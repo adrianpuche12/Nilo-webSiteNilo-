@@ -7,7 +7,7 @@ import { ThemedView } from '@/components/ThemedView';
 export function Welcome() {
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title">Bienvenido a la Home</ThemedText>
+      <ThemedText type="title">Bienvenido a Nilo</ThemedText>
     </ThemedView>
   );
 }

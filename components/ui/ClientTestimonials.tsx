@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   sectionTitle: {
-    fontSize: 28,
+    fontSize: 40,
     fontWeight: "700",
     color: "#fff",
     textAlign: "center",

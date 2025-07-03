@@ -101,6 +101,8 @@ const Footer = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#000',
+    borderColor: "#ff6b35",
+    borderTopWidth: 2,
   },
   footerContent: {
     flexDirection: 'row',
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
     height: 100,
   },
 
-  // Nueva sección para nav links
+
   navLinksSection: {
     flex: 1,
     minWidth: 180,

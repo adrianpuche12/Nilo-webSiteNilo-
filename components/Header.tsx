@@ -13,10 +13,14 @@ import {
 } from 'react-native';
 import { LoginButton, EmailConsultButton } from '@/components/ui/AppButtons';
 
-const Header = () => {
+// Agrega la prop scrollToSection con tipado
+type HeaderProps = {
+  scrollToSection: (sectionId: string) => void;
+};
+
+const Header = ({ scrollToSection }: HeaderProps) => {
   const handleEmailConsult = () => {
     console.log('Consultando email...');
-    
   };
 
   return (
@@ -34,11 +38,10 @@ const Header = () => {
         </View>
         
         <View style={styles.navContainer}>
-          <TextButton text="INICIO" route="/" />
-          <TextButton text="SERVICIOS" route="/servicios" />
-          <TextButton text="QUIÉNES SOMOS" route="/quienes-somos" />
-          <TextButton text="BLOG" route="/blog" />
-          <TextButton text="CONTÁCTANOS" route="/contacto" />
+          <SectionButton text="INICIO" sectionId="inicio" onPress={scrollToSection} />
+          <SectionButton text="SERVICIOS" sectionId="servicios" onPress={scrollToSection} />
+          <SectionButton text="QUIÉNES SOMOS" sectionId="quienes" onPress={scrollToSection} />
+          <SectionButton text="CONTÁCTANOS" sectionId="contacto" onPress={scrollToSection} />
         </View>
         
         <View style={styles.rightSection}>
@@ -65,10 +68,42 @@ const Header = () => {
     </SafeAreaView>
   );
 };
+
+// Componente para botones de sección (scroll interno)
+type SectionButtonProps = {
+  text: string;
+  sectionId: string;
+  onPress: (sectionId: string) => void;
+};
+
+const SectionButton = ({ text, sectionId, onPress }: SectionButtonProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <Pressable
+      style={styles.navItem}
+      onPress={() => onPress(sectionId)}
+      onHoverIn={Platform.OS === 'web' ? () => setIsHovered(true) : undefined}
+      onHoverOut={Platform.OS === 'web' ? () => setIsHovered(false) : undefined}
+    >
+      <Text
+        style={[
+          styles.navText,
+          isHovered && Platform.OS === 'web' && styles.navTextHover,
+        ]}
+      >
+        {text}
+      </Text>
+    </Pressable>
+  );
+};
+
+// Mantén este componente para navegación a otras páginas si lo necesitas
 type TextButtonProps = {
   text: string;
   route: string;
 };
+
 const TextButton = ({ text, route }: TextButtonProps) => {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);

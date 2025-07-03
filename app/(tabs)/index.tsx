@@ -1,3 +1,4 @@
+
 import { View, Text, ScrollView, StyleSheet, Dimensions } from "react-native"
 import { StartProjectButton, ViewPortfolioButton } from "@/components/ui/AppButtons"
 const { width, height } = Dimensions.get("window")

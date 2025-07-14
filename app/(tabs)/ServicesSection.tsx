@@ -1,10 +1,8 @@
 "use client"
 
-import { View, Text, StyleSheet, Dimensions } from "react-native"
+import { View, Text, StyleSheet, useWindowDimensions } from "react-native"
 import { useState } from "react"
 import ServiceCard from "@/components/ui/ServiceCard"
-
-const { width } = Dimensions.get("window")
 
 interface Service {
   id: number
@@ -68,6 +66,8 @@ const defaultServices: Service[] = [
 
 const ServicesSection = ({ services = defaultServices, onServicePress }: ServicesSectionProps) => {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+  const { width } = useWindowDimensions()
+  const bp = useBreakpoint()
 
   const handleServicePress = (service: Service) => {
     if (onServicePress) {
@@ -76,23 +76,90 @@ const ServicesSection = ({ services = defaultServices, onServicePress }: Service
     console.log(`Navegando a: ${service.route}`)
   }
 
-  const cardWidth = Math.floor((width - 80) / 6)
+  
+  const getColumnsAndWidth = () => {
+    let columns = 6 
+    let gap = 20
+
+    if (bp.isMobile) {
+      columns = 2
+      gap = 15
+    } else if (bp.isTabletOrMobile) {
+      columns = 3
+      gap = 18
+    }
+
+    const totalGap = gap * (columns - 1)
+    const availableWidth = width - 80 // padding
+    const cardWidth = Math.floor((availableWidth - totalGap) / columns)
+
+    return { columns, cardWidth, gap }
+  }
+
+  const { cardWidth, gap } = getColumnsAndWidth()
 
   return (
     <View style={styles.container}>
-      <View style={styles.contentWrapper}>
-        <View style={styles.titleContainer}>
-          <View style={styles.titleDecorationLeft} />
+      <View
+        style={[
+          styles.contentWrapper,
+          bp.isTabletOrMobile && styles.contentWrapperTabletOrMobile,
+          bp.isMobile && styles.contentWrapperMobile,
+        ]}
+      >
+        {/* Title Section */}
+        <View
+          style={[
+            styles.titleContainer,
+            bp.isTabletOrMobile && styles.titleContainerTabletOrMobile,
+            bp.isMobile && styles.titleContainerMobile,
+          ]}
+        >
+          <View
+            style={[
+              styles.titleDecorationLeft,
+              bp.isTabletOrMobile && styles.titleDecorationTabletOrMobile,
+              bp.isMobile && styles.titleDecorationMobile,
+            ]}
+          />
           <View style={styles.titleWrapper}>
-            <Text style={styles.sectionSubtitle}>Lo que hacemos</Text>
-            <Text style={styles.sectionTitle}>
+            <Text
+              style={[
+                styles.sectionSubtitle,
+                bp.isTabletOrMobile && styles.sectionSubtitleTabletOrMobile,
+                bp.isMobile && styles.sectionSubtitleMobile,
+              ]}
+            >
+              Lo que hacemos
+            </Text>
+            <Text
+              style={[
+                styles.sectionTitle,
+                bp.isTabletOrMobile && styles.sectionTitleTabletOrMobile,
+                bp.isMobile && styles.sectionTitleMobile,
+              ]}
+            >
               Nuestros <Text style={styles.titleAccent}>Servicios</Text>
             </Text>
           </View>
-          <View style={styles.titleDecorationRight} />
+          <View
+            style={[
+              styles.titleDecorationRight,
+              bp.isTabletOrMobile && styles.titleDecorationTabletOrMobile,
+              bp.isMobile && styles.titleDecorationMobile,
+            ]}
+          />
         </View>
 
-        <View style={styles.servicesGrid}>
+        {/* Services Grid */}
+        <View
+          style={[
+            styles.servicesGrid,
+            { gap },
+            bp.isTabletOrMobile && styles.servicesGridTabletOrMobile,
+            bp.isMobile && styles.servicesGridMobile,
+          ]}
+        >
           {services.map((service) => (
             <ServiceCard
               key={service.id}
@@ -103,12 +170,22 @@ const ServicesSection = ({ services = defaultServices, onServicePress }: Service
               onPress={() => handleServicePress(service)}
               onHoverIn={() => setHoveredCard(service.id)}
               onHoverOut={() => setHoveredCard(null)}
+              breakpoint={bp}
             />
           ))}
         </View>
       </View>
     </View>
   )
+}
+
+// Breakpoint hook
+const useBreakpoint = () => {
+  const { width } = useWindowDimensions()
+  return {
+    isTabletOrMobile: width < 1024,
+    isMobile: width < 768,
+  }
 }
 
 const styles = StyleSheet.create({
@@ -122,6 +199,12 @@ const styles = StyleSheet.create({
     maxWidth: 1200,
     paddingHorizontal: 20,
   },
+  contentWrapperTabletOrMobile: {
+    paddingHorizontal: 16,
+  },
+  contentWrapperMobile: {
+    paddingHorizontal: 14,
+  },
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -129,12 +212,30 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     paddingHorizontal: 20,
   },
+  titleContainerTabletOrMobile: {
+    marginBottom: 50,
+    paddingHorizontal: 16,
+  },
+  titleContainerMobile: {
+    marginBottom: 40,
+    paddingHorizontal: 8,
+  },
   titleDecorationLeft: {
     width: 50,
     height: 3,
     backgroundColor: "#ff6b35",
     marginRight: 25,
     borderRadius: 2,
+  },
+  titleDecorationTabletOrMobile: {
+    width: 40,
+    height: 2,
+    marginRight: 20,
+  },
+  titleDecorationMobile: {
+    width: 30,
+    height: 2,
+    marginRight: 15,
   },
   titleDecorationRight: {
     width: 50,
@@ -154,6 +255,16 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textTransform: "uppercase",
   },
+  sectionSubtitleTabletOrMobile: {
+    fontSize: 12,
+    letterSpacing: 2,
+    marginBottom: 10,
+  },
+  sectionSubtitleMobile: {
+    fontSize: 10,
+    letterSpacing: 1.5,
+    marginBottom: 8,
+  },
   sectionTitle: {
     fontSize: 40,
     fontWeight: "800",
@@ -161,6 +272,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 0.5,
     lineHeight: 42,
+  },
+  sectionTitleTabletOrMobile: {
+    fontSize: 32,
+    lineHeight: 36,
+  },
+  sectionTitleMobile: {
+    fontSize: 24,
+    lineHeight: 28,
   },
   titleAccent: {
     color: "#ff6b35",
@@ -170,8 +289,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    gap: 20,
     marginBottom: 50,
+  },
+  servicesGridTabletOrMobile: {
+    marginBottom: 40,
+  },
+  servicesGridMobile: {
+    marginBottom: 30,
+    justifyContent: "center",
   },
 })
 

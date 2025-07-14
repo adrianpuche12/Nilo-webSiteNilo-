@@ -1,9 +1,9 @@
 "use client"
 
-import { View, Text, StyleSheet } from "react-native"
+import { View, Text, StyleSheet, useWindowDimensions } from "react-native"
 import { useState } from "react"
 import { FilterButton } from "@/components/ui/AppButtons"
-import TeamMemberCard from "@/components/ui/TeamCard"
+import TeamCard from "@/components/ui/TeamCard"
 
 interface TeamMember {
   id: number
@@ -105,6 +105,7 @@ const TeamSection = ({
   subtitle = "CONOCE A NUESTRO EQUIPO",
 }: TeamSectionProps) => {
   const [selectedCategory, setSelectedCategory] = useState(categories[0])
+  const bp = useBreakpoint()
 
   const filteredMembers = teamMembers.filter((member) => member.category === selectedCategory)
 
@@ -117,18 +118,49 @@ const TeamSection = ({
 
   const handleMemberPress = (member: TeamMember) => {
     console.log("Member pressed:", member.name)
-    
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.contentWrapper}>
+      <View
+        style={[
+          styles.contentWrapper,
+          bp.isTabletOrMobile && styles.contentWrapperTabletOrMobile,
+          bp.isMobile && styles.contentWrapperMobile,
+        ]}
+      >
         {/* Title Section */}
-        <View style={styles.titleContainer}>
-          <View style={styles.titleDecorationLeft} />
+        <View
+          style={[
+            styles.titleContainer,
+            bp.isTabletOrMobile && styles.titleContainerTabletOrMobile,
+            bp.isMobile && styles.titleContainerMobile,
+          ]}
+        >
+          <View
+            style={[
+              styles.titleDecorationLeft,
+              bp.isTabletOrMobile && styles.titleDecorationTabletOrMobile,
+              bp.isMobile && styles.titleDecorationMobile,
+            ]}
+          />
           <View style={styles.titleWrapper}>
-            <Text style={styles.sectionSubtitle}>{subtitle}</Text>
-            <Text style={styles.sectionTitle}>
+            <Text
+              style={[
+                styles.sectionSubtitle,
+                bp.isTabletOrMobile && styles.sectionSubtitleTabletOrMobile,
+                bp.isMobile && styles.sectionSubtitleMobile,
+              ]}
+            >
+              {subtitle}
+            </Text>
+            <Text
+              style={[
+                styles.sectionTitle,
+                bp.isTabletOrMobile && styles.sectionTitleTabletOrMobile,
+                bp.isMobile && styles.sectionTitleMobile,
+              ]}
+            >
               {title.split(" ").map((word, index) =>
                 index === title.split(" ").length - 1 ? (
                   <Text key={index} style={styles.titleAccent}>
@@ -140,17 +172,47 @@ const TeamSection = ({
               )}
             </Text>
           </View>
-          <View style={styles.titleDecorationRight} />
+          <View
+            style={[
+              styles.titleDecorationRight,
+              bp.isTabletOrMobile && styles.titleDecorationTabletOrMobile,
+              bp.isMobile && styles.titleDecorationMobile,
+            ]}
+          />
         </View>
 
         {/* Company Information Sections */}
-        <View style={styles.infoSectionsContainer}>
+        <View
+          style={[
+            styles.infoSectionsContainer,
+            bp.isTabletOrMobile && styles.infoSectionsContainerTabletOrMobile,
+            bp.isMobile && styles.infoSectionsContainerMobile,
+          ]}
+        >
           {/* Quiénes Somos Section */}
-          <View style={styles.infoSection}>
-            <Text style={styles.infoQuote}>
+          <View
+            style={[
+              styles.infoSection,
+              bp.isTabletOrMobile && styles.infoSectionTabletOrMobile,
+              bp.isMobile && styles.infoSectionMobile,
+            ]}
+          >
+            <Text
+              style={[
+                styles.infoQuote,
+                bp.isTabletOrMobile && styles.infoQuoteTabletOrMobile,
+                bp.isMobile && styles.infoQuoteMobile,
+              ]}
+            >
               "Conocimiento, creatividad, eficiencia y sinergia para tu solución digital"
             </Text>
-            <Text style={styles.infoDescription}>
+            <Text
+              style={[
+                styles.infoDescription,
+                bp.isTabletOrMobile && styles.infoDescriptionTabletOrMobile,
+                bp.isMobile && styles.infoDescriptionMobile,
+              ]}
+            >
               En NilO Solutions somos un equipo de profesores y estudiantes IT apasionados por la tecnología y mejora
               continua de los procesos digitales. Buscamos generar soluciones tecnológicas disruptivas, innovadoras y
               eficientes para nuestros clientes.
@@ -158,20 +220,64 @@ const TeamSection = ({
           </View>
 
           {/* Mission and Vision Container */}
-          <View style={styles.missionVisionContainer}>
+          <View
+            style={[
+              styles.missionVisionContainer,
+              bp.isTabletOrMobile && styles.missionVisionContainerTabletOrMobile,
+              bp.isMobile && styles.missionVisionContainerMobile,
+            ]}
+          >
             {/* Nuestra Misión Section */}
-            <View style={styles.infoSection}>
-              <View style={styles.infoHeader}>
-                <Text style={styles.infoTitle}>NUESTRA MISIÓN</Text>
-                <View style={styles.infoTitleUnderline} />
+            <View
+              style={[
+                styles.infoSection,
+                bp.isTabletOrMobile && styles.infoSectionTabletOrMobile,
+                bp.isMobile && styles.infoSectionMobile,
+              ]}
+            >
+              <View
+                style={[
+                  styles.infoHeader,
+                  bp.isTabletOrMobile && styles.infoHeaderTabletOrMobile,
+                  bp.isMobile && styles.infoHeaderMobile,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.infoTitle,
+                    bp.isTabletOrMobile && styles.infoTitleTabletOrMobile,
+                    bp.isMobile && styles.infoTitleMobile,
+                  ]}
+                >
+                  NUESTRA MISIÓN
+                </Text>
+                <View
+                  style={[
+                    styles.infoTitleUnderline,
+                    bp.isTabletOrMobile && styles.infoTitleUnderlineTabletOrMobile,
+                    bp.isMobile && styles.infoTitleUnderlineMobile,
+                  ]}
+                />
               </View>
-              <Text style={styles.infoDescription}>
+              <Text
+                style={[
+                  styles.infoDescription,
+                  bp.isTabletOrMobile && styles.infoDescriptionTabletOrMobile,
+                  bp.isMobile && styles.infoDescriptionMobile,
+                ]}
+              >
                 Ser el principal proveedor de soluciones tecnológicas innovadoras, con un enfoque en aplicaciones web y
                 servicios de servidor que optimicen los procesos digitales de nuestros clientes. Nos dedicamos a
                 desarrollar plataformas intuitivas, seguras y robustas que integren servicios, comunicación e
                 información, facilitando de esta manera una experiencia digital completa y eficiente.
               </Text>
-              <Text style={styles.infoDescription}>
+              <Text
+                style={[
+                  styles.infoDescription,
+                  bp.isTabletOrMobile && styles.infoDescriptionTabletOrMobile,
+                  bp.isMobile && styles.infoDescriptionMobile,
+                ]}
+              >
                 A través de tecnologías de vanguardia, buscamos simplificar la interacción entre usuarios y empresas,
                 ofreciendo herramientas que impulsen la productividad, seguridad, calidad de información y satisfacción
                 en cada interacción digital, ágiles y eficientes para nuestros clientes.
@@ -179,18 +285,56 @@ const TeamSection = ({
             </View>
 
             {/* Nuestra Visión Section */}
-            <View style={styles.infoSection}>
-              <View style={styles.infoHeader}>
-                <Text style={styles.infoTitle}>NUESTRA VISIÓN</Text>
-                <View style={styles.infoTitleUnderline} />
+            <View
+              style={[
+                styles.infoSection,
+                bp.isTabletOrMobile && styles.infoSectionTabletOrMobile,
+                bp.isMobile && styles.infoSectionMobile,
+              ]}
+            >
+              <View
+                style={[
+                  styles.infoHeader,
+                  bp.isTabletOrMobile && styles.infoHeaderTabletOrMobile,
+                  bp.isMobile && styles.infoHeaderMobile,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.infoTitle,
+                    bp.isTabletOrMobile && styles.infoTitleTabletOrMobile,
+                    bp.isMobile && styles.infoTitleMobile,
+                  ]}
+                >
+                  NUESTRA VISIÓN
+                </Text>
+                <View
+                  style={[
+                    styles.infoTitleUnderline,
+                    bp.isTabletOrMobile && styles.infoTitleUnderlineTabletOrMobile,
+                    bp.isMobile && styles.infoTitleUnderlineMobile,
+                  ]}
+                />
               </View>
-              <Text style={styles.infoDescription}>
+              <Text
+                style={[
+                  styles.infoDescription,
+                  bp.isTabletOrMobile && styles.infoDescriptionTabletOrMobile,
+                  bp.isMobile && styles.infoDescriptionMobile,
+                ]}
+              >
                 Convertirnos en el socio tecnológico de referencia a nivel global para las empresas que buscan obtener,
                 expandir y mejorar sus procesos y presencia digital. Nos proyectamos como una plataforma integral,
                 alineada con las últimas tendencias tecnológicas, amigables con el medio ambiente y brindando soluciones
                 escalables que se anticipen a las necesidades de un mundo digital en constante evolución.
               </Text>
-              <Text style={styles.infoDescription}>
+              <Text
+                style={[
+                  styles.infoDescription,
+                  bp.isTabletOrMobile && styles.infoDescriptionTabletOrMobile,
+                  bp.isMobile && styles.infoDescriptionMobile,
+                ]}
+              >
                 Aspiramos a incorporar inteligencia artificial, automatización y personalización avanzada en nuestras
                 soluciones, proporcionando experiencias digitales de primer nivel que potencien el éxito y crecimiento
                 de nuestros clientes.
@@ -200,16 +344,42 @@ const TeamSection = ({
         </View>
 
         {/* Team Section Divider */}
-        <View style={styles.teamDivider}>
+        <View
+          style={[
+            styles.teamDivider,
+            bp.isTabletOrMobile && styles.teamDividerTabletOrMobile,
+            bp.isMobile && styles.teamDividerMobile,
+          ]}
+        >
           <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>NUESTRO EQUIPO</Text>
+          <Text
+            style={[
+              styles.dividerText,
+              bp.isTabletOrMobile && styles.dividerTextTabletOrMobile,
+              bp.isMobile && styles.dividerTextMobile,
+            ]}
+          >
+            NUESTRO EQUIPO
+          </Text>
           <View style={styles.dividerLine} />
         </View>
 
         {/* Main Content - Team Filters and Cards */}
-        <View style={styles.mainContent}>
+        <View
+          style={[
+            styles.mainContent,
+            bp.isTabletOrMobile && styles.mainContentTabletOrMobile,
+            bp.isMobile && styles.mainContentMobile,
+          ]}
+        >
           {/* Filter Buttons */}
-          <View style={styles.filterContainer}>
+          <View
+            style={[
+              styles.filterContainer,
+              bp.isTabletOrMobile && styles.filterContainerTabletOrMobile,
+              bp.isMobile && styles.filterContainerMobile,
+            ]}
+          >
             {categories.map((category) => (
               <FilterButton
                 key={category}
@@ -221,15 +391,31 @@ const TeamSection = ({
           </View>
 
           {/* Team Members Cards */}
-          <View style={[styles.membersContainer, { justifyContent: getJustifyContent() }]}>
+          <View
+            style={[
+              styles.membersContainer,
+              { justifyContent: getJustifyContent() },
+              bp.isTabletOrMobile && styles.membersContainerTabletOrMobile,
+              bp.isMobile && styles.membersContainerMobile,
+            ]}
+          >
             {filteredMembers.map((member) => (
-              <TeamMemberCard key={member.id} member={member} onPress={handleMemberPress} />
+              <TeamCard key={member.id} member={member} onPress={handleMemberPress} />
             ))}
           </View>
         </View>
       </View>
     </View>
   )
+}
+
+/* --------------------- BREAKPOINT ------------------------ */
+const useBreakpoint = () => {
+  const { width } = useWindowDimensions()
+  return {
+    isTabletOrMobile: width < 1024,
+    isMobile: width < 768,
+  }
 }
 
 const styles = StyleSheet.create({
@@ -243,6 +429,14 @@ const styles = StyleSheet.create({
     maxWidth: 1200,
     paddingHorizontal: 20,
   },
+  contentWrapperTabletOrMobile: {
+    width: "85%",
+    paddingHorizontal: 16,
+  },
+  contentWrapperMobile: {
+    width: "90%",
+    paddingHorizontal: 12,
+  },
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -250,12 +444,30 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     paddingHorizontal: 20,
   },
+  titleContainerTabletOrMobile: {
+    marginBottom: 50,
+    paddingHorizontal: 16,
+  },
+  titleContainerMobile: {
+    marginBottom: 40,
+    paddingHorizontal: 8,
+  },
   titleDecorationLeft: {
     width: 50,
     height: 3,
     backgroundColor: "#ff6b35",
     marginRight: 25,
     borderRadius: 2,
+  },
+  titleDecorationTabletOrMobile: {
+    width: 40,
+    height: 2,
+    marginRight: 20,
+  },
+  titleDecorationMobile: {
+    width: 30,
+    height: 2,
+    marginRight: 15,
   },
   titleDecorationRight: {
     width: 50,
@@ -275,6 +487,16 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textTransform: "uppercase",
   },
+  sectionSubtitleTabletOrMobile: {
+    fontSize: 12,
+    letterSpacing: 2,
+    marginBottom: 10,
+  },
+  sectionSubtitleMobile: {
+    fontSize: 10,
+    letterSpacing: 1.5,
+    marginBottom: 8,
+  },
   sectionTitle: {
     fontSize: 40,
     fontWeight: "800",
@@ -282,6 +504,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 0.5,
     lineHeight: 42,
+  },
+  sectionTitleTabletOrMobile: {
+    fontSize: 32,
+    lineHeight: 36,
+  },
+  sectionTitleMobile: {
+    fontSize: 24,
+    lineHeight: 28,
   },
   titleAccent: {
     color: "#ff6b35",
@@ -292,13 +522,33 @@ const styles = StyleSheet.create({
   infoSectionsContainer: {
     marginBottom: 80,
   },
+  infoSectionsContainerTabletOrMobile: {
+    marginBottom: 60,
+  },
+  infoSectionsContainerMobile: {
+    marginBottom: 50,
+  },
   infoSection: {
     marginBottom: 50,
     paddingHorizontal: 20,
   },
+  infoSectionTabletOrMobile: {
+    marginBottom: 40,
+    paddingHorizontal: 16,
+  },
+  infoSectionMobile: {
+    marginBottom: 30,
+    paddingHorizontal: 12,
+  },
   infoHeader: {
     alignItems: "center",
     marginBottom: 25,
+  },
+  infoHeaderTabletOrMobile: {
+    marginBottom: 20,
+  },
+  infoHeaderMobile: {
+    marginBottom: 15,
   },
   infoTitle: {
     fontSize: 22,
@@ -308,11 +558,29 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     textAlign: "center",
   },
+  infoTitleTabletOrMobile: {
+    fontSize: 20,
+    letterSpacing: 1.5,
+    marginBottom: 7,
+  },
+  infoTitleMobile: {
+    fontSize: 18,
+    letterSpacing: 1,
+    marginBottom: 6,
+  },
   infoTitleUnderline: {
     width: 60,
     height: 3,
     backgroundColor: "#ff6b35",
     borderRadius: 2,
+  },
+  infoTitleUnderlineTabletOrMobile: {
+    width: 50,
+    height: 2,
+  },
+  infoTitleUnderlineMobile: {
+    width: 40,
+    height: 2,
   },
   infoQuote: {
     fontSize: 18,
@@ -324,6 +592,18 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     paddingHorizontal: 20,
   },
+  infoQuoteTabletOrMobile: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 20,
+    paddingHorizontal: 16,
+  },
+  infoQuoteMobile: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 18,
+    paddingHorizontal: 12,
+  },
   infoDescription: {
     fontSize: 16,
     color: "#ccc",
@@ -333,8 +613,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     letterSpacing: 0.3,
   },
+  infoDescriptionTabletOrMobile: {
+    fontSize: 15,
+    lineHeight: 22,
+    marginBottom: 18,
+    paddingHorizontal: 8,
+  },
+  infoDescriptionMobile: {
+    fontSize: 13,
+    lineHeight: 20,
+    marginBottom: 15,
+    paddingHorizontal: 6,
+  },
 
-  // Mission and Vision Container
+  // Mission and Vision 
   missionVisionContainer: {
     backgroundColor: "#111",
     borderRadius: 20,
@@ -348,6 +640,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
   },
+  missionVisionContainerTabletOrMobile: {
+    borderRadius: 16,
+    padding: 25,
+    marginTop: 30,
+  },
+  missionVisionContainerMobile: {
+    borderRadius: 12,
+    padding: 20,
+    marginTop: 25,
+  },
 
   // Team Divider
   teamDivider: {
@@ -356,6 +658,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 50,
     paddingHorizontal: 20,
+  },
+  teamDividerTabletOrMobile: {
+    marginBottom: 40,
+    paddingHorizontal: 16,
+  },
+  teamDividerMobile: {
+    marginBottom: 30,
+    paddingHorizontal: 12,
   },
   dividerLine: {
     flex: 1,
@@ -370,6 +680,16 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     paddingHorizontal: 20,
   },
+  dividerTextTabletOrMobile: {
+    fontSize: 15,
+    letterSpacing: 1.5,
+    paddingHorizontal: 16,
+  },
+  dividerTextMobile: {
+    fontSize: 13,
+    letterSpacing: 1,
+    paddingHorizontal: 12,
+  },
 
   // Team Content
   mainContent: {
@@ -377,9 +697,28 @@ const styles = StyleSheet.create({
     gap: 40,
     alignItems: "flex-start",
   },
+  mainContentTabletOrMobile: {
+    gap: 30,
+  },
+  mainContentMobile: {
+    flexDirection: "column",
+    gap: 25,
+    alignItems: "center",
+  },
   filterContainer: {
     flex: 1,
     maxWidth: 200,
+  },
+  filterContainerTabletOrMobile: {
+    maxWidth: 180,
+  },
+  filterContainerMobile: {
+    flex: 0,
+    maxWidth: "100%",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 8,
   },
   membersContainer: {
     flex: 2,
@@ -387,6 +726,15 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: 5,
     justifyContent: "flex-start",
+  },
+  membersContainerTabletOrMobile: {
+    gap: 8,
+  },
+  membersContainerMobile: {
+    flex: 0,
+    width: "100%",
+    gap: 12,
+    justifyContent: "center",
   },
 })
 

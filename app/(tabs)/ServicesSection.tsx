@@ -76,22 +76,25 @@ const ServicesSection = ({ services = defaultServices, onServicePress }: Service
     console.log(`Navegando a: ${service.route}`)
   }
 
-  
+  // Responsive columns and card sizing
   const getColumnsAndWidth = () => {
-    let columns = 6 
+    let columns = 6 // Desktop default
     let gap = 20
+    let horizontalPadding = 40 // Padding total de la sección (20px a cada lado)
 
     if (bp.isMobile) {
       columns = 2
       gap = 15
+      horizontalPadding = 28 // 14px a cada lado
     } else if (bp.isTabletOrMobile) {
       columns = 3
       gap = 18
+      horizontalPadding = 32 // 16px a cada lado
     }
 
-    const totalGap = gap * (columns - 1)
-    const availableWidth = width - 80 // padding
-    const cardWidth = Math.floor((availableWidth - totalGap) / columns)
+    // Ajustar el ancho disponible restando el padding del contenedor principal y los gaps entre tarjetas
+    const availableWidth = width - horizontalPadding
+    const cardWidth = (availableWidth - gap * (columns - 1)) / columns
 
     return { columns, cardWidth, gap }
   }
@@ -165,7 +168,6 @@ const ServicesSection = ({ services = defaultServices, onServicePress }: Service
               key={service.id}
               service={service}
               width={cardWidth}
-              height={cardWidth * 0.9}
               hovered={hoveredCard === service.id}
               onPress={() => handleServicePress(service)}
               onHoverIn={() => setHoveredCard(service.id)}

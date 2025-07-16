@@ -25,7 +25,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
 
   // Calculate responsive card width
   const getCardWidth = () => {
-    let columns = 7 
+    let columns = 7 // Desktop default
     let padding = 60
 
     if (bp.isMobile) {
@@ -50,6 +50,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
           transform: [{ scale: isHovered ? 1.02 : 1 }],
         },
         isHovered && styles.memberCardHovered,
+        // Desktop styles are implicitly applied by default styles
         bp.isTabletOrMobile && styles.memberCardTabletOrMobile,
         bp.isMobile && styles.memberCardMobile,
       ]}
@@ -66,6 +67,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
         style={[
           styles.cardBorder,
           isHovered && styles.cardBorderHovered,
+          // Desktop styles are implicitly applied by default styles
           bp.isTabletOrMobile && styles.cardBorderTabletOrMobile,
           bp.isMobile && styles.cardBorderMobile,
         ]}
@@ -75,6 +77,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
       <View
         style={[
           styles.cardContent,
+          // Desktop styles are implicitly applied by default styles
           bp.isTabletOrMobile && styles.cardContentTabletOrMobile,
           bp.isMobile && styles.cardContentMobile,
         ]}
@@ -84,6 +87,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
           style={[
             styles.imageContainer,
             isHovered && styles.imageContainerHovered,
+            // Desktop styles are implicitly applied by default styles
             bp.isTabletOrMobile && styles.imageContainerTabletOrMobile,
             bp.isMobile && styles.imageContainerMobile,
           ]}
@@ -91,6 +95,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
           <View
             style={[
               styles.imageGlow,
+              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.imageGlowTabletOrMobile,
               bp.isMobile && styles.imageGlowMobile,
             ]}
@@ -99,6 +104,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
             source={teamImages[member.image] ?? { uri: member.image }}
             style={[
               styles.profileImage,
+              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.profileImageTabletOrMobile,
               bp.isMobile && styles.profileImageMobile,
             ]}
@@ -106,6 +112,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
           <View
             style={[
               styles.imageOverlay,
+              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.imageOverlayTabletOrMobile,
               bp.isMobile && styles.imageOverlayMobile,
             ]}
@@ -116,6 +123,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
         <View
           style={[
             styles.memberInfo,
+            // Desktop styles are implicitly applied by default styles
             bp.isTabletOrMobile && styles.memberInfoTabletOrMobile,
             bp.isMobile && styles.memberInfoMobile,
           ]}
@@ -124,6 +132,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
             style={[
               styles.memberName,
               isHovered && styles.memberNameHovered,
+              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.memberNameTabletOrMobile,
               bp.isMobile && styles.memberNameMobile,
             ]}
@@ -133,6 +142,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
           <Text
             style={[
               styles.memberRole,
+              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.memberRoleTabletOrMobile,
               bp.isMobile && styles.memberRoleMobile,
             ]}
@@ -143,6 +153,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
             style={[
               styles.roleUnderline,
               isHovered && styles.roleUnderlineHovered,
+              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.roleUnderlineTabletOrMobile,
               bp.isMobile && styles.roleUnderlineMobile,
             ]}
@@ -153,6 +164,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
         <View
           style={[
             styles.quoteContainer,
+            // Desktop styles are implicitly applied by default styles
             bp.isTabletOrMobile && styles.quoteContainerTabletOrMobile,
             bp.isMobile && styles.quoteContainerMobile,
           ]}
@@ -160,6 +172,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
           <Text
             style={[
               styles.quoteIcon,
+              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.quoteIconTabletOrMobile,
               bp.isMobile && styles.quoteIconMobile,
             ]}
@@ -169,6 +182,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
           <Text
             style={[
               styles.memberQuote,
+              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.memberQuoteTabletOrMobile,
               bp.isMobile && styles.memberQuoteMobile,
             ]}
@@ -188,6 +202,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
 const useBreakpoint = () => {
   const { width } = useWindowDimensions()
   return {
+    isDesktop: width >= 1024, // Explicitly defined
     isTabletOrMobile: width < 1024,
     isMobile: width < 768,
   }

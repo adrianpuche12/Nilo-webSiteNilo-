@@ -1,11 +1,32 @@
-import { View, Text, StyleSheet, useWindowDimensions, Dimensions } from "react-native"
+"use client"
 
+import { View, Text, StyleSheet, useWindowDimensions, Dimensions, Animated } from "react-native"
 import { StartProjectButton, ViewPortfolioButton } from "@/components/ui/AppButtons"
-
+import { useComplexShapeAnimation, SHAPE_ANIMATIONS } from "@/components/animations/AnimatedShapes"
+import { useHeroSectionAnimation } from "@/components/animations/HeroAnimations"
 const { height } = Dimensions.get("window")
 
 const NiloSolutionsIndex = () => {
   const bp = useBreakpoint()
+
+  // Animaciones de entrada para toda la sección hero
+  const heroAnimations = useHeroSectionAnimation()
+
+  // Animaciones para cada forma con configuraciones diferentes (formas de fondo)
+  const circle1Animation = useComplexShapeAnimation(
+    SHAPE_ANIMATIONS.CIRCLE_PRIMARY.scale,
+    SHAPE_ANIMATIONS.CIRCLE_PRIMARY.opacity,
+  )
+
+  const circle2Animation = useComplexShapeAnimation(
+    SHAPE_ANIMATIONS.CIRCLE_SECONDARY.scale,
+    SHAPE_ANIMATIONS.CIRCLE_SECONDARY.opacity,
+  )
+
+  const square1Animation = useComplexShapeAnimation(
+    SHAPE_ANIMATIONS.SQUARE_PRIMARY.scale,
+    SHAPE_ANIMATIONS.SQUARE_PRIMARY.opacity,
+  )
 
   return (
     <View style={styles.container}>
@@ -31,46 +52,57 @@ const NiloSolutionsIndex = () => {
               bp.isMobile && styles.heroTextContainerMobile,
             ]}
           >
-            <Text
+            {/* Subtitle con animación */}
+            <Animated.Text
               style={[
                 styles.heroSubtitle,
                 bp.isTabletOrMobile && styles.heroSubtitleTabletOrMobile,
                 bp.isMobile && styles.heroSubtitleMobile,
+                heroAnimations.subtitle,
               ]}
             >
               CONSULTORA DE SOFTWARE
-            </Text>
-            <Text
+            </Animated.Text>
+
+            {/* Title con animación */}
+            <Animated.Text
               style={[
                 styles.heroTitle,
                 bp.isTabletOrMobile && styles.heroTitleTabletOrMobile,
                 bp.isMobile && styles.heroTitleMobile,
+                heroAnimations.title,
               ]}
             >
               Transformamos tus{"\n"}
               <Text style={styles.heroTitleAccent}>ideas digitales</Text>
               {"\n"}en realidad
-            </Text>
-            <Text
+            </Animated.Text>
+
+            {/* Description con animación */}
+            <Animated.Text
               style={[
                 styles.heroDescription,
                 bp.isTabletOrMobile && styles.heroDescriptionTabletOrMobile,
                 bp.isMobile && styles.heroDescriptionMobile,
+                heroAnimations.description,
               ]}
             >
               Desarrollamos soluciones tecnológicas innovadoras para empresas que buscan crecer en el mundo digital.
               Desde aplicaciones móviles hasta sistemas web complejos.
-            </Text>
-            <View
+            </Animated.Text>
+
+            {/* Buttons con animación */}
+            <Animated.View
               style={[
                 styles.heroButtons,
                 bp.isTabletOrMobile && styles.heroButtonsTabletOrMobile,
                 bp.isMobile && styles.heroButtonsMobile,
+                heroAnimations.buttons,
               ]}
             >
               <StartProjectButton onPress={() => console.log("Comenzar proyecto")} />
               <ViewPortfolioButton onPress={() => console.log("Ver portafolio")} />
-            </View>
+            </Animated.View>
           </View>
 
           <View
@@ -80,11 +112,13 @@ const NiloSolutionsIndex = () => {
               bp.isMobile && styles.heroVisualMobile,
             ]}
           >
-            <View
+            {/* Card con animación */}
+            <Animated.View
               style={[
                 styles.floatingCard,
                 bp.isTabletOrMobile && styles.floatingCardTabletOrMobile,
                 bp.isMobile && styles.floatingCardMobile,
+                heroAnimations.card,
               ]}
             >
               <View style={[styles.cardHeader, bp.isMobile && styles.cardHeaderMobile]}>
@@ -156,34 +190,57 @@ const NiloSolutionsIndex = () => {
                   </View>
                 </View>
               </View>
-            </View>
+            </Animated.View>
 
-            <View style={[styles.backgroundElements, bp.isMobile && styles.backgroundElementsMobile]}>
-              <View
+            {/* Background Elements with Animations */}
+            <Animated.View
+              style={[styles.backgroundElements, bp.isMobile && styles.backgroundElementsMobile, heroAnimations.shapes]}
+            >
+              {/* Circle 1 - Animated */}
+              <Animated.View
                 style={[
                   styles.circle,
                   styles.circle1,
                   bp.isTabletOrMobile && styles.circle1TabletOrMobile,
                   bp.isMobile && styles.circle1Mobile,
+                  {
+                    transform: [{ scale: circle1Animation.scale }],
+                    opacity: circle1Animation.opacity,
+                  },
                 ]}
               />
-              <View
+
+              {/* Circle 2 - Animated */}
+              <Animated.View
                 style={[
                   styles.circle,
                   styles.circle2,
                   bp.isTabletOrMobile && styles.circle2TabletOrMobile,
                   bp.isMobile && styles.circle2Mobile,
+                  {
+                    transform: [{ scale: circle2Animation.scale }],
+                    opacity: circle2Animation.opacity,
+                  },
                 ]}
               />
-              <View
+
+              {/* Diamond (Square rotated 45°) - Animated with scale only */}
+              <Animated.View
                 style={[
-                  styles.square,
-                  styles.square1,
-                  bp.isTabletOrMobile && styles.square1TabletOrMobile,
-                  bp.isMobile && styles.square1Mobile,
+                  styles.diamond,
+                  styles.diamond1,
+                  bp.isTabletOrMobile && styles.diamond1TabletOrMobile,
+                  bp.isMobile && styles.diamond1Mobile,
+                  {
+                    transform: [
+                      { rotate: "45deg" }, // Rotación fija para crear el rombo
+                      { scale: square1Animation.scale },
+                    ],
+                    opacity: square1Animation.opacity,
+                  },
                 ]}
               />
-            </View>
+            </Animated.View>
           </View>
         </View>
       </View>
@@ -191,7 +248,7 @@ const NiloSolutionsIndex = () => {
   )
 }
 
-/* --------------------- BREAKPOINT------------------------ */
+/* --------------------- BREAKPOINT HOOK ------------------------ */
 const useBreakpoint = () => {
   const { width } = useWindowDimensions()
   return {
@@ -507,7 +564,6 @@ const styles = StyleSheet.create({
   circle: {
     position: "absolute",
     borderRadius: 50,
-    opacity: 0.1,
     pointerEvents: "none",
   },
   circle1: {
@@ -528,7 +584,6 @@ const styles = StyleSheet.create({
     height: 70,
     top: -10,
     right: -10,
-    opacity: 0.15,
   },
   circle2: {
     width: 60,
@@ -548,35 +603,31 @@ const styles = StyleSheet.create({
     height: 50,
     bottom: -20,
     left: -10,
-    opacity: 0.12,
   },
 
-  /* -------- SQUARES -------- */
-  square: {
+  /* -------- DIAMOND (ROTATED SQUARE) -------- */
+  diamond: {
     position: "absolute",
-    opacity: 0.05,
     pointerEvents: "none",
   },
-  square1: {
+  diamond1: {
     width: 80,
     height: 80,
     backgroundColor: "#ff6b35",
     bottom: 40,
     right: 60,
-    transform: [{ rotate: "45deg" }],
   },
-  square1TabletOrMobile: {
+  diamond1TabletOrMobile: {
     width: 65,
     height: 65,
     bottom: 30,
     right: 45,
   },
-  square1Mobile: {
+  diamond1Mobile: {
     width: 60,
     height: 60,
     bottom: -15,
     right: -15,
-    opacity: 0.08,
   },
 })
 

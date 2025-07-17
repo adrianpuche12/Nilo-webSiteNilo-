@@ -19,23 +19,21 @@ import Animated, {
   withTiming,
   withSpring,
   interpolate,
-  Extrapolation,
 } from "react-native-reanimated";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const scrollViewRef = useRef<ScrollView>(null);
-  const [sectionPositions, setSectionPositions] = useState<
-    Record<string, number>
-  >({});
+  const [sectionPositions, setSectionPositions] = useState<Record<string, number>>({});
 
   // estado para  la animacion de scroll de cambio de seccion
   const [currentSection, setCurrentSection] = useState<string>("inicio");
+  const [newCurrentSection, setNewCurrentSection] = useState<string>("inicio");
+  
 
   // 🎨 Valores animados para cada sección
-  const inicioOpacity = useSharedValue(1);
-  const inicioTranslateY = useSharedValue(0);
+
 
   const serviciosOpacity = useSharedValue(0);
   const serviciosTranslateY = useSharedValue(50);
@@ -45,6 +43,7 @@ export default function RootLayout() {
 
   const contactoOpacity = useSharedValue(0);
   const contactoTranslateY = useSharedValue(50);
+  
 
   // Scroll value para efectos parallax
   const scrollY = useSharedValue(100);
@@ -63,28 +62,24 @@ export default function RootLayout() {
   const animateSection = (sectionId: string, isVisible: boolean) => {
     const duration = 800;
     const springConfig = {
-      damping: 15,
+      damping: 150,
       stiffness: 100,
     };
 
     switch (sectionId) {
-      case "inicio":
-        inicioOpacity.value = withTiming(isVisible ? 1 : 0.3, { duration });
-        inicioTranslateY.value = withSpring(isVisible ? 0 : -20, springConfig);
-        break;
       case "servicios":
-        serviciosOpacity.value = withTiming(isVisible ? 1 : 0.3, { duration });
+        serviciosOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
         serviciosTranslateY.value = withSpring(
           isVisible ? 0 : 50,
           springConfig
         );
         break;
       case "quienes":
-        quienesOpacity.value = withTiming(isVisible ? 1 : 0.3, { duration });
+        quienesOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
         quienesTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
         break;
       case "contacto":
-        contactoOpacity.value = withTiming(isVisible ? 1 : 0.3, { duration });
+        contactoOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
         contactoTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
         break;
     }
@@ -124,22 +119,6 @@ export default function RootLayout() {
     }
   };
   // 🎨 Estilos animados para cada sección
-  const inicioAnimatedStyle = useAnimatedStyle(() => {
-    const parallaxY = interpolate(
-      scrollY.value,
-      [0, 0],
-      [0, -50],
-      Extrapolation.CLAMP
-    );
-
-    return {
-      opacity: inicioOpacity.value,
-      transform: [
-        { translateY: inicioTranslateY.value + parallaxY },
-        { scale: interpolate(inicioOpacity.value, [0.3, 1], [0.95, 1]) },
-      ],
-    };
-  });
 
   const serviciosAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -202,26 +181,22 @@ export default function RootLayout() {
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       <ScrollView
         ref={scrollViewRef}
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#000000" }}
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}
       >
         <Header scrollToSection={scrollToSection} />
-
-        {/* 🎨 Secciones con animaciones */}
-        <Animated.View
-          style={inicioAnimatedStyle}
-          onLayout={(event) => handleSectionLayout("inicio", event)}
-        >
+        <View
+          onLayout={(event) => handleSectionLayout("inicio", event)}>
           <Index />
-        </Animated.View>
+        </View>
 
         <Animated.View
           style={serviciosAnimatedStyle}
           onLayout={(event) => handleSectionLayout("servicios", event)}
         >
-          <Services />
+          <Services isView={currentSection === "servicios"}/>
         </Animated.View>
 
         <Animated.View

@@ -1,20 +1,28 @@
-"use client"
+"use client";
 
-import { View, Text, StyleSheet, useWindowDimensions } from "react-native"
-import { useState } from "react"
-import ServiceCard from "@/components/ui/ServiceCard"
+import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import { useState, useEffect } from "react";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withDelay,
+  withSpring,
+} from "react-native-reanimated";
+import ServiceCard from "@/components/ui/ServiceCard";
 
 interface Service {
-  id: number
-  title: string
-  icon: string
-  description: string
-  route: string
+  id: number;
+  title: string;
+  icon: string;
+  description: string;
+  route: string;
 }
 
 interface ServicesSectionProps {
-  services?: Service[]
-  onServicePress?: (service: Service) => void
+  services?: Service[];
+  onServicePress?: (service: Service) => void;
+  isView?: boolean; // Indica si se está viendo la sección o no
 }
 
 const defaultServices: Service[] = [
@@ -38,68 +46,122 @@ const defaultServices: Service[] = [
     id: 3,
     title: "Apps Móviles",
     icon: "📱",
-    description: "Creamos aplicaciones móviles nativas y multiplataforma con las últimas tecnologías del mercado.",
+    description:
+      "Creamos aplicaciones móviles nativas y multiplataforma con las últimas tecnologías del mercado.",
     route: "/servicios/apps-moviles",
   },
   {
     id: 4,
     title: "E-commerce",
     icon: "🛒",
-    description: "Desarrollamos tiendas online completas con sistemas de pago seguros y gestión avanzada.",
+    description:
+      "Desarrollamos tiendas online completas con sistemas de pago seguros y gestión avanzada.",
     route: "/servicios/ecommerce",
   },
   {
     id: 5,
     title: "Consultoría Tech",
     icon: "💡",
-    description: "Asesoramos en la transformación digital de tu empresa con estrategias tecnológicas efectivas.",
+    description:
+      "Asesoramos en la transformación digital de tu empresa con estrategias tecnológicas efectivas.",
     route: "/servicios/consultoria",
   },
   {
     id: 6,
     title: "Mantenimiento",
     icon: "🔧",
-    description: "Brindamos soporte técnico continuo y mantenimiento para garantizar el óptimo funcionamiento.",
+    description:
+      "Brindamos soporte técnico continuo y mantenimiento para garantizar el óptimo funcionamiento.",
     route: "/servicios/mantenimiento",
   },
-]
+];
 
-const ServicesSection = ({ services = defaultServices, onServicePress }: ServicesSectionProps) => {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
-  const { width } = useWindowDimensions()
-  const bp = useBreakpoint()
+const ServicesSection = ({
+  services = defaultServices,
+  onServicePress,
+  isView = false,
+}: ServicesSectionProps) => {
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const { width } = useWindowDimensions();
+  const bp = useBreakpoint();
+
+  // Valores animados para cada card
+  const cardAnimations = services.map(() => ({
+    opacity: useSharedValue(0),
+    translateX: useSharedValue(-100), // Empiezan 100px a la izquierda
+  }));
 
   const handleServicePress = (service: Service) => {
     if (onServicePress) {
-      onServicePress(service)
+      onServicePress(service);
     }
-    console.log(`Navegando a: ${service.route}`)
-  }
+    console.log(`Navegando a: ${service.route}`);
+  };
+
+  // Efecto para animar las cards cuando se ve la sección
+  useEffect(() => {
+    if (isView) {
+      console.log("🎨 Se está viendo el service");
+
+      // Animar cada card con delay escalonado
+      cardAnimations.forEach((animation, index) => {
+        const delay = index * 150; // 150ms de delay entre cada card
+
+        // Animación de opacity
+        animation.opacity.value = withDelay(
+          delay,
+          withTiming(1, { duration: 600 })
+        );
+
+        // Animación de posición desde la izquierda
+        animation.translateX.value = withDelay(
+          delay,
+          withSpring(0, {
+            damping: 20,
+            stiffness: 100,
+          })
+        );
+      });
+    } else {
+      // Resetear animaciones cuando sale de vista
+      cardAnimations.forEach((animation) => {
+        animation.opacity.value = withTiming(0, { duration: 300 });
+        animation.translateX.value = withTiming(-100, { duration: 300 });
+      });
+    }
+  }, [isView]);
+
+  // estilo animado para cada card
+  const getAnimatedStyle = (index: number) => {
+    return useAnimatedStyle(() => ({
+      opacity: cardAnimations[index].opacity.value,
+      transform: [{ translateX: cardAnimations[index].translateX.value }],
+    }));
+  };
 
   // Responsive columns and card sizing
   const getColumnsAndWidth = () => {
-    let columns = 6 // Desktop default
-    let gap = 20
-    let horizontalPadding = 40 // Padding total de la sección (20px a cada lado)
-
-    if (bp.isMobile) {
-      columns = 2
-      gap = 15
-      horizontalPadding = 28 // 14px a cada lado
+    let columns = 6; // Desktop default
+    let gap = 20;
+    let horizontalPadding = 40; // Padding total de la sección (20px a cada lado)
+   if (bp.isMobile) {
+      columns = 2;
+      gap = 15;
+      horizontalPadding = 28; // 14px a cada lado
     } else if (bp.isTabletOrMobile) {
-      columns = 3
-      gap = 18
-      horizontalPadding = 32 // 16px a cada lado
+      columns = 3;
+      gap = 18;
+      horizontalPadding = 32; // 16px a cada lado
     }
 
     // Ajustar el ancho disponible restando el padding del contenedor principal y los gaps entre tarjetas
-    const availableWidth = width - horizontalPadding
-    const cardWidth = (availableWidth - gap * (columns - 1)) / columns
+    const availableWidth = width - horizontalPadding;
+    const cardWidth = (availableWidth - gap * (columns - 1)) / columns;
 
-    return { columns, cardWidth, gap }
-  }
+    return { columns, cardWidth, gap };
+  };
 
-  const { cardWidth, gap } = getColumnsAndWidth()
+  const { cardWidth, gap } = getColumnsAndWidth();
 
   return (
     <View style={styles.container}>
@@ -163,32 +225,38 @@ const ServicesSection = ({ services = defaultServices, onServicePress }: Service
             bp.isMobile && styles.servicesGridMobile,
           ]}
         >
-          {services.map((service) => (
-            <ServiceCard
+          {services.map((service, index) => (
+            <Animated.View
               key={service.id}
-              service={service}
-              width={cardWidth}
-              hovered={hoveredCard === service.id}
-              onPress={() => handleServicePress(service)}
-              onHoverIn={() => setHoveredCard(service.id)}
-              onHoverOut={() => setHoveredCard(null)}
-              breakpoint={bp}
-            />
+              style={[getAnimatedStyle(index), { width: cardWidth }]}
+            >
+              <ServiceCard
+                service={service}
+                width={cardWidth}
+                hovered={hoveredCard === service.id}
+                onPress={() => handleServicePress(service)}
+                onHoverIn={() => setHoveredCard(service.id)}
+                onHoverOut={() => setHoveredCard(null)}
+                breakpoint={bp}
+              />
+            </Animated.View>
           ))}
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 // Breakpoint hook
 const useBreakpoint = () => {
-  const { width } = useWindowDimensions()
+  const { width } = useWindowDimensions();
   return {
+    isLargeDesktop: width >= 1440,
+    isDesktop: width >= 1024 && width < 1440,
     isTabletOrMobile: width < 1024,
     isMobile: width < 768,
-  }
-}
+  };
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -300,6 +368,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     justifyContent: "center",
   },
-})
+});
 
-export default ServicesSection
+export default ServicesSection;

@@ -15,16 +15,20 @@ interface Props {
   onHoverOut: () => void
   onPress: () => void
   breakpoint?: {
-    isTabletOrMobile: boolean
     isMobile: boolean
+    isTablet: boolean
+    isDesktop: boolean
+    isLargeDesktop: boolean
   }
 }
 
 const useBreakpoint = () => {
   const { width } = useWindowDimensions()
   return {
-    isTabletOrMobile: width < 1024,
     isMobile: width < 768,
+    isTablet: width >= 768 && width < 1024,
+    isDesktop: width >= 1024 && width < 1440,
+    isLargeDesktop: width >= 1440,
   }
 }
 
@@ -41,8 +45,10 @@ const ServiceCard = ({ service, width, hovered, onHoverIn, onHoverOut, onPress, 
           transform: [{ scale: hovered ? 1.05 : 1 }],
         },
         hovered && styles.serviceCardHovered,
-        bp.isTabletOrMobile && styles.serviceCardTabletOrMobile,
         bp.isMobile && styles.serviceCardMobile,
+        bp.isTablet && styles.serviceCardTablet,
+        bp.isDesktop && styles.serviceCardDesktop,
+        bp.isLargeDesktop && styles.serviceCardLargeDesktop,
       ]}
       onPress={onPress}
       onMouseEnter={onHoverIn}
@@ -50,97 +56,87 @@ const ServiceCard = ({ service, width, hovered, onHoverIn, onHoverOut, onPress, 
       activeOpacity={0.9}
     >
       <View style={[styles.gradientOverlay, hovered && styles.gradientOverlayHovered]} />
-      <View
-        style={[
-          styles.leftBorder,
-          hovered && styles.leftBorderHovered,
-          bp.isTabletOrMobile && styles.leftBorderTabletOrMobile,
-          bp.isMobile && styles.leftBorderMobile,
-        ]}
-      />
+      <View style={[
+        styles.leftBorder,
+        hovered && styles.leftBorderHovered,
+        bp.isMobile && styles.leftBorderMobile,
+        bp.isTablet && styles.leftBorderTablet,
+        bp.isDesktop && styles.leftBorderDesktop,
+      ]} />
 
-      <View
-        style={[
-          styles.cardContent,
-          bp.isTabletOrMobile && styles.cardContentTabletOrMobile,
-          bp.isMobile && styles.cardContentMobile,
-        ]}
-      >
-        <View
-          style={[
-            styles.iconContainer,
-            hovered && styles.iconContainerHovered,
-            bp.isTabletOrMobile && styles.iconContainerTabletOrMobile,
-            bp.isMobile && styles.iconContainerMobile,
-          ]}
-        >
-          <View
-            style={[
-              styles.iconGlow,
-              bp.isTabletOrMobile && styles.iconGlowTabletOrMobile,
-              bp.isMobile && styles.iconGlowMobile,
-            ]}
-          />
-          <Text
-            style={[
-              styles.serviceIcon,
-              bp.isTabletOrMobile && styles.serviceIconTabletOrMobile,
-              bp.isMobile && styles.serviceIconMobile,
-            ]}
-          >
+      <View style={[
+        styles.cardContent,
+        bp.isMobile && styles.cardContentMobile,
+        bp.isTablet && styles.cardContentTablet,
+        bp.isDesktop && styles.cardContentDesktop,
+      ]}>
+        <View style={[
+          styles.iconContainer,
+          hovered && styles.iconContainerHovered,
+          bp.isMobile && styles.iconContainerMobile,
+          bp.isTablet && styles.iconContainerTablet,
+          bp.isDesktop && styles.iconContainerDesktop,
+        ]}>
+          <View style={[
+            styles.iconGlow,
+            bp.isMobile && styles.iconGlowMobile,
+            bp.isTablet && styles.iconGlowTablet,
+            bp.isDesktop && styles.iconGlowDesktop,
+          ]} />
+          <Text style={[
+            styles.serviceIcon,
+            bp.isMobile && styles.serviceIconMobile,
+            bp.isTablet && styles.serviceIconTablet,
+            bp.isDesktop && styles.serviceIconDesktop,
+          ]}>
             {service.icon}
           </Text>
         </View>
 
         <View style={[styles.titleSection, bp.isMobile && styles.titleSectionMobile]}>
-          <Text
-            style={[
-              styles.serviceTitle,
-              hovered && styles.serviceTitleHovered,
-              bp.isTabletOrMobile && styles.serviceTitleTabletOrMobile,
-              bp.isMobile && styles.serviceTitleMobile,
-            ]}
-          >
+          <Text style={[
+            styles.serviceTitle,
+            hovered && styles.serviceTitleHovered,
+            bp.isMobile && styles.serviceTitleMobile,
+            bp.isTablet && styles.serviceTitleTablet,
+            bp.isDesktop && styles.serviceTitleDesktop,
+          ]}>
             {service.title}
           </Text>
-          <View
-            style={[
-              styles.titleUnderline,
-              hovered && styles.titleUnderlineHovered,
-              bp.isTabletOrMobile && styles.titleUnderlineTabletOrMobile,
-              bp.isMobile && styles.titleUnderlineMobile,
-            ]}
-          />
+          <View style={[
+            styles.titleUnderline,
+            hovered && styles.titleUnderlineHovered,
+            bp.isMobile && styles.titleUnderlineMobile,
+            bp.isTablet && styles.titleUnderlineTablet,
+            bp.isDesktop && styles.titleUnderlineDesktop,
+          ]} />
         </View>
 
-        <Text
-          style={[
-            styles.serviceDescription,
-            bp.isTabletOrMobile && styles.serviceDescriptionTabletOrMobile,
-            bp.isMobile && styles.serviceDescriptionMobile,
-          ]}
-        >
+        <Text style={[
+          styles.serviceDescription,
+          bp.isMobile && styles.serviceDescriptionMobile,
+          bp.isTablet && styles.serviceDescriptionTablet,
+          bp.isDesktop && styles.serviceDescriptionDesktop,
+        ]}>
           {service.description}
         </Text>
 
         <View style={[styles.learnMoreContainer, bp.isMobile && styles.learnMoreContainerMobile]}>
-          <Text
-            style={[
-              styles.learnMoreText,
-              bp.isTabletOrMobile && styles.learnMoreTextTabletOrMobile,
-              bp.isMobile && styles.learnMoreTextMobile,
-            ]}
-          >
+          <Text style={[
+            styles.learnMoreText,
+            bp.isMobile && styles.learnMoreTextMobile,
+            bp.isTablet && styles.learnMoreTextTablet,
+            bp.isDesktop && styles.learnMoreTextDesktop,
+          ]}>
             Saber más
           </Text>
-          <Text
-            style={[
-              styles.learnMoreArrow,
-              hovered && styles.learnMoreArrowHovered,
-              bp.isTabletOrMobile && styles.learnMoreArrowTabletOrMobile,
-              bp.isMobile && styles.learnMoreArrowMobile,
-            ]}
-          >
+          <Text style={[
+            styles.learnMoreArrow,
+            hovered && styles.learnMoreArrowHovered,
+            bp.isMobile && styles.learnMoreArrowMobile,
+            bp.isTablet && styles.learnMoreArrowTablet,
+            bp.isDesktop && styles.learnMoreArrowDesktop,
+          ]}>
             →
           </Text>
         </View>
@@ -166,15 +162,24 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "hidden",
   },
-  serviceCardTabletOrMobile: {
-    borderRadius: 14,
-    marginBottom: 18,
-  },
   serviceCardMobile: {
     borderRadius: 12,
     marginBottom: 15,
     elevation: 6,
   },
+  serviceCardTablet: {
+    borderRadius: 14,
+    marginBottom: 18,
+  },
+  serviceCardDesktop: {
+    borderRadius: 16,
+    marginBottom: 20,
+  },
+  serviceCardLargeDesktop: {
+    borderRadius: 20,
+    marginBottom: 24,
+  },
+
   serviceCardHovered: {
     elevation: 20,
     shadowColor: "#ff6b35",
@@ -183,6 +188,7 @@ const styles = StyleSheet.create({
     borderColor: "#ff6b35",
     backgroundColor: "#222",
   },
+
   gradientOverlay: {
     position: "absolute",
     top: 0,
@@ -194,6 +200,7 @@ const styles = StyleSheet.create({
   gradientOverlayHovered: {
     backgroundColor: "rgba(255, 107, 53, 0.03)",
   },
+
   leftBorder: {
     position: "absolute",
     left: 0,
@@ -204,15 +211,20 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 3,
     borderBottomRightRadius: 3,
   },
-  leftBorderTabletOrMobile: {
-    width: 3,
-    height: 30,
-    top: 18,
-  },
   leftBorderMobile: {
     width: 3,
     height: 25,
     top: 15,
+  },
+  leftBorderTablet: {
+    width: 3,
+    height: 30,
+    top: 18,
+  },
+  leftBorderDesktop: {
+    width: 4,
+    height: 35,
+    top: 20,
   },
   leftBorderHovered: {
     height: 45,
@@ -223,6 +235,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.6,
     shadowRadius: 8,
   },
+
   cardContent: {
     padding: 20,
     paddingLeft: 28,
@@ -230,14 +243,19 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     zIndex: 1,
   },
-  cardContentTabletOrMobile: {
-    padding: 18,
-    paddingLeft: 24,
-  },
   cardContentMobile: {
     padding: 14,
     paddingLeft: 18,
   },
+  cardContentTablet: {
+    padding: 18,
+    paddingLeft: 24,
+  },
+  cardContentDesktop: {
+    padding: 20,
+    paddingLeft: 28,
+  },
+
   iconContainer: {
     width: 50,
     height: 50,
@@ -253,23 +271,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
   },
-  iconContainerTabletOrMobile: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-    marginBottom: 14,
-  },
   iconContainerMobile: {
     width: 35,
     height: 35,
     borderRadius: 17.5,
     marginBottom: 10,
   },
+  iconContainerTablet: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+    marginBottom: 14,
+  },
+  iconContainerDesktop: {
+    width: 30,
+    height: 30,
+    borderRadius: 25,
+    marginBottom: 16,
+  },
   iconContainerHovered: {
     backgroundColor: "#f49349",
     transform: [{ scale: 1.1 }],
     shadowOpacity: 0.5,
   },
+
   iconGlow: {
     position: "absolute",
     width: 60,
@@ -280,13 +305,6 @@ const styles = StyleSheet.create({
     top: -5,
     left: -5,
   },
-  iconGlowTabletOrMobile: {
-    width: 55,
-    height: 55,
-    borderRadius: 27.5,
-    top: -5,
-    left: -5,
-  },
   iconGlowMobile: {
     width: 45,
     height: 45,
@@ -294,22 +312,42 @@ const styles = StyleSheet.create({
     top: -5,
     left: -5,
   },
+  iconGlowTablet: {
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
+    top: -5,
+    left: -5,
+  },
+  iconGlowDesktop: {
+    width: 40,
+    height: 40,
+    borderRadius: 30,
+    top: -5,
+    left: -5,
+  },
+
   serviceIcon: {
     fontSize: 24,
     zIndex: 1,
   },
-  serviceIconTabletOrMobile: {
-    fontSize: 20,
-  },
   serviceIconMobile: {
     fontSize: 18,
   },
+  serviceIconTablet: {
+    fontSize: 20,
+  },
+  serviceIconDesktop: {
+    fontSize: 18,
+  },
+
   titleSection: {
     marginBottom: 12,
   },
   titleSectionMobile: {
     marginBottom: 10,
   },
+
   serviceTitle: {
     fontSize: 18,
     fontWeight: "700",
@@ -317,37 +355,48 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     lineHeight: 22,
   },
-  serviceTitleTabletOrMobile: {
-    fontSize: 16,
-    lineHeight: 20,
-    marginBottom: 5,
-  },
   serviceTitleMobile: {
     fontSize: 14,
     lineHeight: 17,
     marginBottom: 4,
   },
+  serviceTitleTablet: {
+    fontSize: 16,
+    lineHeight: 20,
+    marginBottom: 5,
+  },
+  serviceTitleDesktop: {
+    fontSize: 16,
+    lineHeight: 18,
+    marginBottom: 5,
+  },
   serviceTitleHovered: {
     color: "#ff6b35",
   },
+
   titleUnderline: {
     width: 30,
     height: 2,
     backgroundColor: "#ff6b35",
     borderRadius: 1,
   },
-  titleUnderlineTabletOrMobile: {
-    width: 28,
-    height: 2,
-  },
   titleUnderlineMobile: {
     width: 25,
     height: 1.5,
+  },
+  titleUnderlineTablet: {
+    width: 28,
+    height: 2,
+  },
+  titleUnderlineDesktop: {
+    width: 30,
+    height: 2,
   },
   titleUnderlineHovered: {
     width: 50,
     backgroundColor: "#fff",
   },
+
   serviceDescription: {
     fontSize: 13,
     color: "#bbb",
@@ -356,16 +405,22 @@ const styles = StyleSheet.create({
     flex: 1,
     letterSpacing: 0.2,
   },
-  serviceDescriptionTabletOrMobile: {
-    fontSize: 12,
-    lineHeight: 16,
-    marginBottom: 14,
-  },
   serviceDescriptionMobile: {
     fontSize: 10,
     lineHeight: 14,
     marginBottom: 10,
   },
+  serviceDescriptionTablet: {
+    fontSize: 12,
+    lineHeight: 16,
+    marginBottom: 14,
+  },
+  serviceDescriptionDesktop: {
+    fontSize: 11,
+    lineHeight: 16,
+    marginBottom: 16,
+  },
+
   learnMoreContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -374,33 +429,42 @@ const styles = StyleSheet.create({
   learnMoreContainerMobile: {
     gap: 6,
   },
+
   learnMoreText: {
     fontSize: 13,
     color: "#ff6b35",
     fontWeight: "600",
     letterSpacing: 0.5,
   },
-  learnMoreTextTabletOrMobile: {
-    fontSize: 12,
-  },
   learnMoreTextMobile: {
     fontSize: 10,
   },
+  learnMoreTextTablet: {
+    fontSize: 12,
+  },
+  learnMoreTextDesktop: {
+    fontSize: 12,
+  },
+
   learnMoreArrow: {
     fontSize: 14,
     color: "#ff6b35",
     fontWeight: "bold",
   },
-  learnMoreArrowTabletOrMobile: {
-    fontSize: 13,
-  },
   learnMoreArrowMobile: {
     fontSize: 12,
+  },
+  learnMoreArrowTablet: {
+    fontSize: 13,
+  },
+  learnMoreArrowDesktop: {
+    fontSize: 13,
   },
   learnMoreArrowHovered: {
     transform: [{ translateX: 4 }],
     color: "#fff",
   },
+
   shineEffect: {
     position: "absolute",
     top: 0,
@@ -411,5 +475,6 @@ const styles = StyleSheet.create({
     transform: [{ skewX: "-20deg" }],
   },
 })
+
 
 export default ServiceCard

@@ -101,8 +101,6 @@ const ServicesSection = ({
   // Efecto para animar las cards cuando se ve la sección
   useEffect(() => {
     if (isView) {
-      console.log("🎨 Se está viendo el service");
-
       // Animar cada card con delay escalonado
       cardAnimations.forEach((animation, index) => {
         const delay = index * 150; // 150ms de delay entre cada card
@@ -152,6 +150,15 @@ const ServicesSection = ({
       columns = 3;
       gap = 18;
       horizontalPadding = 32; // 16px a cada lado
+    }
+    else if (bp.isDesktop) {
+      columns = 4; 
+      gap = 20;
+      horizontalPadding = 40; // 20px a cada lado
+    } else if (bp.isLargeDesktop) {
+      columns = 5; 
+      gap = 24;
+      horizontalPadding = 60; // 30px a cada lado
     }
 
     // Ajustar el ancho disponible restando el padding del contenedor principal y los gaps entre tarjetas

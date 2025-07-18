@@ -1,46 +1,154 @@
-"use client"
-import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native"
+"use client";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+} from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  interpolate,
+  interpolateColor,
+} from "react-native-reanimated";
+import { useEffect } from "react";
 
 interface Service {
-  icon: string
-  title: string
-  description: string
+  icon: string;
+  title: string;
+  description: string;
 }
 
 interface Props {
-  service: Service
-  width: number
-  hovered: boolean
-  onHoverIn: () => void
-  onHoverOut: () => void
-  onPress: () => void
+  service: Service;
+  width: number;
+  hovered: boolean;
+  onHoverIn: () => void;
+  onHoverOut: () => void;
+  onPress: () => void;
   breakpoint?: {
-    isTabletOrMobile: boolean
-    isMobile: boolean
-  }
+    isTabletOrMobile: boolean;
+    isMobile: boolean;
+  };
 }
 
 const useBreakpoint = () => {
-  const { width } = useWindowDimensions()
+  const { width } = useWindowDimensions();
   return {
     isTabletOrMobile: width < 1024,
     isMobile: width < 768,
-  }
-}
+  };
+};
 
-const ServiceCard = ({ service, width, hovered, onHoverIn, onHoverOut, onPress, breakpoint }: Props) => {
-  const bp = breakpoint || useBreakpoint()
+const ServiceCard = ({
+  service,
+  width,
+  hovered,
+  onHoverIn,
+  onHoverOut,
+  onPress,
+  breakpoint,
+}: Props) => {
+  const bp = breakpoint || useBreakpoint();
+
+  const cardAnimations = {
+    scale: useSharedValue(1),
+    borderOpacity: useSharedValue(0),
+    iconScale: useSharedValue(1),
+    arrowTranslateX: useSharedValue(0),
+    titleColor: useSharedValue(0),
+    underlineWidth: useSharedValue(30),
+    leftBorderHeight: useSharedValue(20),
+  };
+
+  // Efectos de las animaciones
+  useEffect(() => {
+    if (hovered) {
+      cardAnimations.scale.value = withTiming(1.05, { duration: 200 });
+      cardAnimations.borderOpacity.value = withTiming(1, { duration: 200 });
+      cardAnimations.iconScale.value = withTiming(1.1, { duration: 200 });
+      cardAnimations.arrowTranslateX.value = withTiming(4, { duration: 200 });
+      cardAnimations.titleColor.value = withTiming(1, { duration: 200 });
+      cardAnimations.underlineWidth.value = withTiming(50, { duration: 200 });
+      cardAnimations.leftBorderHeight.value = withTiming(60, { duration: 200 });
+    } else {
+      cardAnimations.scale.value = withTiming(1, { duration: 300 });
+      cardAnimations.borderOpacity.value = withTiming(0, { duration: 300 });
+      cardAnimations.iconScale.value = withTiming(1, { duration: 300 });
+      cardAnimations.arrowTranslateX.value = withTiming(0, { duration: 300 });
+      cardAnimations.titleColor.value = withTiming(0, { duration: 300 });
+      cardAnimations.underlineWidth.value = withTiming(30, { duration: 300 });
+      cardAnimations.leftBorderHeight.value = withTiming(45, { duration: 300 });
+    }
+  }, [hovered]);
+
+  const animatedCardStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: cardAnimations.scale.value }],
+    borderColor: interpolateColor(
+      cardAnimations.borderOpacity.value,
+      [1, 0],
+      ["#ff6b35", "#2a2a2a"]
+    ),
+    backgroundColor: interpolateColor(
+      cardAnimations.borderOpacity.value,
+      [1, 0],
+      ["#222222", "#1a1a1a"]
+    ),
+  }));
+  const animatedIconStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: cardAnimations.iconScale.value }],
+    backgroundColor: interpolateColor(
+      cardAnimations.iconScale.value,
+      [1, 1.1],
+      ["#ff6b35", "#f49349"]
+    ),
+  }));
+
+  const animatedArrowStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: cardAnimations.arrowTranslateX.value }],
+    color: interpolateColor(cardAnimations.titleColor.value, [0, 1], ["#ff6b35", "#ffffff"]),
+  }));
+
+  const animatedTitleStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(cardAnimations.titleColor.value, [0, 1], ["#ffffff", "#ff6b35"]),
+  }));
+
+  const animatedUnderlineStyle = useAnimatedStyle(() => ({
+    width: cardAnimations.underlineWidth.value,
+    backgroundColor: interpolateColor(
+      cardAnimations.titleColor.value,
+      [0, 1],
+      ["#ff6b35", "#ffffff"]
+    ),
+  }));
+
+  const animatedLeftBorderStyle = useAnimatedStyle(() => ({
+    height: cardAnimations.leftBorderHeight.value,
+  }));
+
+  // leftBorderHovered: {
+  //   height: 45,
+  //   top: 15,
+  //   width: 5,
+  //   shadowColor: "#ff6b35",
+  //   shadowOffset: { width: 2, height: 0 },
+  //   shadowOpacity: 0.6,
+  //   shadowRadius: 8,
+  // },
 
   return (
-    <TouchableOpacity
+    <Animated.View
       style={[
         styles.serviceCard,
         {
           width,
           height: width * 0.9,
-          transform: [{ scale: hovered ? 1.05 : 1 }],
+          // transform: [{ scale: hovered ? 1.05 : 1 }],
         },
-        hovered && styles.serviceCardHovered,
+        // hovered && styles.serviceCardHovered,
+        animatedCardStyle,
         bp.isTabletOrMobile && styles.serviceCardTabletOrMobile,
         bp.isMobile && styles.serviceCardMobile,
       ]}
@@ -49,11 +157,17 @@ const ServiceCard = ({ service, width, hovered, onHoverIn, onHoverOut, onPress, 
       onMouseLeave={onHoverOut}
       activeOpacity={0.9}
     >
-      <View style={[styles.gradientOverlay, hovered && styles.gradientOverlayHovered]} />
       <View
         style={[
+          styles.gradientOverlay,
+          hovered && styles.gradientOverlayHovered,
+        ]}
+      />
+      <Animated.View
+        style={[
           styles.leftBorder,
-          hovered && styles.leftBorderHovered,
+          animatedLeftBorderStyle,
+          // hovered && styles.leftBorderHovered,
           bp.isTabletOrMobile && styles.leftBorderTabletOrMobile,
           bp.isMobile && styles.leftBorderMobile,
         ]}
@@ -66,10 +180,11 @@ const ServiceCard = ({ service, width, hovered, onHoverIn, onHoverOut, onPress, 
           bp.isMobile && styles.cardContentMobile,
         ]}
       >
-        <View
+        <Animated.View
           style={[
             styles.iconContainer,
-            hovered && styles.iconContainerHovered,
+            animatedIconStyle,
+            // hovered && styles.iconContainerHovered,
             bp.isTabletOrMobile && styles.iconContainerTabletOrMobile,
             bp.isMobile && styles.iconContainerMobile,
           ]}
@@ -90,23 +205,30 @@ const ServiceCard = ({ service, width, hovered, onHoverIn, onHoverOut, onPress, 
           >
             {service.icon}
           </Text>
-        </View>
+        </Animated.View>
 
-        <View style={[styles.titleSection, bp.isMobile && styles.titleSectionMobile]}>
-          <Text
+        <View
+          style={[
+            styles.titleSection,
+            bp.isMobile && styles.titleSectionMobile,
+          ]}
+        >
+          <Animated.Text
             style={[
               styles.serviceTitle,
-              hovered && styles.serviceTitleHovered,
+              animatedTitleStyle,
+              // hovered && styles.serviceTitleHovered,
               bp.isTabletOrMobile && styles.serviceTitleTabletOrMobile,
               bp.isMobile && styles.serviceTitleMobile,
             ]}
           >
             {service.title}
-          </Text>
-          <View
+          </Animated.Text>
+          <Animated.View
             style={[
               styles.titleUnderline,
-              hovered && styles.titleUnderlineHovered,
+              animatedUnderlineStyle,
+              // hovered && styles.titleUnderlineHovered,
               bp.isTabletOrMobile && styles.titleUnderlineTabletOrMobile,
               bp.isMobile && styles.titleUnderlineMobile,
             ]}
@@ -123,33 +245,40 @@ const ServiceCard = ({ service, width, hovered, onHoverIn, onHoverOut, onPress, 
           {service.description}
         </Text>
 
-        <View style={[styles.learnMoreContainer, bp.isMobile && styles.learnMoreContainerMobile]}>
-          <Text
+        <View
+          style={[
+            styles.learnMoreContainer,
+            bp.isMobile && styles.learnMoreContainerMobile,
+          ]}
+        >
+          <Animated.Text
             style={[
               styles.learnMoreText,
+              animatedArrowStyle,
               bp.isTabletOrMobile && styles.learnMoreTextTabletOrMobile,
               bp.isMobile && styles.learnMoreTextMobile,
             ]}
           >
             Saber más
-          </Text>
-          <Text
+          </Animated.Text>
+          <Animated.Text
             style={[
               styles.learnMoreArrow,
-              hovered && styles.learnMoreArrowHovered,
+              animatedArrowStyle,
+              // hovered && styles.learnMoreArrowHovered,
               bp.isTabletOrMobile && styles.learnMoreArrowTabletOrMobile,
               bp.isMobile && styles.learnMoreArrowMobile,
             ]}
           >
             →
-          </Text>
+          </Animated.Text>
         </View>
       </View>
 
-      {hovered && <View style={styles.shineEffect} />}
-    </TouchableOpacity>
-  )
-}
+      {/* {hovered && <View style={styles.shineEffect} />} */}
+    </Animated.View>
+  );
+};
 
 const styles = StyleSheet.create({
   serviceCard: {
@@ -175,14 +304,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     elevation: 6,
   },
-  serviceCardHovered: {
-    elevation: 20,
-    shadowColor: "#ff6b35",
-    shadowOpacity: 0.2,
-    shadowRadius: 24,
-    borderColor: "#ff6b35",
-    backgroundColor: "#222",
-  },
+  // serviceCardHovered: {
+  //   elevation: 20,
+  //   shadowColor: "#ff6b35",
+  //   shadowOpacity: 0.2,
+  //   shadowRadius: 24,
+  //   borderColor: "#ff6b35",
+  //   backgroundColor: "#222",
+  // },
   gradientOverlay: {
     position: "absolute",
     top: 0,
@@ -214,15 +343,15 @@ const styles = StyleSheet.create({
     height: 25,
     top: 15,
   },
-  leftBorderHovered: {
-    height: 45,
-    top: 15,
-    width: 5,
-    shadowColor: "#ff6b35",
-    shadowOffset: { width: 2, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 8,
-  },
+  // leftBorderHovered: {
+  //   height: 45,
+  //   top: 15,
+  //   width: 5,
+  //   shadowColor: "#ff6b35",
+  //   shadowOffset: { width: 2, height: 0 },
+  //   shadowOpacity: 0.6,
+  //   shadowRadius: 8,
+  // },
   cardContent: {
     padding: 20,
     paddingLeft: 28,
@@ -265,11 +394,11 @@ const styles = StyleSheet.create({
     borderRadius: 17.5,
     marginBottom: 10,
   },
-  iconContainerHovered: {
-    backgroundColor: "#f49349",
-    transform: [{ scale: 1.1 }],
-    shadowOpacity: 0.5,
-  },
+  // iconContainerHovered: {
+  //   backgroundColor: "#f49349",
+  //   transform: [{ scale: 1.1 }],
+  //   shadowOpacity: 0.5,
+  // },
   iconGlow: {
     position: "absolute",
     width: 60,
@@ -327,9 +456,9 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     marginBottom: 4,
   },
-  serviceTitleHovered: {
-    color: "#ff6b35",
-  },
+  // serviceTitleHovered: {
+  //   color: "#ff6b35",
+  // },
   titleUnderline: {
     width: 30,
     height: 2,
@@ -344,10 +473,10 @@ const styles = StyleSheet.create({
     width: 25,
     height: 1.5,
   },
-  titleUnderlineHovered: {
-    width: 50,
-    backgroundColor: "#fff",
-  },
+  // titleUnderlineHovered: {
+  //   width: 50,
+  //   backgroundColor: "#fff",
+  // },
   serviceDescription: {
     fontSize: 13,
     color: "#bbb",
@@ -397,10 +526,10 @@ const styles = StyleSheet.create({
   learnMoreArrowMobile: {
     fontSize: 12,
   },
-  learnMoreArrowHovered: {
-    transform: [{ translateX: 4 }],
-    color: "#fff",
-  },
+  // learnMoreArrowHovered: {
+  //   transform: [{ translateX: 4 }],
+  //   color: "#fff",
+  // },
   shineEffect: {
     position: "absolute",
     top: 0,
@@ -410,6 +539,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     transform: [{ skewX: "-20deg" }],
   },
-})
+});
 
-export default ServiceCard
+export default ServiceCard;

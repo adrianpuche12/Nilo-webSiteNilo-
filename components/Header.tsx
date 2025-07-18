@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -12,27 +12,129 @@ import {
   Pressable,
   Modal,
   useWindowDimensions,
-} from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import Text from "@/components/ui/CustomText"
-import { LoginButton, EmailConsultButton } from "@/components/ui/AppButtons"
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import Text from "@/components/ui/CustomText";
+import { LoginButton, EmailConsultButton } from "@/components/ui/AppButtons";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withSpring,
+  withDelay,
+} from "react-native-reanimated";
 
 type HeaderProps = {
-  scrollToSection: (sectionId: string) => void
-}
+  scrollToSection: (sectionId: string) => void;
+};
 
 type SectionButtonProps = {
-  text: string
-  sectionId: string
-  onPress: (sectionId: string) => void
-}
+  text: string;
+  sectionId: string;
+  onPress: (sectionId: string) => void;
+};
 
 /* ---------- HEADER ---------- */
 const Header = ({ scrollToSection }: HeaderProps) => {
-  const bp = useBreakpoint()
-  const [menuVisible, setMenuVisible] = useState(false)
-  const toggleMenu = () => setMenuVisible((prev) => !prev)
-  const handleEmailConsult = () => console.log("Consultando email…")
+  const bp = useBreakpoint();
+  const [menuVisible, setMenuVisible] = useState(false);
+  const toggleMenu = () => setMenuVisible((prev) => !prev);
+  const handleEmailConsult = () => console.log("Consultando email…");
+
+  // constantes para animaciones
+  const animations = {
+    translateXBanner: useSharedValue(-2000),
+    translateXLogo: useSharedValue(-2000),
+  };
+  
+  // Definir el array de navegación
+const defaultNavItems = [
+  {
+    id: 1,
+    text: "INICIO",
+    sectionId: "inicio",
+  },
+  {
+    id: 2,
+    text: "SERVICIOS", 
+    sectionId: "servicios",
+  },
+  {
+    id: 3,
+    text: "QUIÉNES SOMOS",
+    sectionId: "quienes",
+  },
+  {
+    id: 4,
+    text: "CONTÁCTANOS",
+    sectionId: "contacto",
+  },
+];
+
+  const cardAnimations = defaultNavItems.map(() => ({
+    opacity: useSharedValue(0),
+    translateY: useSharedValue(-100),
+  }));
+
+  const translateYSectionButton = useSharedValue(0);
+
+  useEffect(() => {
+    animations.translateXBanner.value = withDelay(
+      300,
+      withSpring(0, {
+        damping: 15,
+        stiffness: 100,
+      })
+    );
+    animations.translateXLogo.value = withDelay(
+      600,
+      withSpring(0, {
+        damping: 15,
+        stiffness: 100,
+      })
+    );
+
+    // Animar los botones de navegación
+    cardAnimations.forEach((animation, index) => {
+      const delay = 800 + (index * 150); // Empezar después del logo
+      
+      animation.opacity.value = withDelay(
+        delay,
+        withSpring(1, {
+          damping: 15,
+          stiffness: 100,
+        })
+      );
+      
+      animation.translateY.value = withDelay(
+        delay,
+        withSpring(0, {
+          damping: 15,
+          stiffness: 100,
+        })
+      );
+    });
+  }, []);
+
+  const animatedStyleBanner = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: animations.translateXBanner.value }],
+    };
+  });
+
+  const animatedStyleLogo = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: animations.translateXLogo.value }],
+    };
+  });
+
+  // Función para obtener el estilo animado de cada botón
+  const getAnimatedButtonStyle = (index: number) => {
+    return useAnimatedStyle(() => ({
+      opacity: cardAnimations[index].opacity.value,
+      transform: [{ translateY: cardAnimations[index].translateY.value }],
+    }));
+  };
 
   const renderNavItems = (vertical = false) => (
     <View
@@ -41,12 +143,17 @@ const Header = ({ scrollToSection }: HeaderProps) => {
         bp.isTabletOrMobile && styles.navContainerTabletOrMobile,
       ]}
     >
-      <SectionButton text="INICIO" sectionId="inicio" onPress={scrollToSection} />
-      <SectionButton text="SERVICIOS" sectionId="servicios" onPress={scrollToSection} />
-      <SectionButton text="QUIÉNES SOMOS" sectionId="quienes" onPress={scrollToSection} />
-      <SectionButton text="CONTÁCTANOS" sectionId="contacto" onPress={scrollToSection} />
+      {defaultNavItems.map((item, index) => (
+        <Animated.View key={item.id} style={getAnimatedButtonStyle(index)}>
+          <SectionButton
+            text={item.text}
+            sectionId={item.sectionId}
+            onPress={scrollToSection}
+          />
+        </Animated.View>
+      ))}
     </View>
-  )
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -62,12 +169,13 @@ const Header = ({ scrollToSection }: HeaderProps) => {
       >
         {/* Logo */}
         <View style={styles.logoContainer}>
-          <Image
+          <Animated.Image
             source={require("@/assets/images/logo.png")}
             style={[
               styles.logoImage,
               bp.isTabletOrMobile && styles.logoImageTabletOrMobile,
               bp.isMobile && styles.logoImageMobile,
+              animatedStyleLogo,
             ]}
             resizeMode="contain"
           />
@@ -98,8 +206,22 @@ const Header = ({ scrollToSection }: HeaderProps) => {
         {!bp.isMobile && (
           <View style={styles.rightSection}>
             <View style={styles.languageSelector}>
-              <Text style={[styles.languageText, bp.isTabletOrMobile && styles.languageTextTabletOrMobile]}>ES</Text>
-              <Text style={[styles.languageText, bp.isTabletOrMobile && styles.languageTextTabletOrMobile]}>EN</Text>
+              <Text
+                style={[
+                  styles.languageText,
+                  bp.isTabletOrMobile && styles.languageTextTabletOrMobile,
+                ]}
+              >
+                ES
+              </Text>
+              <Text
+                style={[
+                  styles.languageText,
+                  bp.isTabletOrMobile && styles.languageTextTabletOrMobile,
+                ]}
+              >
+                EN
+              </Text>
             </View>
             <LoginButton />
           </View>
@@ -114,16 +236,22 @@ const Header = ({ scrollToSection }: HeaderProps) => {
           bp.isMobile && styles.promoBannerMobile,
         ]}
       >
-        <Text
+        <Animated.Text
           style={[
             styles.promoText,
             bp.isTabletOrMobile && styles.promoTextTabletOrMobile,
             bp.isMobile && styles.promoTextMobile,
+            animatedStyleBanner,
           ]}
         >
           BANNER PARA OFERTAS PROMOS
-        </Text>
-        <View style={[styles.emailSection, bp.isMobile && styles.emailSectionMobile]}>
+        </Animated.Text>
+        <View
+          style={[
+            styles.emailSection,
+            bp.isMobile && styles.emailSectionMobile,
+          ]}
+        >
           <TextInput
             style={[
               styles.emailInput,
@@ -137,13 +265,13 @@ const Header = ({ scrollToSection }: HeaderProps) => {
         </View>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 /* ---------- BUTTON ---------- */
 const SectionButton = ({ text, sectionId, onPress }: SectionButtonProps) => {
-  const [isHovered, setIsHovered] = useState(false)
-  const bp = useBreakpoint()
+  const [isHovered, setIsHovered] = useState(false);
+  const bp = useBreakpoint();
 
   return (
     <Pressable
@@ -162,17 +290,17 @@ const SectionButton = ({ text, sectionId, onPress }: SectionButtonProps) => {
         {text}
       </Text>
     </Pressable>
-  )
-}
+  );
+};
 
 /* --------------------- BREAKPOINT ------------------------ */
 const useBreakpoint = () => {
-  const { width } = useWindowDimensions()
+  const { width } = useWindowDimensions();
   return {
     isTabletOrMobile: width < 1024,
     isMobile: width < 768,
-  }
-}
+  };
+};
 
 const styles = StyleSheet.create({
   container: { backgroundColor: "#000" },
@@ -293,6 +421,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
   },
   modalFooter: { marginTop: 30 },
-})
+});
 
-export default Header
+export default Header;

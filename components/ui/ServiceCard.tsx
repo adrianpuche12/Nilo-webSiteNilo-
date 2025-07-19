@@ -10,7 +10,6 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  interpolate,
   interpolateColor,
 } from "react-native-reanimated";
 import { useEffect } from "react";
@@ -152,6 +151,7 @@ const ServiceCard = ({
         bp.isTabletOrMobile && styles.serviceCardTabletOrMobile,
         bp.isMobile && styles.serviceCardMobile,
       ]}
+      //@ts-ignore
       onPress={onPress}
       onMouseEnter={onHoverIn}
       onMouseLeave={onHoverOut}

@@ -54,6 +54,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
         bp.isTabletOrMobile && styles.memberCardTabletOrMobile,
         bp.isMobile && styles.memberCardMobile,
       ]}
+      //@ts-ignore
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onPress={() => onPress?.(member)}
@@ -223,6 +224,7 @@ const styles = StyleSheet.create({
     borderColor: "#2a2a2a",
     position: "relative",
     overflow: "hidden",
+    //@ts-ignore
     transition: "all 0.4s ease",
   },
   memberCardTabletOrMobile: {
@@ -251,6 +253,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: "transparent",
+    //@ts-ignore
     transition: "all 0.4s ease",
   },
   cardGradientHovered: {
@@ -265,6 +268,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff6b35",
     borderTopRightRadius: 3,
     borderBottomRightRadius: 3,
+    //@ts-ignore
     transition: "all 0.4s ease",
   },
   cardBorderTabletOrMobile: {
@@ -307,6 +311,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
+    //@ts-ignore
     transition: "all 0.4s ease",
   },
   imageContainerTabletOrMobile: {
@@ -402,6 +407,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginBottom: 4,
     textAlign: "center",
+    //@ts-ignore
     transition: "color 0.4s ease",
   },
   memberNameTabletOrMobile: {
@@ -435,6 +441,7 @@ const styles = StyleSheet.create({
     height: 2,
     backgroundColor: "#ff6b35",
     borderRadius: 1,
+    //@ts-ignore
     transition: "all 0.4s ease",
   },
   roleUnderlineTabletOrMobile: {

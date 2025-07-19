@@ -22,6 +22,8 @@ import Animated, {
   withRepeat,
   withSpring,
   withDelay,
+  withTiming,
+  interpolateColor,
 } from "react-native-reanimated";
 
 type HeaderProps = {
@@ -46,37 +48,35 @@ const Header = ({ scrollToSection }: HeaderProps) => {
     translateXBanner: useSharedValue(-2000),
     translateXLogo: useSharedValue(-2000),
   };
-  
-  // Definir el array de navegación
-const defaultNavItems = [
-  {
-    id: 1,
-    text: "INICIO",
-    sectionId: "inicio",
-  },
-  {
-    id: 2,
-    text: "SERVICIOS", 
-    sectionId: "servicios",
-  },
-  {
-    id: 3,
-    text: "QUIÉNES SOMOS",
-    sectionId: "quienes",
-  },
-  {
-    id: 4,
-    text: "CONTÁCTANOS",
-    sectionId: "contacto",
-  },
-];
 
-  const cardAnimations = defaultNavItems.map(() => ({
+  // Definir el array de navegación
+  const sectionNavItems = [
+    {
+      id: 1,
+      text: "INICIO",
+      sectionId: "inicio",
+    },
+    {
+      id: 2,
+      text: "SERVICIOS",
+      sectionId: "servicios",
+    },
+    {
+      id: 3,
+      text: "QUIÉNES SOMOS",
+      sectionId: "quienes",
+    },
+    {
+      id: 4,
+      text: "CONTÁCTANOS",
+      sectionId: "contacto",
+    },
+  ];
+
+  const sectionButtonAnimations = sectionNavItems.map(() => ({
     opacity: useSharedValue(0),
     translateY: useSharedValue(-100),
   }));
-
-  const translateYSectionButton = useSharedValue(0);
 
   useEffect(() => {
     animations.translateXBanner.value = withDelay(
@@ -95,9 +95,9 @@ const defaultNavItems = [
     );
 
     // Animar los botones de navegación
-    cardAnimations.forEach((animation, index) => {
-      const delay = 800 + (index * 150); // Empezar después del logo
-      
+    sectionButtonAnimations.forEach((animation, index) => {
+      const delay = 800 + index * 150; // Empezar después del logo
+
       animation.opacity.value = withDelay(
         delay,
         withSpring(1, {
@@ -105,7 +105,7 @@ const defaultNavItems = [
           stiffness: 100,
         })
       );
-      
+
       animation.translateY.value = withDelay(
         delay,
         withSpring(0, {
@@ -131,8 +131,10 @@ const defaultNavItems = [
   // Función para obtener el estilo animado de cada botón
   const getAnimatedButtonStyle = (index: number) => {
     return useAnimatedStyle(() => ({
-      opacity: cardAnimations[index].opacity.value,
-      transform: [{ translateY: cardAnimations[index].translateY.value }],
+      opacity: sectionButtonAnimations[index].opacity.value,
+      transform: [
+        { translateY: sectionButtonAnimations[index].translateY.value },
+      ],
     }));
   };
 
@@ -143,7 +145,7 @@ const defaultNavItems = [
         bp.isTabletOrMobile && styles.navContainerTabletOrMobile,
       ]}
     >
-      {defaultNavItems.map((item, index) => (
+      {sectionNavItems.map((item, index) => (
         <Animated.View key={item.id} style={getAnimatedButtonStyle(index)}>
           <SectionButton
             text={item.text}
@@ -273,6 +275,44 @@ const SectionButton = ({ text, sectionId, onPress }: SectionButtonProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const bp = useBreakpoint();
 
+  // Animaciones de hover para el botón
+  const buttonAnimations = {
+    scale: useSharedValue(1),
+    textColor: useSharedValue(0),
+    underlineWidth: useSharedValue(0),
+  };
+
+  useEffect(() => {
+    if (isHovered) {
+      buttonAnimations.scale.value = withTiming(1.05, { duration: 200 });
+      buttonAnimations.textColor.value = withTiming(1, { duration: 200 });
+      buttonAnimations.underlineWidth.value = withTiming(100, {
+        duration: 200,
+      });
+    } else {
+      buttonAnimations.scale.value = withTiming(1, { duration: 200 });
+      buttonAnimations.textColor.value = withTiming(0, { duration: 200 });
+      buttonAnimations.underlineWidth.value = withTiming(0, { duration: 200 });
+    }
+  }, [isHovered]);
+
+  // Estilos animados
+  const animatedButtonSectionStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: buttonAnimations.scale.value }],
+  }));
+
+  const animatedTextSectionStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      buttonAnimations.textColor.value,
+      [0, 1],
+      ["#ffffff", "#ff6b35"]
+    ),
+  }));
+   const animatedUnderlineSectionStyle = useAnimatedStyle(() => ({
+    width: `${buttonAnimations.underlineWidth.value}%`,
+    backgroundColor: "#ff6b35",
+  }));
+
   return (
     <Pressable
       style={styles.navItem}
@@ -280,15 +320,18 @@ const SectionButton = ({ text, sectionId, onPress }: SectionButtonProps) => {
       onHoverIn={Platform.OS === "web" ? () => setIsHovered(true) : undefined}
       onHoverOut={Platform.OS === "web" ? () => setIsHovered(false) : undefined}
     >
-      <Text
-        style={[
-          styles.navText,
-          bp.isTabletOrMobile && styles.navTextTabletOrMobile,
-          isHovered && Platform.OS === "web" && styles.navTextHover,
-        ]}
-      >
-        {text}
-      </Text>
+      <Animated.View style={[animatedButtonSectionStyle]}>
+        <Animated.Text
+          style={[
+            styles.navText,
+            bp.isTabletOrMobile && styles.navTextTabletOrMobile,
+            animatedTextSectionStyle,
+          ]}
+        >
+          {text}
+        </Animated.Text>
+        <Animated.View style={[styles.underline, animatedUnderlineSectionStyle]} />
+      </Animated.View>
     </Pressable>
   );
 };
@@ -301,7 +344,6 @@ const useBreakpoint = () => {
     isMobile: width < 768,
   };
 };
-
 const styles = StyleSheet.create({
   container: { backgroundColor: "#000" },
 
@@ -338,9 +380,14 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   navItem: { marginHorizontal: 15 },
-  navText: { color: "#fff", fontSize: 15, fontWeight: "500" },
+  navText: { color: "#fff", fontSize: 15, fontWeight: "400" },
   navTextTabletOrMobile: { fontSize: 14 },
   navTextHover: { textDecorationLine: "underline" },
+  underline: {
+    height: 2,
+    marginTop: 4,
+    borderRadius: 1,
+  },
 
   /* — SECCIÓN DERECHA — */
   rightSection: { flexDirection: "row", alignItems: "center" },

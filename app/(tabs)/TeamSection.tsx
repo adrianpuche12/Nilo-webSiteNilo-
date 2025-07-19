@@ -1,24 +1,32 @@
-"use client"
+"use client";
 
-import { View, Text, StyleSheet, useWindowDimensions } from "react-native"
-import { useState } from "react"
-import { FilterButton } from "@/components/ui/AppButtons"
-import TeamCard from "@/components/ui/TeamCard"
+import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import { useState } from "react";
+import { FilterButton } from "@/components/ui/AppButtons";
+import TeamCard from "@/components/ui/TeamCard";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withDelay,
+  withSpring,
+} from "react-native-reanimated";
+import { useEffect } from "react";
 
 interface TeamMember {
-  id: number
-  name: string
-  role: string
-  category: string
-  quote: string
-  image: string
+  id: number;
+  name: string;
+  role: string;
+  category: string;
+  quote: string;
+  image: string;
 }
 
 interface TeamSectionProps {
-  teamMembers?: TeamMember[]
-  categories?: string[]
-  title?: string
-  subtitle?: string
+  teamMembers?: TeamMember[];
+  categories?: string[];
+  title?: string;
+  subtitle?: string;
 }
 
 const defaultTeamMembers: TeamMember[] = [
@@ -94,9 +102,17 @@ const defaultTeamMembers: TeamMember[] = [
     quote: "Conectando marcas con audiencias digitales",
     image: "/placeholder.svg?height=120&width=120",
   },
-]
+];
 
-const defaultCategories = ["CO-FOUNDER", "FRONTEND", "BACKEND", "DEVOPS", "TESTING", "UX/UI", "MARKETING"]
+const defaultCategories = [
+  "CO-FOUNDER",
+  "FRONTEND",
+  "BACKEND",
+  "DEVOPS",
+  "TESTING",
+  "UX/UI",
+  "MARKETING",
+];
 
 const TeamSection = ({
   teamMembers = defaultTeamMembers,
@@ -104,21 +120,81 @@ const TeamSection = ({
   title = "Quiénes Somos",
   subtitle = "CONOCE A NUESTRO EQUIPO",
 }: TeamSectionProps) => {
-  const [selectedCategory, setSelectedCategory] = useState(categories[0])
-  const bp = useBreakpoint()
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const bp = useBreakpoint();
 
-  const filteredMembers = teamMembers.filter((member) => member.category === selectedCategory)
+  const filteredMembers = teamMembers.filter(
+    (member) => member.category === selectedCategory
+  );
+  // Crear animaciones para cada miembro del equipo
+  // Crear un número máximo de animaciones posibles
+  const maxMembers = 10; 
+
+  const cardAnimations = Array.from({ length: maxMembers }, () => ({
+    opacity: useSharedValue(0),
+    translateY: useSharedValue(50),
+    scale: useSharedValue(0.8),
+  }));
+
+  const animatedStyles = cardAnimations.map((animation) =>
+    useAnimatedStyle(() => ({
+      opacity: animation.opacity.value,
+      transform: [
+        { translateY: animation.translateY.value },
+        { scale: animation.scale.value },
+      ],
+    }))
+  );
+
+  // Efecto para animar las cards cuando cambia la categoría
+  useEffect(() => {
+    cardAnimations.forEach((animation) => {
+      animation.opacity.value = 0;
+      animation.translateY.value = 50;
+      animation.scale.value = 0.8;
+    });
+
+    filteredMembers.forEach((_, index) => {
+      if (index < maxMembers) {
+        const delay = index * 150;
+
+        cardAnimations[index].opacity.value = withDelay(
+          delay,
+          withSpring(1, {
+            damping: 15,
+            stiffness: 100,
+          })
+        );
+
+        cardAnimations[index].translateY.value = withDelay(
+          delay,
+          withSpring(0, {
+            damping: 20,
+            stiffness: 150,
+          })
+        );
+
+        cardAnimations[index].scale.value = withDelay(
+          delay,
+          withSpring(1, {
+            damping: 15,
+            stiffness: 100,
+          })
+        );
+      }
+    });
+  }, [selectedCategory, filteredMembers.length]);
 
   const getJustifyContent = () => {
-    const memberCount = filteredMembers.length
-    if (memberCount === 1) return "center"
-    if (memberCount === 2) return "space-around"
-    return "flex-start"
-  }
+    const memberCount = filteredMembers.length;
+    if (memberCount === 1) return "center";
+    if (memberCount === 2) return "space-around";
+    return "flex-start";
+  };
 
   const handleMemberPress = (member: TeamMember) => {
-    console.log("Member pressed:", member.name)
-  }
+    console.log("Member pressed:", member.name);
+  };
 
   return (
     <View style={styles.container}>
@@ -173,7 +249,7 @@ const TeamSection = ({
                   </Text>
                 ) : (
                   <Text key={index}>{word} </Text>
-                ),
+                )
               )}
             </Text>
           </View>
@@ -213,7 +289,8 @@ const TeamSection = ({
                 bp.isMobile && styles.infoQuoteMobile,
               ]}
             >
-              "Conocimiento, creatividad, eficiencia y sinergia para tu solución digital"
+              "Conocimiento, creatividad, eficiencia y sinergia para tu solución
+              digital"
             </Text>
             <Text
               style={[
@@ -223,9 +300,10 @@ const TeamSection = ({
                 bp.isMobile && styles.infoDescriptionMobile,
               ]}
             >
-              En NilO Solutions somos un equipo de profesores y estudiantes IT apasionados por la tecnología y mejora
-              continua de los procesos digitales. Buscamos generar soluciones tecnológicas disruptivas, innovadoras y
-              eficientes para nuestros clientes.
+              En NilO Solutions somos un equipo de profesores y estudiantes IT
+              apasionados por la tecnología y mejora continua de los procesos
+              digitales. Buscamos generar soluciones tecnológicas disruptivas,
+              innovadoras y eficientes para nuestros clientes.
             </Text>
           </View>
 
@@ -234,7 +312,8 @@ const TeamSection = ({
             style={[
               styles.missionVisionContainer,
               // Desktop styles are implicitly applied by default styles
-              bp.isTabletOrMobile && styles.missionVisionContainerTabletOrMobile,
+              bp.isTabletOrMobile &&
+                styles.missionVisionContainerTabletOrMobile,
               bp.isMobile && styles.missionVisionContainerMobile,
             ]}
           >
@@ -269,7 +348,8 @@ const TeamSection = ({
                   style={[
                     styles.infoTitleUnderline,
                     // Desktop styles are implicitly applied by default styles
-                    bp.isTabletOrMobile && styles.infoTitleUnderlineTabletOrMobile,
+                    bp.isTabletOrMobile &&
+                      styles.infoTitleUnderlineTabletOrMobile,
                     bp.isMobile && styles.infoTitleUnderlineMobile,
                   ]}
                 />
@@ -282,10 +362,13 @@ const TeamSection = ({
                   bp.isMobile && styles.infoDescriptionMobile,
                 ]}
               >
-                Ser el principal proveedor de soluciones tecnológicas innovadoras, con un enfoque en aplicaciones web y
-                servicios de servidor que optimicen los procesos digitales de nuestros clientes. Nos dedicamos a
-                desarrollar plataformas intuitivas, seguras y robustas que integren servicios, comunicación e
-                información, facilitando de esta manera una experiencia digital completa y eficiente.
+                Ser el principal proveedor de soluciones tecnológicas
+                innovadoras, con un enfoque en aplicaciones web y servicios de
+                servidor que optimicen los procesos digitales de nuestros
+                clientes. Nos dedicamos a desarrollar plataformas intuitivas,
+                seguras y robustas que integren servicios, comunicación e
+                información, facilitando de esta manera una experiencia digital
+                completa y eficiente.
               </Text>
               <Text
                 style={[
@@ -295,9 +378,11 @@ const TeamSection = ({
                   bp.isMobile && styles.infoDescriptionMobile,
                 ]}
               >
-                A través de tecnologías de vanguardia, buscamos simplificar la interacción entre usuarios y empresas,
-                ofreciendo herramientas que impulsen la productividad, seguridad, calidad de información y satisfacción
-                en cada interacción digital, ágiles y eficientes para nuestros clientes.
+                A través de tecnologías de vanguardia, buscamos simplificar la
+                interacción entre usuarios y empresas, ofreciendo herramientas
+                que impulsen la productividad, seguridad, calidad de información
+                y satisfacción en cada interacción digital, ágiles y eficientes
+                para nuestros clientes.
               </Text>
             </View>
 
@@ -332,7 +417,8 @@ const TeamSection = ({
                   style={[
                     styles.infoTitleUnderline,
                     // Desktop styles are implicitly applied by default styles
-                    bp.isTabletOrMobile && styles.infoTitleUnderlineTabletOrMobile,
+                    bp.isTabletOrMobile &&
+                      styles.infoTitleUnderlineTabletOrMobile,
                     bp.isMobile && styles.infoTitleUnderlineMobile,
                   ]}
                 />
@@ -345,10 +431,13 @@ const TeamSection = ({
                   bp.isMobile && styles.infoDescriptionMobile,
                 ]}
               >
-                Convertirnos en el socio tecnológico de referencia a nivel global para las empresas que buscan obtener,
-                expandir y mejorar sus procesos y presencia digital. Nos proyectamos como una plataforma integral,
-                alineada con las últimas tendencias tecnológicas, amigables con el medio ambiente y brindando soluciones
-                escalables que se anticipen a las necesidades de un mundo digital en constante evolución.
+                Convertirnos en el socio tecnológico de referencia a nivel
+                global para las empresas que buscan obtener, expandir y mejorar
+                sus procesos y presencia digital. Nos proyectamos como una
+                plataforma integral, alineada con las últimas tendencias
+                tecnológicas, amigables con el medio ambiente y brindando
+                soluciones escalables que se anticipen a las necesidades de un
+                mundo digital en constante evolución.
               </Text>
               <Text
                 style={[
@@ -358,9 +447,10 @@ const TeamSection = ({
                   bp.isMobile && styles.infoDescriptionMobile,
                 ]}
               >
-                Aspiramos a incorporar inteligencia artificial, automatización y personalización avanzada en nuestras
-                soluciones, proporcionando experiencias digitales de primer nivel que potencien el éxito y crecimiento
-                de nuestros clientes.
+                Aspiramos a incorporar inteligencia artificial, automatización y
+                personalización avanzada en nuestras soluciones, proporcionando
+                experiencias digitales de primer nivel que potencien el éxito y
+                crecimiento de nuestros clientes.
               </Text>
             </View>
           </View>
@@ -422,30 +512,34 @@ const TeamSection = ({
             style={[
               styles.membersContainer,
               { justifyContent: getJustifyContent() },
-              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.membersContainerTabletOrMobile,
               bp.isMobile && styles.membersContainerMobile,
             ]}
           >
-            {filteredMembers.map((member) => (
-              <TeamCard key={member.id} member={member} onPress={handleMemberPress} />
+            {filteredMembers.map((member, index) => (
+              <Animated.View
+                key={member.id}
+                style={animatedStyles[index]}
+              >
+                <TeamCard member={member} onPress={handleMemberPress} />
+              </Animated.View>
             ))}
           </View>
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 /* --------------------- BREAKPOINT HOOK ------------------------ */
 const useBreakpoint = () => {
-  const { width } = useWindowDimensions()
+  const { width } = useWindowDimensions();
   return {
     isDesktop: width >= 1024, // Explicitly defined
     isTabletOrMobile: width < 1024,
     isMobile: width < 768,
-  }
-}
+  };
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -765,6 +859,6 @@ const styles = StyleSheet.create({
     gap: 12,
     justifyContent: "center",
   },
-})
+});
 
-export default TeamSection
+export default TeamSection;

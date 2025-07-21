@@ -1,16 +1,9 @@
 "use client";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-} from "react-native";
+import { View, Text, useWindowDimensions, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  interpolate,
   interpolateColor,
 } from "react-native-reanimated";
 import { useEffect } from "react";
@@ -29,13 +22,10 @@ interface Props {
   onHoverOut: () => void;
   onPress: () => void;
   breakpoint?: {
-    isMobile: boolean
-    isTablet: boolean
-    isDesktop: boolean
-    isLargeDesktop: boolean
-  }
-    isTabletOrMobile: boolean;
     isMobile: boolean;
+    isTablet: boolean;
+    isDesktop: boolean;
+    isLargeDesktop: boolean;
   };
 }
 
@@ -46,8 +36,6 @@ const useBreakpoint = () => {
     isTablet: width >= 768 && width < 1024,
     isDesktop: width >= 1024 && width < 1440,
     isLargeDesktop: width >= 1440,
-  }
-}
   };
 };
 
@@ -62,91 +50,79 @@ const ServiceCard = ({
 }: Props) => {
   const bp = breakpoint || useBreakpoint();
 
-  const cardAnimations = {
-    scale: useSharedValue(1),
-    borderOpacity: useSharedValue(0),
-    iconScale: useSharedValue(1),
-    arrowTranslateX: useSharedValue(0),
-    titleColor: useSharedValue(0),
-    underlineWidth: useSharedValue(30),
-    leftBorderHeight: useSharedValue(20),
-  };
+  const scale = useSharedValue(1);
+  const borderOpacity = useSharedValue(0);
+  const iconScale = useSharedValue(1);
+  const arrowTranslateX = useSharedValue(0);
+  const titleColor = useSharedValue(0);
+  const underlineWidth = useSharedValue(30);
+  const leftBorderHeight = useSharedValue(20);
 
   // Efectos de las animaciones
   useEffect(() => {
     if (hovered) {
-      cardAnimations.scale.value = withTiming(1.05, { duration: 200 });
-      cardAnimations.borderOpacity.value = withTiming(1, { duration: 200 });
-      cardAnimations.iconScale.value = withTiming(1.1, { duration: 200 });
-      cardAnimations.arrowTranslateX.value = withTiming(4, { duration: 200 });
-      cardAnimations.titleColor.value = withTiming(1, { duration: 200 });
-      cardAnimations.underlineWidth.value = withTiming(50, { duration: 200 });
-      cardAnimations.leftBorderHeight.value = withTiming(60, { duration: 200 });
+      scale.value = withTiming(1.05, { duration: 200 });
+      borderOpacity.value = withTiming(1, { duration: 200 });
+      iconScale.value = withTiming(1.1, { duration: 200 });
+      arrowTranslateX.value = withTiming(4, { duration: 200 });
+      titleColor.value = withTiming(1, { duration: 200 });
+      underlineWidth.value = withTiming(50, { duration: 200 });
+      leftBorderHeight.value = withTiming(60, { duration: 200 });
     } else {
-      cardAnimations.scale.value = withTiming(1, { duration: 300 });
-      cardAnimations.borderOpacity.value = withTiming(0, { duration: 300 });
-      cardAnimations.iconScale.value = withTiming(1, { duration: 300 });
-      cardAnimations.arrowTranslateX.value = withTiming(0, { duration: 300 });
-      cardAnimations.titleColor.value = withTiming(0, { duration: 300 });
-      cardAnimations.underlineWidth.value = withTiming(30, { duration: 300 });
-      cardAnimations.leftBorderHeight.value = withTiming(45, { duration: 300 });
+      scale.value = withTiming(1, { duration: 300 });
+      borderOpacity.value = withTiming(0, { duration: 300 });
+      iconScale.value = withTiming(1, { duration: 300 });
+      arrowTranslateX.value = withTiming(0, { duration: 300 });
+      titleColor.value = withTiming(0, { duration: 300 });
+      underlineWidth.value = withTiming(30, { duration: 300 });
+      leftBorderHeight.value = withTiming(45, { duration: 300 });
     }
   }, [hovered]);
 
   const animatedCardStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: cardAnimations.scale.value }],
+    transform: [{ scale: scale.value }],
     borderColor: interpolateColor(
-      cardAnimations.borderOpacity.value,
+      borderOpacity.value,
       [1, 0],
       ["#ff6b35", "#2a2a2a"]
     ),
     backgroundColor: interpolateColor(
-      cardAnimations.borderOpacity.value,
+      borderOpacity.value,
       [1, 0],
       ["#222222", "#1a1a1a"]
     ),
   }));
+
   const animatedIconStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: cardAnimations.iconScale.value }],
+    transform: [{ scale: iconScale.value }],
     backgroundColor: interpolateColor(
-      cardAnimations.iconScale.value,
+      iconScale.value,
       [1, 1.1],
       ["#ff6b35", "#f49349"]
     ),
   }));
 
   const animatedArrowStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: cardAnimations.arrowTranslateX.value }],
-    color: interpolateColor(cardAnimations.titleColor.value, [0, 1], ["#ff6b35", "#ffffff"]),
+    transform: [{ translateX: arrowTranslateX.value }],
+    color: interpolateColor(titleColor.value, [0, 1], ["#ff6b35", "#ffffff"]),
   }));
 
   const animatedTitleStyle = useAnimatedStyle(() => ({
-    color: interpolateColor(cardAnimations.titleColor.value, [0, 1], ["#ffffff", "#ff6b35"]),
+    color: interpolateColor(titleColor.value, [0, 1], ["#ffffff", "#ff6b35"]),
   }));
 
   const animatedUnderlineStyle = useAnimatedStyle(() => ({
-    width: cardAnimations.underlineWidth.value,
+    width: underlineWidth.value,
     backgroundColor: interpolateColor(
-      cardAnimations.titleColor.value,
+      titleColor.value,
       [0, 1],
       ["#ff6b35", "#ffffff"]
     ),
   }));
 
   const animatedLeftBorderStyle = useAnimatedStyle(() => ({
-    height: cardAnimations.leftBorderHeight.value,
+    height: leftBorderHeight.value,
   }));
-
-  // leftBorderHovered: {
-  //   height: 45,
-  //   top: 15,
-  //   width: 5,
-  //   shadowColor: "#ff6b35",
-  //   shadowOffset: { width: 2, height: 0 },
-  //   shadowOpacity: 0.6,
-  //   shadowRadius: 8,
-  // },
-
   return (
     <Animated.View
       style={[
@@ -154,30 +130,19 @@ const ServiceCard = ({
         {
           width,
           height: width * 0.9,
-          // transform: [{ scale: hovered ? 1.05 : 1 }],
         },
-        hovered && styles.serviceCardHovered,
-        // hovered && styles.serviceCardHovered,
         animatedCardStyle,
-        bp.isTabletOrMobile && styles.serviceCardTabletOrMobile,
         bp.isMobile && styles.serviceCardMobile,
         bp.isTablet && styles.serviceCardTablet,
         bp.isDesktop && styles.serviceCardDesktop,
         bp.isLargeDesktop && styles.serviceCardLargeDesktop,
       ]}
+      //@ts-ignore
       onPress={onPress}
       onMouseEnter={onHoverIn}
       onMouseLeave={onHoverOut}
       activeOpacity={0.9}
     >
-      <View style={[styles.gradientOverlay, hovered && styles.gradientOverlayHovered]} />
-      <View style={[
-        styles.leftBorder,
-        hovered && styles.leftBorderHovered,
-        bp.isMobile && styles.leftBorderMobile,
-        bp.isTablet && styles.leftBorderTablet,
-        bp.isDesktop && styles.leftBorderDesktop,
-      ]} />
       <View
         style={[
           styles.gradientOverlay,
@@ -188,79 +153,49 @@ const ServiceCard = ({
         style={[
           styles.leftBorder,
           animatedLeftBorderStyle,
-          // hovered && styles.leftBorderHovered,
-          bp.isTabletOrMobile && styles.leftBorderTabletOrMobile,
           bp.isMobile && styles.leftBorderMobile,
+          bp.isTablet && styles.leftBorderTablet,
+          bp.isDesktop && styles.leftBorderDesktop,
         ]}
       />
 
-      <View style={[
-        styles.cardContent,
-        bp.isMobile && styles.cardContentMobile,
-        bp.isTablet && styles.cardContentTablet,
-        bp.isDesktop && styles.cardContentDesktop,
-      ]}>
-        <View style={[
-          styles.iconContainer,
-          hovered && styles.iconContainerHovered,
-          bp.isMobile && styles.iconContainerMobile,
-          bp.isTablet && styles.iconContainerTablet,
-          bp.isDesktop && styles.iconContainerDesktop,
-        ]}>
-          <View style={[
-            styles.iconGlow,
-            bp.isMobile && styles.iconGlowMobile,
-            bp.isTablet && styles.iconGlowTablet,
-            bp.isDesktop && styles.iconGlowDesktop,
-          ]} />
-          <Text style={[
-            styles.serviceIcon,
-            bp.isMobile && styles.serviceIconMobile,
-            bp.isTablet && styles.serviceIconTablet,
-            bp.isDesktop && styles.serviceIconDesktop,
-          ]}>
       <View
         style={[
           styles.cardContent,
-          bp.isTabletOrMobile && styles.cardContentTabletOrMobile,
           bp.isMobile && styles.cardContentMobile,
+          bp.isTablet && styles.cardContentTablet,
+          bp.isDesktop && styles.cardContentDesktop,
         ]}
       >
         <Animated.View
           style={[
             styles.iconContainer,
             animatedIconStyle,
-            // hovered && styles.iconContainerHovered,
-            bp.isTabletOrMobile && styles.iconContainerTabletOrMobile,
             bp.isMobile && styles.iconContainerMobile,
+            bp.isTablet && styles.iconContainerTablet,
+            bp.isDesktop && styles.iconContainerDesktop,
           ]}
         >
           <View
             style={[
               styles.iconGlow,
-              bp.isTabletOrMobile && styles.iconGlowTabletOrMobile,
               bp.isMobile && styles.iconGlowMobile,
+              bp.isTablet && styles.iconGlowTablet,
+              bp.isDesktop && styles.iconGlowDesktop,
             ]}
           />
           <Text
             style={[
               styles.serviceIcon,
-              bp.isTabletOrMobile && styles.serviceIconTabletOrMobile,
               bp.isMobile && styles.serviceIconMobile,
+              bp.isTablet && styles.serviceIconTablet,
+              bp.isDesktop && styles.serviceIconDesktop,
             ]}
           >
             {service.icon}
           </Text>
         </Animated.View>
 
-        <View style={[styles.titleSection, bp.isMobile && styles.titleSectionMobile]}>
-          <Text style={[
-            styles.serviceTitle,
-            hovered && styles.serviceTitleHovered,
-            bp.isMobile && styles.serviceTitleMobile,
-            bp.isTablet && styles.serviceTitleTablet,
-            bp.isDesktop && styles.serviceTitleDesktop,
-          ]}>
         <View
           style={[
             styles.titleSection,
@@ -271,48 +206,35 @@ const ServiceCard = ({
             style={[
               styles.serviceTitle,
               animatedTitleStyle,
-              // hovered && styles.serviceTitleHovered,
-              bp.isTabletOrMobile && styles.serviceTitleTabletOrMobile,
               bp.isMobile && styles.serviceTitleMobile,
+              bp.isTablet && styles.serviceTitleTablet,
+              bp.isDesktop && styles.serviceTitleDesktop,
             ]}
           >
             {service.title}
-          </Text>
-          <View style={[
-            styles.titleUnderline,
-            hovered && styles.titleUnderlineHovered,
-            bp.isMobile && styles.titleUnderlineMobile,
-            bp.isTablet && styles.titleUnderlineTablet,
-            bp.isDesktop && styles.titleUnderlineDesktop,
-          ]} />
           </Animated.Text>
           <Animated.View
             style={[
               styles.titleUnderline,
               animatedUnderlineStyle,
-              // hovered && styles.titleUnderlineHovered,
-              bp.isTabletOrMobile && styles.titleUnderlineTabletOrMobile,
               bp.isMobile && styles.titleUnderlineMobile,
+              bp.isTablet && styles.titleUnderlineTablet,
+              bp.isDesktop && styles.titleUnderlineDesktop,
             ]}
           />
         </View>
 
-        <Text style={[
-          styles.serviceDescription,
-          bp.isMobile && styles.serviceDescriptionMobile,
-          bp.isTablet && styles.serviceDescriptionTablet,
-          bp.isDesktop && styles.serviceDescriptionDesktop,
-        ]}>
+        <Text
+          style={[
+            styles.serviceDescription,
+            bp.isMobile && styles.serviceDescriptionMobile,
+            bp.isTablet && styles.serviceDescriptionTablet,
+            bp.isDesktop && styles.serviceDescriptionDesktop,
+          ]}
+        >
           {service.description}
         </Text>
 
-        <View style={[styles.learnMoreContainer, bp.isMobile && styles.learnMoreContainerMobile]}>
-          <Text style={[
-            styles.learnMoreText,
-            bp.isMobile && styles.learnMoreTextMobile,
-            bp.isTablet && styles.learnMoreTextTablet,
-            bp.isDesktop && styles.learnMoreTextDesktop,
-          ]}>
         <View
           style={[
             styles.learnMoreContainer,
@@ -323,35 +245,26 @@ const ServiceCard = ({
             style={[
               styles.learnMoreText,
               animatedArrowStyle,
-              bp.isTabletOrMobile && styles.learnMoreTextTabletOrMobile,
               bp.isMobile && styles.learnMoreTextMobile,
+              bp.isTablet && styles.learnMoreTextTablet,
+              bp.isDesktop && styles.learnMoreTextDesktop,
             ]}
           >
             Saber más
-          </Text>
-          <Text style={[
-            styles.learnMoreArrow,
-            hovered && styles.learnMoreArrowHovered,
-            bp.isMobile && styles.learnMoreArrowMobile,
-            bp.isTablet && styles.learnMoreArrowTablet,
-            bp.isDesktop && styles.learnMoreArrowDesktop,
-          ]}>
           </Animated.Text>
           <Animated.Text
             style={[
               styles.learnMoreArrow,
               animatedArrowStyle,
-              // hovered && styles.learnMoreArrowHovered,
-              bp.isTabletOrMobile && styles.learnMoreArrowTabletOrMobile,
               bp.isMobile && styles.learnMoreArrowMobile,
+              bp.isTablet && styles.learnMoreArrowTablet,
+              bp.isDesktop && styles.learnMoreArrowDesktop,
             ]}
           >
             →
           </Animated.Text>
         </View>
       </View>
-
-      {/* {hovered && <View style={styles.shineEffect} />} */}
     </Animated.View>
   );
 };
@@ -716,8 +629,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     transform: [{ skewX: "-20deg" }],
   },
-})
-
 });
 
 export default ServiceCard;

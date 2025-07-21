@@ -60,6 +60,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
         bp.isMobile && styles.memberCardMobile,
         bp.isLargeDesktop && styles.memberCardLargeDesktop,
       ]}
+      //@ts-ignore
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onPress={() => onPress?.(member)}

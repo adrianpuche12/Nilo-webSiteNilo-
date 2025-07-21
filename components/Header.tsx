@@ -19,9 +19,6 @@ import { LoginButton, EmailConsultButton } from "@/components/ui/AppButtons";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withRepeat,
-  withSpring,
-  withDelay,
   withTiming,
   interpolateColor,
 } from "react-native-reanimated";
@@ -42,12 +39,7 @@ const Header = ({ scrollToSection }: HeaderProps) => {
   const [menuVisible, setMenuVisible] = useState(false);
   const toggleMenu = () => setMenuVisible((prev) => !prev);
   const handleEmailConsult = () => console.log("Consultando email…");
-
-  // constantes para animaciones
-  const animations = {
-    translateXBanner: useSharedValue(-2000),
-    translateXLogo: useSharedValue(-2000),
-  };
+ 
 
   // Definir el array de navegación
   const sectionNavItems = [
@@ -73,70 +65,7 @@ const Header = ({ scrollToSection }: HeaderProps) => {
     },
   ];
 
-  const sectionButtonAnimations = sectionNavItems.map(() => ({
-    opacity: useSharedValue(0),
-    translateY: useSharedValue(-100),
-  }));
-
-  useEffect(() => {
-    animations.translateXBanner.value = withDelay(
-      300,
-      withSpring(0, {
-        damping: 15,
-        stiffness: 100,
-      })
-    );
-    animations.translateXLogo.value = withDelay(
-      600,
-      withSpring(0, {
-        damping: 15,
-        stiffness: 100,
-      })
-    );
-
-    // Animar los botones de navegación
-    sectionButtonAnimations.forEach((animation, index) => {
-      const delay = 800 + index * 150; // Empezar después del logo
-
-      animation.opacity.value = withDelay(
-        delay,
-        withSpring(1, {
-          damping: 15,
-          stiffness: 100,
-        })
-      );
-
-      animation.translateY.value = withDelay(
-        delay,
-        withSpring(0, {
-          damping: 15,
-          stiffness: 100,
-        })
-      );
-    });
-  }, []);
-
-  const animatedStyleBanner = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: animations.translateXBanner.value }],
-    };
-  });
-
-  const animatedStyleLogo = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: animations.translateXLogo.value }],
-    };
-  });
-
   // Función para obtener el estilo animado de cada botón
-  const getAnimatedButtonStyle = (index: number) => {
-    return useAnimatedStyle(() => ({
-      opacity: sectionButtonAnimations[index].opacity.value,
-      transform: [
-        { translateY: sectionButtonAnimations[index].translateY.value },
-      ],
-    }));
-  };
 
   const renderNavItems = (vertical = false) => (
     <View
@@ -145,8 +74,8 @@ const Header = ({ scrollToSection }: HeaderProps) => {
         bp.isTabletOrMobile && styles.navContainerTabletOrMobile,
       ]}
     >
-      {sectionNavItems.map((item, index) => (
-        <Animated.View key={item.id} style={getAnimatedButtonStyle(index)}>
+      {sectionNavItems.map((item) => (
+        <Animated.View key={item.id}>
           <SectionButton
             text={item.text}
             sectionId={item.sectionId}
@@ -171,13 +100,12 @@ const Header = ({ scrollToSection }: HeaderProps) => {
       >
         {/* Logo */}
         <View style={styles.logoContainer}>
-          <Animated.Image
+          <Image
             source={require("@/assets/images/logo.png")}
             style={[
               styles.logoImage,
               bp.isTabletOrMobile && styles.logoImageTabletOrMobile,
               bp.isMobile && styles.logoImageMobile,
-              animatedStyleLogo,
             ]}
             resizeMode="contain"
           />
@@ -238,16 +166,15 @@ const Header = ({ scrollToSection }: HeaderProps) => {
           bp.isMobile && styles.promoBannerMobile,
         ]}
       >
-        <Animated.Text
+        <Text
           style={[
             styles.promoText,
             bp.isTabletOrMobile && styles.promoTextTabletOrMobile,
             bp.isMobile && styles.promoTextMobile,
-            animatedStyleBanner,
           ]}
         >
           BANNER PARA OFERTAS PROMOS
-        </Animated.Text>
+        </Text>
         <View
           style={[
             styles.emailSection,

@@ -7,7 +7,6 @@ import TeamCard from "@/components/ui/TeamCard";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withTiming,
   withDelay,
   withSpring,
 } from "react-native-reanimated";
@@ -128,7 +127,7 @@ const TeamSection = ({
   );
   // Crear animaciones para cada miembro del equipo
   // Crear un número máximo de animaciones posibles
-  const maxMembers = 10; 
+  const maxMembers = 10;
 
   const cardAnimations = Array.from({ length: maxMembers }, () => ({
     opacity: useSharedValue(0),
@@ -334,7 +333,6 @@ const TeamSection = ({
                 <View
                   style={[
                     styles.infoTitleUnderline,
-                    // Desktop styles are implicitly applied by default styles
                     bp.isTabletOrMobile &&
                       styles.infoTitleUnderlineTabletOrMobile,
                     bp.isMobile && styles.infoTitleUnderlineMobile,
@@ -493,10 +491,7 @@ const TeamSection = ({
             ]}
           >
             {filteredMembers.map((member, index) => (
-              <Animated.View
-                key={member.id}
-                style={animatedStyles[index]}
-              >
+              <Animated.View key={member.id} style={animatedStyles[index]}>
                 <TeamCard member={member} onPress={handleMemberPress} />
               </Animated.View>
             ))}

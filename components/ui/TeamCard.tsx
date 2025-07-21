@@ -144,11 +144,11 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
           </Text>
           <View
             style={[
-              styles.roleUnderline,
-              isHovered && styles.roleUnderlineHovered,
               bp.isTablet && styles.roleUnderlineTabletOrMobile,
               bp.isMobile && styles.roleUnderlineMobile,
               bp.isLargeDesktop && styles.roleUnderlineLargeDesktop,
+              styles.roleUnderline,
+              isHovered && styles.roleUnderlineHovered,
             ]}
           />
         </View>
@@ -471,10 +471,9 @@ const styles = StyleSheet.create({
 
   roleUnderline: {
     width: 40,
-    height: 2,
+    height: 3,
     backgroundColor: "#ff6b35",
     borderRadius: 1,
-    //@ts-ignore
     transition: "all 0.4s ease",
   },
   roleUnderlineTabletOrMobile: {

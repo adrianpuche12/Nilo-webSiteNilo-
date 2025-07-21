@@ -28,9 +28,8 @@ export default function RootLayout() {
   const [sectionPositions, setSectionPositions] = useState<Record<string, number>>({});
 
   // estado para  la animacion de scroll de cambio de seccion
-  const [currentSection, setCurrentSection] = useState<string>("inicio");
-  const [newCurrentSection, setNewCurrentSection] = useState<string>("inicio");
-  
+  const [currentSection, setCurrentSection] = useState<string>("inicio"); 
+  const [serviceIsViewed, setServiceIsViewed] = useState<boolean>(false);
 
   // 🎨 Valores animados para cada sección
 
@@ -69,10 +68,7 @@ export default function RootLayout() {
     switch (sectionId) {
       case "servicios":
         serviciosOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
-        serviciosTranslateY.value = withSpring(
-          isVisible ? 0 : 50,
-          springConfig
-        );
+        serviciosTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
         break;
       case "quienes":
         quienesOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
@@ -101,6 +97,10 @@ export default function RootLayout() {
 
         const sectionVisible = currentScrollY + 200 >= sectionTop - 500;
 
+        if (section === "servicios") {
+          setServiceIsViewed(sectionVisible);
+        }
+        
         // Animar sección si está visible
         animateSection(section, sectionVisible);
 
@@ -114,8 +114,6 @@ export default function RootLayout() {
     // Solo hacer console.log si cambió la sección
     if (newCurrentSection !== currentSection) {
       setCurrentSection(newCurrentSection);
-      console.log("🎯 Sección actual:", newCurrentSection);
-      console.log("📍 Posición scroll:", currentScrollY);
     }
   };
   // 🎨 Estilos animados para cada sección
@@ -196,7 +194,7 @@ export default function RootLayout() {
           style={serviciosAnimatedStyle}
           onLayout={(event) => handleSectionLayout("servicios", event)}
         >
-          <Services isView={currentSection === "servicios"}/>
+          <Services isView={serviceIsViewed}/>
         </Animated.View>
 
         <Animated.View

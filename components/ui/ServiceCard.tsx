@@ -1,11 +1,5 @@
 "use client";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-} from "react-native";
+import { View, Text, useWindowDimensions, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -28,16 +22,20 @@ interface Props {
   onHoverOut: () => void;
   onPress: () => void;
   breakpoint?: {
-    isTabletOrMobile: boolean;
     isMobile: boolean;
+    isTablet: boolean;
+    isDesktop: boolean;
+    isLargeDesktop: boolean;
   };
 }
 
 const useBreakpoint = () => {
   const { width } = useWindowDimensions();
   return {
-    isTabletOrMobile: width < 1024,
     isMobile: width < 768,
+    isTablet: width >= 768 && width < 1024,
+    isDesktop: width >= 1024 && width < 1440,
+    isLargeDesktop: width >= 1440,
   };
 };
 
@@ -52,91 +50,79 @@ const ServiceCard = ({
 }: Props) => {
   const bp = breakpoint || useBreakpoint();
 
-  const cardAnimations = {
-    scale: useSharedValue(1),
-    borderOpacity: useSharedValue(0),
-    iconScale: useSharedValue(1),
-    arrowTranslateX: useSharedValue(0),
-    titleColor: useSharedValue(0),
-    underlineWidth: useSharedValue(30),
-    leftBorderHeight: useSharedValue(20),
-  };
+  const scale = useSharedValue(1);
+  const borderOpacity = useSharedValue(0);
+  const iconScale = useSharedValue(1);
+  const arrowTranslateX = useSharedValue(0);
+  const titleColor = useSharedValue(0);
+  const underlineWidth = useSharedValue(30);
+  const leftBorderHeight = useSharedValue(20);
 
   // Efectos de las animaciones
   useEffect(() => {
     if (hovered) {
-      cardAnimations.scale.value = withTiming(1.05, { duration: 200 });
-      cardAnimations.borderOpacity.value = withTiming(1, { duration: 200 });
-      cardAnimations.iconScale.value = withTiming(1.1, { duration: 200 });
-      cardAnimations.arrowTranslateX.value = withTiming(4, { duration: 200 });
-      cardAnimations.titleColor.value = withTiming(1, { duration: 200 });
-      cardAnimations.underlineWidth.value = withTiming(50, { duration: 200 });
-      cardAnimations.leftBorderHeight.value = withTiming(60, { duration: 200 });
+      scale.value = withTiming(1.05, { duration: 200 });
+      borderOpacity.value = withTiming(1, { duration: 200 });
+      iconScale.value = withTiming(1.1, { duration: 200 });
+      arrowTranslateX.value = withTiming(4, { duration: 200 });
+      titleColor.value = withTiming(1, { duration: 200 });
+      underlineWidth.value = withTiming(50, { duration: 200 });
+      leftBorderHeight.value = withTiming(60, { duration: 200 });
     } else {
-      cardAnimations.scale.value = withTiming(1, { duration: 300 });
-      cardAnimations.borderOpacity.value = withTiming(0, { duration: 300 });
-      cardAnimations.iconScale.value = withTiming(1, { duration: 300 });
-      cardAnimations.arrowTranslateX.value = withTiming(0, { duration: 300 });
-      cardAnimations.titleColor.value = withTiming(0, { duration: 300 });
-      cardAnimations.underlineWidth.value = withTiming(30, { duration: 300 });
-      cardAnimations.leftBorderHeight.value = withTiming(45, { duration: 300 });
+      scale.value = withTiming(1, { duration: 300 });
+      borderOpacity.value = withTiming(0, { duration: 300 });
+      iconScale.value = withTiming(1, { duration: 300 });
+      arrowTranslateX.value = withTiming(0, { duration: 300 });
+      titleColor.value = withTiming(0, { duration: 300 });
+      underlineWidth.value = withTiming(30, { duration: 300 });
+      leftBorderHeight.value = withTiming(45, { duration: 300 });
     }
   }, [hovered]);
 
   const animatedCardStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: cardAnimations.scale.value }],
+    transform: [{ scale: scale.value }],
     borderColor: interpolateColor(
-      cardAnimations.borderOpacity.value,
+      borderOpacity.value,
       [1, 0],
       ["#ff6b35", "#2a2a2a"]
     ),
     backgroundColor: interpolateColor(
-      cardAnimations.borderOpacity.value,
+      borderOpacity.value,
       [1, 0],
       ["#222222", "#1a1a1a"]
     ),
   }));
+
   const animatedIconStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: cardAnimations.iconScale.value }],
+    transform: [{ scale: iconScale.value }],
     backgroundColor: interpolateColor(
-      cardAnimations.iconScale.value,
+      iconScale.value,
       [1, 1.1],
       ["#ff6b35", "#f49349"]
     ),
   }));
 
   const animatedArrowStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: cardAnimations.arrowTranslateX.value }],
-    color: interpolateColor(cardAnimations.titleColor.value, [0, 1], ["#ff6b35", "#ffffff"]),
+    transform: [{ translateX: arrowTranslateX.value }],
+    color: interpolateColor(titleColor.value, [0, 1], ["#ff6b35", "#ffffff"]),
   }));
 
   const animatedTitleStyle = useAnimatedStyle(() => ({
-    color: interpolateColor(cardAnimations.titleColor.value, [0, 1], ["#ffffff", "#ff6b35"]),
+    color: interpolateColor(titleColor.value, [0, 1], ["#ffffff", "#ff6b35"]),
   }));
 
   const animatedUnderlineStyle = useAnimatedStyle(() => ({
-    width: cardAnimations.underlineWidth.value,
+    width: underlineWidth.value,
     backgroundColor: interpolateColor(
-      cardAnimations.titleColor.value,
+      titleColor.value,
       [0, 1],
       ["#ff6b35", "#ffffff"]
     ),
   }));
 
   const animatedLeftBorderStyle = useAnimatedStyle(() => ({
-    height: cardAnimations.leftBorderHeight.value,
+    height: leftBorderHeight.value,
   }));
-
-  // leftBorderHovered: {
-  //   height: 45,
-  //   top: 15,
-  //   width: 5,
-  //   shadowColor: "#ff6b35",
-  //   shadowOffset: { width: 2, height: 0 },
-  //   shadowOpacity: 0.6,
-  //   shadowRadius: 8,
-  // },
-
   return (
     <Animated.View
       style={[
@@ -144,12 +130,12 @@ const ServiceCard = ({
         {
           width,
           height: width * 0.9,
-          // transform: [{ scale: hovered ? 1.05 : 1 }],
         },
-        // hovered && styles.serviceCardHovered,
         animatedCardStyle,
-        bp.isTabletOrMobile && styles.serviceCardTabletOrMobile,
         bp.isMobile && styles.serviceCardMobile,
+        bp.isTablet && styles.serviceCardTablet,
+        bp.isDesktop && styles.serviceCardDesktop,
+        bp.isLargeDesktop && styles.serviceCardLargeDesktop,
       ]}
       //@ts-ignore
       onPress={onPress}
@@ -167,40 +153,43 @@ const ServiceCard = ({
         style={[
           styles.leftBorder,
           animatedLeftBorderStyle,
-          // hovered && styles.leftBorderHovered,
-          bp.isTabletOrMobile && styles.leftBorderTabletOrMobile,
           bp.isMobile && styles.leftBorderMobile,
+          bp.isTablet && styles.leftBorderTablet,
+          bp.isDesktop && styles.leftBorderDesktop,
         ]}
       />
 
       <View
         style={[
           styles.cardContent,
-          bp.isTabletOrMobile && styles.cardContentTabletOrMobile,
           bp.isMobile && styles.cardContentMobile,
+          bp.isTablet && styles.cardContentTablet,
+          bp.isDesktop && styles.cardContentDesktop,
         ]}
       >
         <Animated.View
           style={[
             styles.iconContainer,
             animatedIconStyle,
-            // hovered && styles.iconContainerHovered,
-            bp.isTabletOrMobile && styles.iconContainerTabletOrMobile,
             bp.isMobile && styles.iconContainerMobile,
+            bp.isTablet && styles.iconContainerTablet,
+            bp.isDesktop && styles.iconContainerDesktop,
           ]}
         >
           <View
             style={[
               styles.iconGlow,
-              bp.isTabletOrMobile && styles.iconGlowTabletOrMobile,
               bp.isMobile && styles.iconGlowMobile,
+              bp.isTablet && styles.iconGlowTablet,
+              bp.isDesktop && styles.iconGlowDesktop,
             ]}
           />
           <Text
             style={[
               styles.serviceIcon,
-              bp.isTabletOrMobile && styles.serviceIconTabletOrMobile,
               bp.isMobile && styles.serviceIconMobile,
+              bp.isTablet && styles.serviceIconTablet,
+              bp.isDesktop && styles.serviceIconDesktop,
             ]}
           >
             {service.icon}
@@ -217,9 +206,9 @@ const ServiceCard = ({
             style={[
               styles.serviceTitle,
               animatedTitleStyle,
-              // hovered && styles.serviceTitleHovered,
-              bp.isTabletOrMobile && styles.serviceTitleTabletOrMobile,
               bp.isMobile && styles.serviceTitleMobile,
+              bp.isTablet && styles.serviceTitleTablet,
+              bp.isDesktop && styles.serviceTitleDesktop,
             ]}
           >
             {service.title}
@@ -228,9 +217,9 @@ const ServiceCard = ({
             style={[
               styles.titleUnderline,
               animatedUnderlineStyle,
-              // hovered && styles.titleUnderlineHovered,
-              bp.isTabletOrMobile && styles.titleUnderlineTabletOrMobile,
               bp.isMobile && styles.titleUnderlineMobile,
+              bp.isTablet && styles.titleUnderlineTablet,
+              bp.isDesktop && styles.titleUnderlineDesktop,
             ]}
           />
         </View>
@@ -238,8 +227,9 @@ const ServiceCard = ({
         <Text
           style={[
             styles.serviceDescription,
-            bp.isTabletOrMobile && styles.serviceDescriptionTabletOrMobile,
             bp.isMobile && styles.serviceDescriptionMobile,
+            bp.isTablet && styles.serviceDescriptionTablet,
+            bp.isDesktop && styles.serviceDescriptionDesktop,
           ]}
         >
           {service.description}
@@ -255,8 +245,9 @@ const ServiceCard = ({
             style={[
               styles.learnMoreText,
               animatedArrowStyle,
-              bp.isTabletOrMobile && styles.learnMoreTextTabletOrMobile,
               bp.isMobile && styles.learnMoreTextMobile,
+              bp.isTablet && styles.learnMoreTextTablet,
+              bp.isDesktop && styles.learnMoreTextDesktop,
             ]}
           >
             Saber más
@@ -265,17 +256,15 @@ const ServiceCard = ({
             style={[
               styles.learnMoreArrow,
               animatedArrowStyle,
-              // hovered && styles.learnMoreArrowHovered,
-              bp.isTabletOrMobile && styles.learnMoreArrowTabletOrMobile,
               bp.isMobile && styles.learnMoreArrowMobile,
+              bp.isTablet && styles.learnMoreArrowTablet,
+              bp.isDesktop && styles.learnMoreArrowDesktop,
             ]}
           >
             →
           </Animated.Text>
         </View>
       </View>
-
-      {/* {hovered && <View style={styles.shineEffect} />} */}
     </Animated.View>
   );
 };
@@ -295,15 +284,33 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "hidden",
   },
-  serviceCardTabletOrMobile: {
-    borderRadius: 14,
-    marginBottom: 18,
-  },
   serviceCardMobile: {
     borderRadius: 12,
     marginBottom: 15,
     elevation: 6,
   },
+  serviceCardTablet: {
+    borderRadius: 14,
+    marginBottom: 18,
+  },
+  serviceCardDesktop: {
+    borderRadius: 16,
+    marginBottom: 20,
+  },
+  serviceCardLargeDesktop: {
+    borderRadius: 20,
+    marginBottom: 24,
+  },
+
+  serviceCardHovered: {
+    elevation: 20,
+    shadowColor: "#ff6b35",
+    shadowOpacity: 0.2,
+    shadowRadius: 24,
+    borderColor: "#ff6b35",
+    backgroundColor: "#222",
+  },
+
   // serviceCardHovered: {
   //   elevation: 20,
   //   shadowColor: "#ff6b35",
@@ -323,6 +330,7 @@ const styles = StyleSheet.create({
   gradientOverlayHovered: {
     backgroundColor: "rgba(255, 107, 53, 0.03)",
   },
+
   leftBorder: {
     position: "absolute",
     left: 0,
@@ -333,16 +341,31 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 3,
     borderBottomRightRadius: 3,
   },
-  leftBorderTabletOrMobile: {
-    width: 3,
-    height: 30,
-    top: 18,
-  },
   leftBorderMobile: {
     width: 3,
     height: 25,
     top: 15,
   },
+  leftBorderTablet: {
+    width: 3,
+    height: 30,
+    top: 18,
+  },
+  leftBorderDesktop: {
+    width: 4,
+    height: 35,
+    top: 20,
+  },
+  leftBorderHovered: {
+    height: 45,
+    top: 15,
+    width: 5,
+    shadowColor: "#ff6b35",
+    shadowOffset: { width: 2, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+  },
+
   // leftBorderHovered: {
   //   height: 45,
   //   top: 15,
@@ -359,14 +382,19 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     zIndex: 1,
   },
-  cardContentTabletOrMobile: {
-    padding: 18,
-    paddingLeft: 24,
-  },
   cardContentMobile: {
     padding: 14,
     paddingLeft: 18,
   },
+  cardContentTablet: {
+    padding: 18,
+    paddingLeft: 24,
+  },
+  cardContentDesktop: {
+    padding: 20,
+    paddingLeft: 28,
+  },
+
   iconContainer: {
     width: 50,
     height: 50,
@@ -382,18 +410,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
   },
-  iconContainerTabletOrMobile: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-    marginBottom: 14,
-  },
   iconContainerMobile: {
     width: 35,
     height: 35,
     borderRadius: 17.5,
     marginBottom: 10,
   },
+  iconContainerTablet: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+    marginBottom: 14,
+  },
+  iconContainerDesktop: {
+    width: 30,
+    height: 30,
+    borderRadius: 25,
+    marginBottom: 16,
+  },
+  iconContainerHovered: {
+    backgroundColor: "#f49349",
+    transform: [{ scale: 1.1 }],
+    shadowOpacity: 0.5,
+  },
+
   // iconContainerHovered: {
   //   backgroundColor: "#f49349",
   //   transform: [{ scale: 1.1 }],
@@ -409,13 +449,6 @@ const styles = StyleSheet.create({
     top: -5,
     left: -5,
   },
-  iconGlowTabletOrMobile: {
-    width: 55,
-    height: 55,
-    borderRadius: 27.5,
-    top: -5,
-    left: -5,
-  },
   iconGlowMobile: {
     width: 45,
     height: 45,
@@ -423,22 +456,42 @@ const styles = StyleSheet.create({
     top: -5,
     left: -5,
   },
+  iconGlowTablet: {
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
+    top: -5,
+    left: -5,
+  },
+  iconGlowDesktop: {
+    width: 40,
+    height: 40,
+    borderRadius: 30,
+    top: -5,
+    left: -5,
+  },
+
   serviceIcon: {
     fontSize: 24,
     zIndex: 1,
   },
-  serviceIconTabletOrMobile: {
-    fontSize: 20,
-  },
   serviceIconMobile: {
     fontSize: 18,
   },
+  serviceIconTablet: {
+    fontSize: 20,
+  },
+  serviceIconDesktop: {
+    fontSize: 18,
+  },
+
   titleSection: {
     marginBottom: 12,
   },
   titleSectionMobile: {
     marginBottom: 10,
   },
+
   serviceTitle: {
     fontSize: 18,
     fontWeight: "700",
@@ -446,16 +499,25 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     lineHeight: 22,
   },
-  serviceTitleTabletOrMobile: {
-    fontSize: 16,
-    lineHeight: 20,
-    marginBottom: 5,
-  },
   serviceTitleMobile: {
     fontSize: 14,
     lineHeight: 17,
     marginBottom: 4,
   },
+  serviceTitleTablet: {
+    fontSize: 16,
+    lineHeight: 20,
+    marginBottom: 5,
+  },
+  serviceTitleDesktop: {
+    fontSize: 16,
+    lineHeight: 18,
+    marginBottom: 5,
+  },
+  serviceTitleHovered: {
+    color: "#ff6b35",
+  },
+
   // serviceTitleHovered: {
   //   color: "#ff6b35",
   // },
@@ -465,14 +527,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff6b35",
     borderRadius: 1,
   },
-  titleUnderlineTabletOrMobile: {
-    width: 28,
-    height: 2,
-  },
   titleUnderlineMobile: {
     width: 25,
     height: 1.5,
   },
+  titleUnderlineTablet: {
+    width: 28,
+    height: 2,
+  },
+  titleUnderlineDesktop: {
+    width: 30,
+    height: 2,
+  },
+  titleUnderlineHovered: {
+    width: 50,
+    backgroundColor: "#fff",
+  },
+
   // titleUnderlineHovered: {
   //   width: 50,
   //   backgroundColor: "#fff",
@@ -485,16 +556,22 @@ const styles = StyleSheet.create({
     flex: 1,
     letterSpacing: 0.2,
   },
-  serviceDescriptionTabletOrMobile: {
-    fontSize: 12,
-    lineHeight: 16,
-    marginBottom: 14,
-  },
   serviceDescriptionMobile: {
     fontSize: 10,
     lineHeight: 14,
     marginBottom: 10,
   },
+  serviceDescriptionTablet: {
+    fontSize: 12,
+    lineHeight: 16,
+    marginBottom: 14,
+  },
+  serviceDescriptionDesktop: {
+    fontSize: 11,
+    lineHeight: 16,
+    marginBottom: 16,
+  },
+
   learnMoreContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -503,29 +580,42 @@ const styles = StyleSheet.create({
   learnMoreContainerMobile: {
     gap: 6,
   },
+
   learnMoreText: {
     fontSize: 13,
     color: "#ff6b35",
     fontWeight: "600",
     letterSpacing: 0.5,
   },
-  learnMoreTextTabletOrMobile: {
-    fontSize: 12,
-  },
   learnMoreTextMobile: {
     fontSize: 10,
   },
+  learnMoreTextTablet: {
+    fontSize: 12,
+  },
+  learnMoreTextDesktop: {
+    fontSize: 12,
+  },
+
   learnMoreArrow: {
     fontSize: 14,
     color: "#ff6b35",
     fontWeight: "bold",
   },
-  learnMoreArrowTabletOrMobile: {
-    fontSize: 13,
-  },
   learnMoreArrowMobile: {
     fontSize: 12,
   },
+  learnMoreArrowTablet: {
+    fontSize: 13,
+  },
+  learnMoreArrowDesktop: {
+    fontSize: 13,
+  },
+  learnMoreArrowHovered: {
+    transform: [{ translateX: 4 }],
+    color: "#fff",
+  },
+
   // learnMoreArrowHovered: {
   //   transform: [{ translateX: 4 }],
   //   color: "#fff",

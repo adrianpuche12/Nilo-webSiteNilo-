@@ -22,7 +22,7 @@ interface Service {
 interface ServicesSectionProps {
   services?: Service[];
   onServicePress?: (service: Service) => void;
-  isView?: boolean; // Indica si se está viendo la sección o no
+  isView?: boolean;
 }
 
 const defaultServices: Service[] = [
@@ -85,10 +85,9 @@ const ServicesSection = ({
   const { width } = useWindowDimensions();
   const bp = useBreakpoint();
 
-  // Valores animados para cada card
   const cardAnimations = services.map(() => ({
     opacity: useSharedValue(0),
-    translateX: useSharedValue(-100), // Empiezan 100px a la izquierda
+    translateX: useSharedValue(-100),
   }));
 
   const handleServicePress = (service: Service) => {
@@ -98,20 +97,16 @@ const ServicesSection = ({
     console.log(`Navegando a: ${service.route}`);
   };
 
-  // Efecto para animar las cards cuando se ve la sección
   useEffect(() => {
     if (isView) {
       // Animar cada card con delay escalonado
       cardAnimations.forEach((animation, index) => {
-        const delay = index * 150; // 150ms de delay entre cada card
+        const delay = index * 150;
 
-        // Animación de opacity
         animation.opacity.value = withDelay(
           delay,
           withTiming(1, { duration: 600 })
         );
-
-        // Animación de posición desde la izquierda
         animation.translateX.value = withDelay(
           delay,
           withSpring(0, {
@@ -121,7 +116,6 @@ const ServicesSection = ({
         );
       });
     } else {
-      // Resetear animaciones cuando sale de vista
       cardAnimations.forEach((animation) => {
         animation.opacity.value = withTiming(0, { duration: 300 });
         animation.translateX.value = withTiming(-100, { duration: 300 });
@@ -129,7 +123,6 @@ const ServicesSection = ({
     }
   }, [isView]);
 
-  // estilo animado para cada card
   const getAnimatedStyle = (index: number) => {
     return useAnimatedStyle(() => ({
       opacity: cardAnimations[index].opacity.value,
@@ -137,31 +130,29 @@ const ServicesSection = ({
     }));
   };
 
-  // Responsive columns and card sizing
   const getColumnsAndWidth = () => {
-    let columns = 6; // Desktop default
-    let gap = 20;
-    let horizontalPadding = 40; // Padding total de la sección (20px a cada lado)
-   if (bp.isMobile) {
+    let columns = 3;
+    let gap = 24;
+    let horizontalPadding = 40;
+
+    if (bp.isMobile) {
       columns = 2;
-      gap = 15;
-      horizontalPadding = 28; // 14px a cada lado
-    } else if (bp.isTabletOrMobile) {
+      gap = 14;
+      horizontalPadding = 28;
+    } else if (bp.isTablet) {
       columns = 3;
-      gap = 18;
-      horizontalPadding = 32; // 16px a cada lado
-    }
-    else if (bp.isDesktop) {
-      columns = 4; 
+      gap = 16;
+      horizontalPadding = 32;
+    } else if (bp.isDesktop) {
+      columns = 4;
       gap = 20;
-      horizontalPadding = 40; // 20px a cada lado
+      horizontalPadding = 36;
     } else if (bp.isLargeDesktop) {
-      columns = 5; 
+      columns = 6;
       gap = 24;
-      horizontalPadding = 60; // 30px a cada lado
+      horizontalPadding = 40;
     }
 
-    // Ajustar el ancho disponible restando el padding del contenedor principal y los gaps entre tarjetas
     const availableWidth = width - horizontalPadding;
     const cardWidth = (availableWidth - gap * (columns - 1)) / columns;
 
@@ -175,22 +166,21 @@ const ServicesSection = ({
       <View
         style={[
           styles.contentWrapper,
-          bp.isTabletOrMobile && styles.contentWrapperTabletOrMobile,
+          bp.isTablet && styles.contentWrapperTablet,
           bp.isMobile && styles.contentWrapperMobile,
         ]}
       >
-        {/* Title Section */}
         <View
           style={[
             styles.titleContainer,
-            bp.isTabletOrMobile && styles.titleContainerTabletOrMobile,
+            bp.isTablet && styles.titleContainerTablet,
             bp.isMobile && styles.titleContainerMobile,
           ]}
         >
           <View
             style={[
               styles.titleDecorationLeft,
-              bp.isTabletOrMobile && styles.titleDecorationTabletOrMobile,
+              bp.isTablet && styles.titleDecorationTablet,
               bp.isMobile && styles.titleDecorationMobile,
             ]}
           />
@@ -198,7 +188,7 @@ const ServicesSection = ({
             <Text
               style={[
                 styles.sectionSubtitle,
-                bp.isTabletOrMobile && styles.sectionSubtitleTabletOrMobile,
+                bp.isTablet && styles.sectionSubtitleTablet,
                 bp.isMobile && styles.sectionSubtitleMobile,
               ]}
             >
@@ -207,7 +197,7 @@ const ServicesSection = ({
             <Text
               style={[
                 styles.sectionTitle,
-                bp.isTabletOrMobile && styles.sectionTitleTabletOrMobile,
+                bp.isTablet && styles.sectionTitleTablet,
                 bp.isMobile && styles.sectionTitleMobile,
               ]}
             >
@@ -217,18 +207,17 @@ const ServicesSection = ({
           <View
             style={[
               styles.titleDecorationRight,
-              bp.isTabletOrMobile && styles.titleDecorationTabletOrMobile,
+              bp.isTablet && styles.titleDecorationTablet,
               bp.isMobile && styles.titleDecorationMobile,
             ]}
           />
         </View>
 
-        {/* Services Grid */}
         <View
           style={[
             styles.servicesGrid,
             { gap },
-            bp.isTabletOrMobile && styles.servicesGridTabletOrMobile,
+            bp.isTablet && styles.servicesGridTablet,
             bp.isMobile && styles.servicesGridMobile,
           ]}
         >
@@ -254,14 +243,14 @@ const ServicesSection = ({
   );
 };
 
-// Breakpoint hook
+// ✅ Nuevo Hook con los breakpoints actualizados
 const useBreakpoint = () => {
   const { width } = useWindowDimensions();
   return {
-    isLargeDesktop: width >= 1440,
-    isDesktop: width >= 1024 && width < 1440,
-    isTabletOrMobile: width < 1024,
     isMobile: width < 768,
+    isTablet: width >= 768 && width < 1024,
+    isDesktop: width >= 1024 && width < 1440,
+    isLargeDesktop: width >= 1440,
   };
 };
 
@@ -276,7 +265,7 @@ const styles = StyleSheet.create({
     maxWidth: 1200,
     paddingHorizontal: 20,
   },
-  contentWrapperTabletOrMobile: {
+  contentWrapperTablet: {
     paddingHorizontal: 16,
   },
   contentWrapperMobile: {
@@ -289,7 +278,7 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     paddingHorizontal: 20,
   },
-  titleContainerTabletOrMobile: {
+  titleContainerTablet: {
     marginBottom: 50,
     paddingHorizontal: 16,
   },
@@ -304,22 +293,22 @@ const styles = StyleSheet.create({
     marginRight: 25,
     borderRadius: 2,
   },
-  titleDecorationTabletOrMobile: {
-    width: 40,
-    height: 2,
-    marginRight: 20,
-  },
-  titleDecorationMobile: {
-    width: 30,
-    height: 2,
-    marginRight: 15,
-  },
   titleDecorationRight: {
     width: 50,
     height: 3,
     backgroundColor: "#ff6b35",
     marginLeft: 25,
     borderRadius: 2,
+  },
+  titleDecorationTablet: {
+    width: 40,
+    height: 2,
+    marginHorizontal: 20,
+  },
+  titleDecorationMobile: {
+    width: 30,
+    height: 2,
+    marginHorizontal: 15,
   },
   titleWrapper: {
     alignItems: "center",
@@ -332,7 +321,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textTransform: "uppercase",
   },
-  sectionSubtitleTabletOrMobile: {
+  sectionSubtitleTablet: {
     fontSize: 12,
     letterSpacing: 2,
     marginBottom: 10,
@@ -350,7 +339,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     lineHeight: 42,
   },
-  sectionTitleTabletOrMobile: {
+  sectionTitleTablet: {
     fontSize: 32,
     lineHeight: 36,
   },
@@ -368,7 +357,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 50,
   },
-  servicesGridTabletOrMobile: {
+  servicesGridTablet: {
     marginBottom: 40,
   },
   servicesGridMobile: {

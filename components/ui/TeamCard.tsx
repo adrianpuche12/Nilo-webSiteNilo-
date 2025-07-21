@@ -1,6 +1,13 @@
 "use client"
 
-import { View, Text, TouchableOpacity, StyleSheet, Image, useWindowDimensions } from "react-native"
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  useWindowDimensions,
+} from "react-native"
 import { useState } from "react"
 import teamImages from "@/assets/TeamImages"
 
@@ -23,17 +30,19 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
   const [isHovered, setIsHovered] = useState(false)
   const bp = useBreakpoint()
 
-  // Calculate responsive card width
   const getCardWidth = () => {
-    let columns = 7 // Desktop default
+    let columns = 5
     let padding = 60
 
     if (bp.isMobile) {
       columns = 2
       padding = 40
-    } else if (bp.isTabletOrMobile) {
+    } else if (bp.isTablet) {
       columns = 4
       padding = 50
+    } else if (bp.isLargeDesktop) {
+      columns = 8
+      padding = 80
     }
 
     return (width - padding) / columns
@@ -45,14 +54,11 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
     <TouchableOpacity
       style={[
         styles.memberCard,
-        {
-          width: cardWidth,
-          transform: [{ scale: isHovered ? 1.02 : 1 }],
-        },
+        { width: cardWidth, transform: [{ scale: isHovered ? 1.02 : 1 }] },
         isHovered && styles.memberCardHovered,
-        // Desktop styles are implicitly applied by default styles
-        bp.isTabletOrMobile && styles.memberCardTabletOrMobile,
+        bp.isTablet && styles.memberCardTabletOrMobile,
         bp.isMobile && styles.memberCardMobile,
+        bp.isLargeDesktop && styles.memberCardLargeDesktop,
       ]}
       //@ts-ignore
       onMouseEnter={() => setIsHovered(true)}
@@ -60,82 +66,68 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
       onPress={() => onPress?.(member)}
       activeOpacity={0.9}
     >
-      {/* Background Gradient */}
+      {/* Gradient */}
       <View style={[styles.cardGradient, isHovered && styles.cardGradientHovered]} />
 
-      {/* Orange Border */}
+      {/* Border */}
       <View
         style={[
           styles.cardBorder,
           isHovered && styles.cardBorderHovered,
-          // Desktop styles are implicitly applied by default styles
-          bp.isTabletOrMobile && styles.cardBorderTabletOrMobile,
+          bp.isTablet && styles.cardBorderTabletOrMobile,
           bp.isMobile && styles.cardBorderMobile,
+          bp.isLargeDesktop && styles.cardBorderLargeDesktop,
         ]}
       />
 
       {/* Content */}
-      <View
-        style={[
-          styles.cardContent,
-          // Desktop styles are implicitly applied by default styles
-          bp.isTabletOrMobile && styles.cardContentTabletOrMobile,
-          bp.isMobile && styles.cardContentMobile,
-        ]}
-      >
-        {/* Profile Image */}
+      <View style={[styles.cardContent]}>
+        {/* Image */}
         <View
           style={[
             styles.imageContainer,
             isHovered && styles.imageContainerHovered,
-            // Desktop styles are implicitly applied by default styles
-            bp.isTabletOrMobile && styles.imageContainerTabletOrMobile,
+            bp.isTablet && styles.imageContainerTabletOrMobile,
             bp.isMobile && styles.imageContainerMobile,
+            bp.isLargeDesktop && styles.imageContainerLargeDesktop,
           ]}
         >
           <View
             style={[
               styles.imageGlow,
-              // Desktop styles are implicitly applied by default styles
-              bp.isTabletOrMobile && styles.imageGlowTabletOrMobile,
+              bp.isTablet && styles.imageGlowTabletOrMobile,
               bp.isMobile && styles.imageGlowMobile,
+              bp.isLargeDesktop && styles.imageGlowLargeDesktop,
             ]}
           />
           <Image
             source={teamImages[member.image] ?? { uri: member.image }}
             style={[
               styles.profileImage,
-              // Desktop styles are implicitly applied by default styles
-              bp.isTabletOrMobile && styles.profileImageTabletOrMobile,
+              bp.isTablet && styles.profileImageTabletOrMobile,
               bp.isMobile && styles.profileImageMobile,
+              bp.isLargeDesktop && styles.profileImageLargeDesktop,
             ]}
           />
           <View
             style={[
               styles.imageOverlay,
-              // Desktop styles are implicitly applied by default styles
-              bp.isTabletOrMobile && styles.imageOverlayTabletOrMobile,
+              bp.isTablet && styles.imageOverlayTabletOrMobile,
               bp.isMobile && styles.imageOverlayMobile,
+              bp.isLargeDesktop && styles.imageOverlayLargeDesktop,
             ]}
           />
         </View>
 
-        {/* Member Info */}
-        <View
-          style={[
-            styles.memberInfo,
-            // Desktop styles are implicitly applied by default styles
-            bp.isTabletOrMobile && styles.memberInfoTabletOrMobile,
-            bp.isMobile && styles.memberInfoMobile,
-          ]}
-        >
+        {/* Info */}
+        <View style={[styles.memberInfo]}>
           <Text
             style={[
               styles.memberName,
               isHovered && styles.memberNameHovered,
-              // Desktop styles are implicitly applied by default styles
-              bp.isTabletOrMobile && styles.memberNameTabletOrMobile,
+              bp.isTablet && styles.memberNameTabletOrMobile,
               bp.isMobile && styles.memberNameMobile,
+              bp.isLargeDesktop && styles.memberNameLargeDesktop,
             ]}
           >
             {member.name}
@@ -143,9 +135,9 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
           <Text
             style={[
               styles.memberRole,
-              // Desktop styles are implicitly applied by default styles
-              bp.isTabletOrMobile && styles.memberRoleTabletOrMobile,
+              bp.isTablet && styles.memberRoleTabletOrMobile,
               bp.isMobile && styles.memberRoleMobile,
+              bp.isLargeDesktop && styles.memberRoleLargeDesktop,
             ]}
           >
             {member.role}
@@ -154,28 +146,21 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
             style={[
               styles.roleUnderline,
               isHovered && styles.roleUnderlineHovered,
-              // Desktop styles are implicitly applied by default styles
-              bp.isTabletOrMobile && styles.roleUnderlineTabletOrMobile,
+              bp.isTablet && styles.roleUnderlineTabletOrMobile,
               bp.isMobile && styles.roleUnderlineMobile,
+              bp.isLargeDesktop && styles.roleUnderlineLargeDesktop,
             ]}
           />
         </View>
 
         {/* Quote */}
-        <View
-          style={[
-            styles.quoteContainer,
-            // Desktop styles are implicitly applied by default styles
-            bp.isTabletOrMobile && styles.quoteContainerTabletOrMobile,
-            bp.isMobile && styles.quoteContainerMobile,
-          ]}
-        >
+        <View style={[styles.quoteContainer]}>
           <Text
             style={[
               styles.quoteIcon,
-              // Desktop styles are implicitly applied by default styles
-              bp.isTabletOrMobile && styles.quoteIconTabletOrMobile,
+              bp.isTablet && styles.quoteIconTabletOrMobile,
               bp.isMobile && styles.quoteIconMobile,
+              bp.isLargeDesktop && styles.quoteIconLargeDesktop,
             ]}
           >
             "
@@ -183,9 +168,9 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
           <Text
             style={[
               styles.memberQuote,
-              // Desktop styles are implicitly applied by default styles
-              bp.isTabletOrMobile && styles.memberQuoteTabletOrMobile,
+              bp.isTablet && styles.memberQuoteTabletOrMobile,
               bp.isMobile && styles.memberQuoteMobile,
+              bp.isLargeDesktop && styles.memberQuoteLargeDesktop,
             ]}
           >
             {member.quote}
@@ -193,23 +178,25 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
         </View>
       </View>
 
-      {/* Shine Effect */}
       {isHovered && <View style={styles.shineEffect} />}
     </TouchableOpacity>
   )
 }
 
-/* --------------------- BREAKPOINT HOOK ------------------------ */
+/* --------------------- HOOK ------------------------ */
 const useBreakpoint = () => {
   const { width } = useWindowDimensions()
   return {
-    isDesktop: width >= 1024, // Explicitly defined
-    isTabletOrMobile: width < 1024,
     isMobile: width < 768,
+    isTablet: width >= 768 && width < 1024,
+    isDesktop: width >= 1024 && width < 1440,
+    isLargeDesktop: width >= 1440,
   }
 }
 
+
 const styles = StyleSheet.create({
+  // Base
   memberCard: {
     backgroundColor: "#1a1a1a",
     borderRadius: 20,
@@ -238,6 +225,11 @@ const styles = StyleSheet.create({
     minHeight: 280,
     elevation: 6,
   },
+  memberCardLargeDesktop: {
+    borderRadius: 24,
+    padding: 28,
+    minHeight: 400,
+  },
   memberCardHovered: {
     elevation: 20,
     shadowColor: "#ff6b35",
@@ -246,6 +238,8 @@ const styles = StyleSheet.create({
     borderColor: "#ff6b35",
     backgroundColor: "#222",
   },
+
+  // Card visual
   cardGradient: {
     position: "absolute",
     top: 0,
@@ -281,6 +275,11 @@ const styles = StyleSheet.create({
     height: 30,
     top: 15,
   },
+  cardBorderLargeDesktop: {
+    width: 5,
+    height: 50,
+    top: 18,
+  },
   cardBorderHovered: {
     height: 60,
     top: 10,
@@ -290,16 +289,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.6,
     shadowRadius: 8,
   },
+
+  // Card content
   cardContent: {
     alignItems: "center",
     zIndex: 1,
   },
-  cardContentTabletOrMobile: {
-    // Mantener centrado
-  },
-  cardContentMobile: {
-    // Mantener centrado
-  },
+
+  // Image
   imageContainer: {
     width: 100,
     height: 100,
@@ -325,6 +322,12 @@ const styles = StyleSheet.create({
     height: 70,
     borderRadius: 35,
     marginBottom: 14,
+  },
+  imageContainerLargeDesktop: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    marginBottom: 24,
   },
   imageContainerHovered: {
     transform: [{ scale: 1.05 }],
@@ -354,6 +357,13 @@ const styles = StyleSheet.create({
     top: -5,
     left: -5,
   },
+  imageGlowLargeDesktop: {
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    top: -5,
+    left: -5,
+  },
   profileImage: {
     width: 100,
     height: 100,
@@ -373,6 +383,12 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     borderWidth: 2,
   },
+  profileImageLargeDesktop: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 4,
+  },
   imageOverlay: {
     position: "absolute",
     top: 0,
@@ -391,6 +407,12 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     borderWidth: 1,
   },
+  imageOverlayLargeDesktop: {
+    borderRadius: 60,
+    borderWidth: 2,
+  },
+
+  // Info
   memberInfo: {
     alignItems: "center",
     marginBottom: 16,
@@ -401,6 +423,7 @@ const styles = StyleSheet.create({
   memberInfoMobile: {
     marginBottom: 12,
   },
+
   memberName: {
     fontSize: 20,
     fontWeight: "700",
@@ -418,9 +441,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 3,
   },
+  memberNameLargeDesktop: {
+    fontSize: 22,
+    marginBottom: 6,
+  },
   memberNameHovered: {
     color: "#ff6b35",
   },
+
   memberRole: {
     fontSize: 14,
     color: "#ff6b35",
@@ -436,6 +464,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 6,
   },
+  memberRoleLargeDesktop: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+
   roleUnderline: {
     width: 40,
     height: 2,
@@ -452,10 +485,16 @@ const styles = StyleSheet.create({
     width: 30,
     height: 1.5,
   },
+  roleUnderlineLargeDesktop: {
+    width: 50,
+    height: 3,
+  },
   roleUnderlineHovered: {
     width: 60,
     backgroundColor: "#fff",
   },
+
+  // Quote
   quoteContainer: {
     alignItems: "center",
     paddingHorizontal: 10,
@@ -466,6 +505,7 @@ const styles = StyleSheet.create({
   quoteContainerMobile: {
     paddingHorizontal: 6,
   },
+
   quoteIcon: {
     fontSize: 32,
     color: "#ff6b35",
@@ -481,6 +521,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 5,
   },
+  quoteIconLargeDesktop: {
+    fontSize: 36,
+    marginBottom: 10,
+  },
+
   memberQuote: {
     fontSize: 13,
     color: "#bbb",
@@ -497,6 +542,12 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 15,
   },
+  memberQuoteLargeDesktop: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+
+  // Effect
   shineEffect: {
     position: "absolute",
     top: 0,
@@ -507,5 +558,6 @@ const styles = StyleSheet.create({
     transform: [{ skewX: "-20deg" }],
   },
 })
+
 
 export default TeamCard

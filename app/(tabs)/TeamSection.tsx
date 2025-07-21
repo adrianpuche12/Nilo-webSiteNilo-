@@ -201,7 +201,6 @@ const TeamSection = ({
       <View
         style={[
           styles.contentWrapper,
-          // Desktop styles are implicitly applied by default styles
           bp.isTabletOrMobile && styles.contentWrapperTabletOrMobile,
           bp.isMobile && styles.contentWrapperMobile,
         ]}
@@ -210,7 +209,6 @@ const TeamSection = ({
         <View
           style={[
             styles.titleContainer,
-            // Desktop styles are implicitly applied by default styles
             bp.isTabletOrMobile && styles.titleContainerTabletOrMobile,
             bp.isMobile && styles.titleContainerMobile,
           ]}
@@ -218,7 +216,6 @@ const TeamSection = ({
           <View
             style={[
               styles.titleDecorationLeft,
-              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.titleDecorationTabletOrMobile,
               bp.isMobile && styles.titleDecorationMobile,
             ]}
@@ -227,7 +224,6 @@ const TeamSection = ({
             <Text
               style={[
                 styles.sectionSubtitle,
-                // Desktop styles are implicitly applied by default styles
                 bp.isTabletOrMobile && styles.sectionSubtitleTabletOrMobile,
                 bp.isMobile && styles.sectionSubtitleMobile,
               ]}
@@ -237,7 +233,6 @@ const TeamSection = ({
             <Text
               style={[
                 styles.sectionTitle,
-                // Desktop styles are implicitly applied by default styles
                 bp.isTabletOrMobile && styles.sectionTitleTabletOrMobile,
                 bp.isMobile && styles.sectionTitleMobile,
               ]}
@@ -256,7 +251,6 @@ const TeamSection = ({
           <View
             style={[
               styles.titleDecorationRight,
-              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.titleDecorationTabletOrMobile,
               bp.isMobile && styles.titleDecorationMobile,
             ]}
@@ -267,7 +261,6 @@ const TeamSection = ({
         <View
           style={[
             styles.infoSectionsContainer,
-            // Desktop styles are implicitly applied by default styles
             bp.isTabletOrMobile && styles.infoSectionsContainerTabletOrMobile,
             bp.isMobile && styles.infoSectionsContainerMobile,
           ]}
@@ -276,7 +269,6 @@ const TeamSection = ({
           <View
             style={[
               styles.infoSection,
-              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.infoSectionTabletOrMobile,
               bp.isMobile && styles.infoSectionMobile,
             ]}
@@ -284,7 +276,6 @@ const TeamSection = ({
             <Text
               style={[
                 styles.infoQuote,
-                // Desktop styles are implicitly applied by default styles
                 bp.isTabletOrMobile && styles.infoQuoteTabletOrMobile,
                 bp.isMobile && styles.infoQuoteMobile,
               ]}
@@ -295,7 +286,6 @@ const TeamSection = ({
             <Text
               style={[
                 styles.infoDescription,
-                // Desktop styles are implicitly applied by default styles
                 bp.isTabletOrMobile && styles.infoDescriptionTabletOrMobile,
                 bp.isMobile && styles.infoDescriptionMobile,
               ]}
@@ -321,7 +311,6 @@ const TeamSection = ({
             <View
               style={[
                 styles.infoSection,
-                // Desktop styles are implicitly applied by default styles
                 bp.isTabletOrMobile && styles.infoSectionTabletOrMobile,
                 bp.isMobile && styles.infoSectionMobile,
               ]}
@@ -329,7 +318,6 @@ const TeamSection = ({
               <View
                 style={[
                   styles.infoHeader,
-                  // Desktop styles are implicitly applied by default styles
                   bp.isTabletOrMobile && styles.infoHeaderTabletOrMobile,
                   bp.isMobile && styles.infoHeaderMobile,
                 ]}
@@ -337,7 +325,6 @@ const TeamSection = ({
                 <Text
                   style={[
                     styles.infoTitle,
-                    // Desktop styles are implicitly applied by default styles
                     bp.isTabletOrMobile && styles.infoTitleTabletOrMobile,
                     bp.isMobile && styles.infoTitleMobile,
                   ]}
@@ -357,7 +344,6 @@ const TeamSection = ({
               <Text
                 style={[
                   styles.infoDescription,
-                  // Desktop styles are implicitly applied by default styles
                   bp.isTabletOrMobile && styles.infoDescriptionTabletOrMobile,
                   bp.isMobile && styles.infoDescriptionMobile,
                 ]}
@@ -373,7 +359,6 @@ const TeamSection = ({
               <Text
                 style={[
                   styles.infoDescription,
-                  // Desktop styles are implicitly applied by default styles
                   bp.isTabletOrMobile && styles.infoDescriptionTabletOrMobile,
                   bp.isMobile && styles.infoDescriptionMobile,
                 ]}
@@ -390,7 +375,6 @@ const TeamSection = ({
             <View
               style={[
                 styles.infoSection,
-                // Desktop styles are implicitly applied by default styles
                 bp.isTabletOrMobile && styles.infoSectionTabletOrMobile,
                 bp.isMobile && styles.infoSectionMobile,
               ]}
@@ -398,7 +382,6 @@ const TeamSection = ({
               <View
                 style={[
                   styles.infoHeader,
-                  // Desktop styles are implicitly applied by default styles
                   bp.isTabletOrMobile && styles.infoHeaderTabletOrMobile,
                   bp.isMobile && styles.infoHeaderMobile,
                 ]}
@@ -406,7 +389,6 @@ const TeamSection = ({
                 <Text
                   style={[
                     styles.infoTitle,
-                    // Desktop styles are implicitly applied by default styles
                     bp.isTabletOrMobile && styles.infoTitleTabletOrMobile,
                     bp.isMobile && styles.infoTitleMobile,
                   ]}
@@ -426,7 +408,6 @@ const TeamSection = ({
               <Text
                 style={[
                   styles.infoDescription,
-                  // Desktop styles are implicitly applied by default styles
                   bp.isTabletOrMobile && styles.infoDescriptionTabletOrMobile,
                   bp.isMobile && styles.infoDescriptionMobile,
                 ]}
@@ -442,7 +423,6 @@ const TeamSection = ({
               <Text
                 style={[
                   styles.infoDescription,
-                  // Desktop styles are implicitly applied by default styles
                   bp.isTabletOrMobile && styles.infoDescriptionTabletOrMobile,
                   bp.isMobile && styles.infoDescriptionMobile,
                 ]}
@@ -460,7 +440,6 @@ const TeamSection = ({
         <View
           style={[
             styles.teamDivider,
-            // Desktop styles are implicitly applied by default styles
             bp.isTabletOrMobile && styles.teamDividerTabletOrMobile,
             bp.isMobile && styles.teamDividerMobile,
           ]}
@@ -469,7 +448,6 @@ const TeamSection = ({
           <Text
             style={[
               styles.dividerText,
-              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.dividerTextTabletOrMobile,
               bp.isMobile && styles.dividerTextMobile,
             ]}
@@ -483,7 +461,6 @@ const TeamSection = ({
         <View
           style={[
             styles.mainContent,
-            // Desktop styles are implicitly applied by default styles
             bp.isTabletOrMobile && styles.mainContentTabletOrMobile,
             bp.isMobile && styles.mainContentMobile,
           ]}
@@ -492,7 +469,6 @@ const TeamSection = ({
           <View
             style={[
               styles.filterContainer,
-              // Desktop styles are implicitly applied by default styles
               bp.isTabletOrMobile && styles.filterContainerTabletOrMobile,
               bp.isMobile && styles.filterContainerMobile,
             ]}

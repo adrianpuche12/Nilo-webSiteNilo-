@@ -1,24 +1,30 @@
-"use client"
+"use client";
 
-import { View, Text, TextInput, StyleSheet, useWindowDimensions } from "react-native"
-import { useState } from "react"
-import { SendButton } from "@/components/ui/AppButtons"
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  useWindowDimensions,
+} from "react-native";
+import { useState } from "react";
+import { SendButton } from "@/components/ui/AppButtons";
 
 interface ContactFormData {
-  email: string
-  firstName: string
-  lastName: string
-  company: string
-  countryCode: string
-  areaCode: string
-  phoneNumber: string
-  message: string
+  email: string;
+  firstName: string;
+  lastName: string;
+  company: string;
+  countryCode: string;
+  areaCode: string;
+  phoneNumber: string;
+  message: string;
 }
 
 interface ContactSectionProps {
-  title?: string
-  subtitle?: string
-  onSubmit?: (formData: ContactFormData) => void
+  title?: string;
+  subtitle?: string;
+  onSubmit?: (formData: ContactFormData) => void;
 }
 
 const ContactSection = ({
@@ -35,33 +41,36 @@ const ContactSection = ({
     areaCode: "",
     phoneNumber: "",
     message: "",
-  })
+  });
 
-  const [errors, setErrors] = useState<Partial<ContactFormData>>({})
-  const [focusedField, setFocusedField] = useState<string | null>(null)
-  const bp = useBreakpoint()
+  const [errors, setErrors] = useState<Partial<ContactFormData>>({});
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const bp = useBreakpoint();
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<ContactFormData> = {}
+    const newErrors: Partial<ContactFormData> = {};
 
-    if (!formData.email.trim()) newErrors.email = "Email es requerido"
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email inválido"
+    if (!formData.email.trim()) newErrors.email = "Email es requerido";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Email inválido";
 
-    if (!formData.firstName.trim()) newErrors.firstName = "Nombre es requerido"
-    if (!formData.lastName.trim()) newErrors.lastName = "Apellido es requerido"
-    if (!formData.company.trim()) newErrors.company = "Empresa es requerida"
-    if (!formData.areaCode.trim()) newErrors.areaCode = "Código de área es requerido"
-    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = "Número de teléfono es requerido"
-    if (!formData.message.trim()) newErrors.message = "Mensaje es requerido"
+    if (!formData.firstName.trim()) newErrors.firstName = "Nombre es requerido";
+    if (!formData.lastName.trim()) newErrors.lastName = "Apellido es requerido";
+    if (!formData.company.trim()) newErrors.company = "Empresa es requerida";
+    if (!formData.areaCode.trim())
+      newErrors.areaCode = "Código de área es requerido";
+    if (!formData.phoneNumber.trim())
+      newErrors.phoneNumber = "Número de teléfono es requerido";
+    if (!formData.message.trim()) newErrors.message = "Mensaje es requerido";
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = () => {
     if (validateForm()) {
-      onSubmit?.(formData)
-      console.log("Form submitted:", formData)
+      onSubmit?.(formData);
+      console.log("Form submitted:", formData);
 
       setFormData({
         email: "",
@@ -72,17 +81,17 @@ const ContactSection = ({
         areaCode: "",
         phoneNumber: "",
         message: "",
-      })
+      });
     }
-  }
+  };
 
   const updateFormData = (field: keyof ContactFormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }))
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-  }
+  };
 
   const isFormValid = () => {
     return (
@@ -94,8 +103,8 @@ const ContactSection = ({
       formData.phoneNumber.trim() &&
       formData.message.trim() &&
       /\S+@\S+\.\S+/.test(formData.email)
-    )
-  }
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -211,7 +220,9 @@ const ContactSection = ({
             ]}
           >
             {/* Left Column */}
-            <View style={[styles.leftColumn, bp.isMobile && styles.columnMobile]}>
+            <View
+              style={[styles.leftColumn, bp.isMobile && styles.columnMobile]}
+            >
               {/* Email Field */}
               <View
                 style={[
@@ -300,7 +311,9 @@ const ContactSection = ({
             </View>
 
             {/* Right Column */}
-            <View style={[styles.rightColumn, bp.isMobile && styles.columnMobile]}>
+            <View
+              style={[styles.rightColumn, bp.isMobile && styles.columnMobile]}
+            >
               {/* Company Field */}
               <View
                 style={[
@@ -465,7 +478,9 @@ const ContactSection = ({
                 bp.isMobile && styles.errorTextMobile,
               ]}
             >
-              {errors.areaCode || errors.phoneNumber ? "Teléfono completo es requerido" : " "}
+              {errors.areaCode || errors.phoneNumber
+                ? "Teléfono completo es requerido"
+                : " "}
             </Text>
           </View>
 
@@ -548,24 +563,25 @@ const ContactSection = ({
                   bp.isMobile && styles.privacyTextMobile,
                 ]}
               >
-                Al hacer clic en enviar acepta nuestras políticas de privacidad y legales
+                Al hacer clic en enviar acepta nuestras políticas de privacidad
+                y legales
               </Text>
             </View>
           </View>
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 /* --------------------- BREAKPOINT HOOK ------------------------ */
 const useBreakpoint = () => {
-  const { width } = useWindowDimensions()
+  const { width } = useWindowDimensions();
   return {
     isTabletOrMobile: width < 1024,
     isMobile: width < 768,
-  }
-}
+  };
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -802,6 +818,8 @@ const styles = StyleSheet.create({
     color: "#fff",
     borderWidth: 2,
     borderColor: "#444",
+    //@ts-ignore
+    transition: "transform 0.2s ease-in-out",
   },
   textInputTabletOrMobile: {
     borderRadius: 10,
@@ -823,6 +841,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
+    transform: [{ scale: 1.05 }],
   },
   textInputError: {
     borderColor: "#ff4444",
@@ -838,6 +857,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#444",
     minHeight: 120,
+    transition: "transform 0.2s ease-in-out",
   },
   textAreaTabletOrMobile: {
     borderRadius: 10,
@@ -874,6 +894,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#444",
     textAlign: "center",
+    transition: "transform 0.2s ease-in-out",
   },
   phoneInputTabletOrMobile: {
     borderRadius: 10,
@@ -955,6 +976,6 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     marginBottom: 3,
   },
-})
+});
 
-export default ContactSection
+export default ContactSection;

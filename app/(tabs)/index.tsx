@@ -629,6 +629,11 @@ const styles = StyleSheet.create({
     bottom: -15,
     right: -15,
   },
+// hover button styles
+hoverButton: {
+transform: [{ scale: 1.05 }],
+},
+
 })
 
 export default NiloSolutionsIndex

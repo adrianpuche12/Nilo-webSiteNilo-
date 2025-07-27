@@ -54,6 +54,8 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
     <TouchableOpacity
       style={[
         styles.memberCard,
+        { //@ts-ignore
+           transition: "all 0.4s ease" },
         { width: cardWidth, transform: [{ scale: isHovered ? 1.02 : 1 }] },
         isHovered && styles.memberCardHovered,
         bp.isTablet && styles.memberCardTabletOrMobile,
@@ -211,8 +213,6 @@ const styles = StyleSheet.create({
     borderColor: "#2a2a2a",
     position: "relative",
     overflow: "hidden",
-    //@ts-ignore
-    transition: "all 0.4s ease",
   },
   memberCardTabletOrMobile: {
     borderRadius: 16,
@@ -294,6 +294,7 @@ const styles = StyleSheet.create({
   cardContent: {
     alignItems: "center",
     zIndex: 1,
+    
   },
 
   // Image

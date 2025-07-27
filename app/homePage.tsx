@@ -6,7 +6,7 @@ import { useComplexShapeAnimation, SHAPE_ANIMATIONS } from "@/components/animati
 import { useHeroSectionAnimation } from "@/components/animations/HeroAnimations"
 const { height } = Dimensions.get("window")
 
-const NiloSolutionsIndex = () => {
+const NiloSolutionsHome = () => {
   const bp = useBreakpoint()
 
   // Animaciones de entrada para toda la sección hero
@@ -636,4 +636,4 @@ transform: [{ scale: 1.05 }],
 
 })
 
-export default NiloSolutionsIndex
+export default NiloSolutionsHome

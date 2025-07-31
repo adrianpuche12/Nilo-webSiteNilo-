@@ -1,19 +1,45 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+import React, { useState } from "react";
 
+const { width, height } = Dimensions.get("window");
 interface BlogPostProps {
-  post: { id: string; title: string; content: string; date: string };
+  post: {
+    id: string;
+    title: string;
+    content: string;
+    date: string;
+    description: string;
+  };
+  sendDetails: (post: BlogPostProps["post"]) => void;
 }
 
-const BlogPost = ({ post }: BlogPostProps) => {
+const BlogPost = ({ post, sendDetails }: BlogPostProps) => {
+
+  const handleDetails = () => {
+    sendDetails(post);
+  };
+
   return (
     <View style={styles.postContainer}>
-      <View style={styles.titleDate}>
-        <Text style={styles.postTitle}>{post.title}</Text>
-        <Text style={styles.postDate}>{post.date}</Text>
-      </View>
-
-      <Text style={styles.postContent}>{post.content}</Text>
+      <Image
+        source={require("../assets/images/logo.png")}
+        style={styles.postImage}
+      />
+      <Text style={styles.postDate}>
+        Articulo{"\n"}por Nilo Solutions, {post.date}
+      </Text>
+      <Text style={styles.postTitle}>{post.title}</Text>
+      <Text style={styles.postContent}>{post.description}</Text>
+      <TouchableOpacity onPress={handleDetails} style={styles.readMoreButton}>
+        <Text style={styles.buttonText}>Leer articulo</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -28,6 +54,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderLeftWidth: 4,
     borderLeftColor: "#007AFF",
+    width: width * 0.2,
+    height: height * 0.5,
+    flex: 1,
   },
   postTitle: {
     fontSize: 20,
@@ -47,10 +76,27 @@ const styles = StyleSheet.create({
     color: "#ccc",
     lineHeight: 22,
   },
-  titleDate:{
+  titleDate: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     paddingBottom: 10,
-  }
+  },
+  postImage: {
+    alignSelf: "center",
+    height: height * 0.5 * 0.4,
+    resizeMode: "contain",
+    marginBottom: 15,
+  },
+  readMoreButton: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 10,
+    marginTop: "auto",
+  },
+  buttonText: {
+    color: "#007AFF",
+    alignSelf: "center",
+  },
 });

@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import BlogPost from "./BlogPost";
 import React, { useState } from "react";
 
 // Define el objeto post para despues guardar los post en su state
@@ -15,6 +14,7 @@ interface Post {
   title: string;
   content: string;
   date: string;
+  description: string;
 }
 
 interface BlogFormProps {
@@ -26,6 +26,7 @@ const BlogForm = ({ post, onAddPost }: BlogFormProps) => {
   const [formData, setFormData] = useState({
     title: post?.title || "",
     content: post?.content || "",
+    description: post?.description || "",
   });
   const [id, setId] = useState(1);
 
@@ -43,6 +44,7 @@ const BlogForm = ({ post, onAddPost }: BlogFormProps) => {
       id: id.toString(),
       title: formData.title,
       content: formData.content,
+      description: formData.description,
       date: new Date().toLocaleString("es-AR", {
         timeZone: "America/Argentina/Buenos_Aires",
         year: "numeric",
@@ -53,7 +55,7 @@ const BlogForm = ({ post, onAddPost }: BlogFormProps) => {
       }),
     };
     onAddPost(newPost);
-    setFormData({ title: "", content: "" });
+    setFormData({ title: "", content: "" , description: "" });
     setId(id + 1);
     console.log("post creado: ", newPost); // lista actualizada de post porque se buguea
   };
@@ -68,6 +70,18 @@ const BlogForm = ({ post, onAddPost }: BlogFormProps) => {
           onChangeText={(value) => handleInputChange("title", value)}
           placeholder="Escribe el título del blog..."
           placeholderTextColor="#999"
+        />
+      </View>
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Descripción</Text>
+        <TextInput
+          style={[styles.input]}
+          value={formData.description}
+          onChangeText={(value) => handleInputChange("description", value)}
+          placeholder="Escribe la descripción del blog..."
+          placeholderTextColor="#999"
+          numberOfLines={8}
+          textAlignVertical="top"
         />
       </View>
       <View style={styles.inputGroup}>

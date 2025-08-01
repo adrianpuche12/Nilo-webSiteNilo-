@@ -22,9 +22,11 @@ import Animated, {
   withTiming,
   interpolateColor,
 } from "react-native-reanimated";
+import { useRouter } from "expo-router";
 
 type HeaderProps = {
   scrollToSection: (sectionId: string) => void;
+  isIndexPage?: boolean;
 };
 
 type SectionButtonProps = {
@@ -34,15 +36,15 @@ type SectionButtonProps = {
 };
 
 /* ---------- HEADER ---------- */
-const Header = ({ scrollToSection }: HeaderProps) => {
+const Header = ({ scrollToSection, isIndexPage }: HeaderProps) => {
+  const router = useRouter();
   const bp = useBreakpoint();
   const [menuVisible, setMenuVisible] = useState(false);
   const toggleMenu = () => setMenuVisible((prev) => !prev);
   const handleEmailConsult = () => console.log("Consultando email…");
- 
 
   // Definir el array de navegación
-  const sectionNavItems = [
+  const indexSectionNavItems = [
     {
       id: 1,
       text: "INICIO",
@@ -63,10 +65,25 @@ const Header = ({ scrollToSection }: HeaderProps) => {
       text: "CONTÁCTANOS",
       sectionId: "contacto",
     },
+    {
+      id: 5,
+      text: "BLOG",
+      sectionId: "blog",
+      url: "/blog",
+    },
   ];
+  const otherPagesNavItems = [
+    {
+      id: 1,
+      text: "HOME",
+      sectionId: "home",
+      url: "/",
+    },
+  ];
+  // define que items se van a renderizar en el header dependiendo de la url actual
+  const itemsToRender = isIndexPage ? indexSectionNavItems : otherPagesNavItems;
 
   // Función para obtener el estilo animado de cada botón
-
   const renderNavItems = (vertical = false) => (
     <View
       style={[
@@ -74,17 +91,32 @@ const Header = ({ scrollToSection }: HeaderProps) => {
         bp.isTabletOrMobile && styles.navContainerTabletOrMobile,
       ]}
     >
-      {sectionNavItems.map((item) => (
+      {itemsToRender.map((item) => (
         <Animated.View key={item.id}>
           <SectionButton
             text={item.text}
             sectionId={item.sectionId}
-            onPress={scrollToSection}
+            onPress={handleNavigation}
           />
         </Animated.View>
       ))}
     </View>
   );
+
+  // Función para manejar la navegación
+  const handleNavigation = (sectionId: string) => {
+    const currentItem = itemsToRender.find(
+      (item) => item.sectionId === sectionId
+    );
+
+    if (currentItem && 'url' in currentItem && currentItem.url) {
+      // Si hay una URL, navegar a esa URL
+      console.log(`Navegando a ${currentItem.url}`);
+      router.push(currentItem.url as any)
+    } else {
+      scrollToSection(sectionId);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -235,7 +267,7 @@ const SectionButton = ({ text, sectionId, onPress }: SectionButtonProps) => {
       ["#ffffff", "#ff6b35"]
     ),
   }));
-   const animatedUnderlineSectionStyle = useAnimatedStyle(() => ({
+  const animatedUnderlineSectionStyle = useAnimatedStyle(() => ({
     width: `${buttonAnimations.underlineWidth.value}%`,
     backgroundColor: "#ff6b35",
   }));
@@ -257,7 +289,9 @@ const SectionButton = ({ text, sectionId, onPress }: SectionButtonProps) => {
         >
           {text}
         </Animated.Text>
-        <Animated.View style={[styles.underline, animatedUnderlineSectionStyle]} />
+        <Animated.View
+          style={[styles.underline, animatedUnderlineSectionStyle]}
+        />
       </Animated.View>
     </Pressable>
   );

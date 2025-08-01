@@ -169,7 +169,7 @@ export default function Home() {
         onScroll={handleScroll}
         scrollEventThrottle={16}
       >
-        <Header scrollToSection={scrollToSection} />
+        <Header scrollToSection={scrollToSection} isIndexPage={true} />
         <View
           onLayout={(event) => handleSectionLayout("inicio", event)}>
           <HomePage />

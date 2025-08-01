@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   },
   footerContent: {
     flexDirection: "row",
-    paddingHorizontal: 20,
+    paddingHorizontal: 80,
     paddingVertical: 30,
     justifyContent: "space-between",
     flexWrap: "wrap",

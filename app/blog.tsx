@@ -10,6 +10,9 @@ import React, { Component, useState } from "react";
 import BlogForm from "@/components/BlogForm";
 import BlogPost from "@/components/BlogPost";
 import BlogPostDetails from "@/components/BlogPostDetails";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import { ScrollView } from "react-native-gesture-handler";
 
 const { width, height } = Dimensions.get("window");
 interface Post {
@@ -49,39 +52,45 @@ const blog = () => {
     <BlogPost post={item} sendDetails={handlePostDetails} />
   );
 
-  const getSnapOffsets = () => {
-    const totalPages = Math.ceil(posts.length / 4);
-    const offsets = [];
-    for (let i = 0; i < totalPages; i++) {
-      offsets.push(i * width);
-    }
-    return offsets;
-  };
+ const handleScrollToSection = (sectionId: string | null) => {
+  if (sectionId === null) {
+    console.log("Received null sectionId");
+    return;
+  }
+}
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Blog</Text>
-      <Text style={styles.subtitle}>
-        En nuestro Blog encontraras novedades, consejos y articulos de interés.
-      </Text>
-      <FlatList
-        data={posts}
-        renderItem={renderPost}
-        keyExtractor={(item) => item.id}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        decelerationRate="fast"
-        // pagingEnabled={true}
-        contentContainerStyle={{
-          gap: gap,
-          alignItems: "center",
-          paddingHorizontal: gap / 2, // Solo padding izquierdo
-        }}
-        style={styles.scrollView}
-      />
-      <TouchableOpacity onPress={toggleViewForm} style={styles.hideFormButton}>
-        <Text style={styles.hideFormButtonText}>{`Crear un nuevo post`}</Text>
-      </TouchableOpacity>
+    <ScrollView showsHorizontalScrollIndicator={false}>
+      <Header scrollToSection={handleScrollToSection}></Header>
+      <View style={styles.blogContainer}>
+        <Text style={styles.title}>Blog</Text>
+        <Text style={styles.subtitle}>
+          En nuestro Blog encontraras novedades, consejos y articulos de
+          interés.
+        </Text>
+        <FlatList
+          data={posts}
+          renderItem={renderPost}
+          keyExtractor={(item) => item.id}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          decelerationRate="fast"
+          // pagingEnabled={true}
+          contentContainerStyle={{
+            gap: gap,
+            alignItems: "center",
+            paddingHorizontal: gap / 2, // Solo padding izquierdo
+          }}
+          style={styles.scrollView}
+        />
+        <TouchableOpacity
+          onPress={toggleViewForm}
+          style={styles.hideFormButton}
+        >
+          <Text style={styles.hideFormButtonText}>{`Crear un nuevo post`}</Text>
+        </TouchableOpacity>
+      </View>
+
       {viewForm && (
         <View style={[styles.formSection, !viewForm && styles.hiddenForm]}>
           <BlogForm onAddPost={handleAddPost} />
@@ -96,17 +105,20 @@ const blog = () => {
           />
         </View>
       )}
-    </View>
+      <View style={styles.footer}>
+        <Footer />
+      </View>
+    </ScrollView>
   );
 };
 export default blog;
 
 const styles = StyleSheet.create({
-  container: {
+  blogContainer: {
+    height: height*0.9,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    flex: 1,
     backgroundColor: "#000",
   },
   formSection: {
@@ -114,7 +126,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: width * 0.8,
     position: "absolute",
-    top: height*0.45,
+    top: height * 0.45,
     left: "50%",
     transform: [{ translateX: -(width * 0.8) / 2 }, { translateY: -200 }],
   },
@@ -164,5 +176,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#ccc",
     marginBottom: 12,
+  },
+  footer: {
+    bottom: 0,
+    width: width,
   },
 });

@@ -55,7 +55,7 @@ const BlogForm = ({ post, onAddPost }: BlogFormProps) => {
       }),
     };
     onAddPost(newPost);
-    setFormData({ title: "", content: "" , description: "" });
+    setFormData({ title: "", content: "", description: "" });
     setId(id + 1);
     console.log("post creado: ", newPost); // lista actualizada de post porque se buguea
   };
@@ -108,10 +108,14 @@ export default BlogForm;
 
 const styles = StyleSheet.create({
   formContainer: {
+    borderColor: "#444444",
+    borderWidth: 1,
+    borderRadius: 20,
     padding: 20,
     paddingTop: 60,
-    flex: 1,
-    backgroundColor: "#000",
+    height: "100%",
+    backgroundColor: "#1A1A1A",
+
   },
   title: {
     fontSize: 28,
@@ -130,28 +134,36 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   input: {
-    backgroundColor: "#1a1a1a",
-    borderWidth: 1,
-    borderColor: "#333",
+    color: "#fff",
+    backgroundColor: "#2A2A2A",
+    borderWidth: 2,
+    borderColor: "#444444",
     borderRadius: 8,
     padding: 15,
     fontSize: 16,
-    color: "#fff",
   },
   textArea: {
-    height: 120,
+    height: 80,
     paddingTop: 15,
   },
   submitButton: {
-    backgroundColor: "#007AFF",
-    borderRadius: 8,
-    padding: 15,
-    alignItems: "center",
+    alignSelf: "center",
+    width: "18%",
+    backgroundColor: "#ff6b35",
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 30,
+    elevation: 3,
+    shadowColor: "#ff6b35",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
     marginTop: 20,
   },
   submitButtonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "600",
+    textAlign: "center",
   },
 });

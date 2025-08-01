@@ -1,5 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import React from "react";
 
 interface Post {
   id: string;
@@ -37,15 +43,17 @@ const BlogPostDetails = ({ selectedPost, onClose }: BlogPostDetailsProps) => {
         </TouchableOpacity>
       )}
     </View>
-  )
-}
+  );
+};
 
-export default BlogPostDetails
+export default BlogPostDetails;
 
 const styles = StyleSheet.create({
   container: {
+    borderColor: "#444444",
+    borderWidth: 1,
     flex: 1,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 12,
     padding: 20,
   },
@@ -54,41 +62,47 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: "bold",
+    color: "#fff",
     marginBottom: 10,
   },
   date: {
     fontSize: 14,
-    color: '#888',
+    color: "#888",
     marginBottom: 15,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
   description: {
     fontSize: 16,
-    color: '#ccc',
+    color: "#ccc",
     marginBottom: 20,
     lineHeight: 22,
   },
   content: {
     fontSize: 16,
-    color: '#fff',
+    color: "#fff",
     lineHeight: 24,
   },
   noPostText: {
-    color: '#888',
-    textAlign: 'center',
+    color: "#888",
+    textAlign: "center",
     fontSize: 16,
   },
   closeButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-    padding: 12,
-    marginTop: 20,
+    backgroundColor: "#ff6b35",
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 30,
+    elevation: 3,
+    shadowColor: "#ff6b35",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    marginTop: "auto",
   },
   closeButtonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
+    color: "#fff",
+    textAlign: "center",
+    fontWeight: "bold",
   },
-})
+});

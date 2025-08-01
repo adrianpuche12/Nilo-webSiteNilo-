@@ -2,7 +2,7 @@ import {
   Text,
   StyleSheet,
   View,
-  ScrollView,
+  FlatList,
   Dimensions,
   TouchableOpacity,
 } from "react-native";
@@ -45,31 +45,57 @@ const blog = () => {
     setSelectedPost(null);
     setViewPostDetails(false);
   };
+  const renderPost = ({ item }: { item: Post }) => (
+    <BlogPost post={item} sendDetails={handlePostDetails} />
+  );
+
+  const getSnapOffsets = () => {
+    const totalPages = Math.ceil(posts.length / 4);
+    const offsets = [];
+    for (let i = 0; i < totalPages; i++) {
+      offsets.push(i * width);
+    }
+    return offsets;
+  };
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
+      <Text style={styles.title}>Blog</Text>
+      <Text style={styles.subtitle}>
+        En nuestro Blog encontraras novedades, consejos y articulos de interés.
+      </Text>
+      <FlatList
+        data={posts}
+        renderItem={renderPost}
+        keyExtractor={(item) => item.id}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
+        decelerationRate="fast"
+        // pagingEnabled={true}
         contentContainerStyle={{
           gap: gap,
           alignItems: "center",
+          paddingHorizontal: gap / 2, // Solo padding izquierdo
         }}
-      >
-        {posts.map((post) => (
-          <BlogPost key={post.id} post={post} sendDetails={handlePostDetails} />
-        ))}
-      </ScrollView>
+        style={styles.scrollView}
+      />
       <TouchableOpacity onPress={toggleViewForm} style={styles.hideFormButton}>
-        <Text>{`Crear un nuevo post`}</Text>
+        <Text style={styles.hideFormButtonText}>{`Crear un nuevo post`}</Text>
       </TouchableOpacity>
-      <View style={[styles.formSection, viewForm && styles.hiddenForm]}>
-        <BlogForm onAddPost={handleAddPost} />
-      </View>
-      <View style={[styles.formSection, !viewPostDetails && styles.hiddenForm]}>
-        <BlogPostDetails selectedPost={selectedPost} onClose={handleCloseDetails} />
-      </View>
+      {viewForm && (
+        <View style={[styles.formSection, !viewForm && styles.hiddenForm]}>
+          <BlogForm onAddPost={handleAddPost} />
+        </View>
+      )}
+
+      {viewPostDetails && (
+        <View style={styles.formSection}>
+          <BlogPostDetails
+            selectedPost={selectedPost}
+            onClose={handleCloseDetails}
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -84,18 +110,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   formSection: {
+    height: height * 0.73,
     bottom: 0,
     width: width * 0.8,
     position: "absolute",
-    top: "40%",
+    top: height*0.45,
     left: "50%",
     transform: [{ translateX: -(width * 0.8) / 2 }, { translateY: -200 }],
   },
   scrollView: {
-    width: "100%",
+    width: width,
     backgroundColor: "#000",
-    marginLeft: gap / 2,
-    marginRight: "auto",
   },
   hiddenForm: {
     top: 99999,
@@ -104,9 +129,21 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 20,
-    backgroundColor: "#007AFF",
-    borderRadius: 8,
-    padding: 10,
+    backgroundColor: "#ff6b35",
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 30,
+    elevation: 3,
+    shadowColor: "#ff6b35",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    marginTop: "auto",
+  },
+  hideFormButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    alignSelf: "center",
   },
   hidePostDetailsButton: {
     position: "absolute",
@@ -115,5 +152,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#007AFF",
     borderRadius: 8,
     padding: 10,
+  },
+  title: {
+    marginTop: 20,
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#ccc",
+    marginBottom: 12,
   },
 });

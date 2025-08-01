@@ -20,14 +20,18 @@ interface BlogPostProps {
   sendDetails: (post: BlogPostProps["post"]) => void;
 }
 
-const BlogPost = ({ post, sendDetails }: BlogPostProps) => {
+const postWidth = width * 0.2;
+const totalGapSpace = width - 4 * postWidth;
+const gap = totalGapSpace / 4;
 
+const BlogPost = ({ post, sendDetails }: BlogPostProps) => {
   const handleDetails = () => {
     sendDetails(post);
   };
 
   return (
     <View style={styles.postContainer}>
+      <View style={styles.leftBorder}></View>
       <Image
         source={require("../assets/images/logo.png")}
         style={styles.postImage}
@@ -48,12 +52,12 @@ export default BlogPost;
 
 const styles = StyleSheet.create({
   postContainer: {
+    borderColor: "#444444",
+    borderWidth: 1,
     backgroundColor: "#1a1a1a",
-    borderRadius: 12,
+    borderRadius: 20,
     padding: 20,
     marginBottom: 15,
-    borderLeftWidth: 4,
-    borderLeftColor: "#007AFF",
     width: width * 0.2,
     height: height * 0.5,
     flex: 1,
@@ -84,19 +88,36 @@ const styles = StyleSheet.create({
   },
   postImage: {
     alignSelf: "center",
-    height: height * 0.5 * 0.4,
+    width: "100%",
+    height: height * 0.2,
     resizeMode: "contain",
     marginBottom: 15,
   },
   readMoreButton: {
-    width: "100%",
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 10,
+    backgroundColor: "#ff6b35",
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 30,
+    elevation: 3,
+    shadowColor: "#ff6b35",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
     marginTop: "auto",
   },
   buttonText: {
-    color: "#007AFF",
+    color: "#fff",
+    fontSize: 16,
     alignSelf: "center",
+  },
+  leftBorder: {
+    position: "absolute",
+    left: 0,
+    top: 20,
+    width: 4,
+    height: 55,
+    backgroundColor: "#ff6b35",
+    borderTopRightRadius: 3,
+    borderBottomRightRadius: 3,
   },
 });

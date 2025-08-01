@@ -13,6 +13,7 @@ import BlogPostDetails from "@/components/BlogPostDetails";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { ScrollView } from "react-native-gesture-handler";
+import { samplePosts } from "@/assets/data/samplePosts";
 
 const { width, height } = Dimensions.get("window");
 interface Post {
@@ -27,7 +28,7 @@ const totalGapSpace = width - 4 * postWidth;
 const gap = totalGapSpace / 4;
 
 const blog = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<Post[]>(samplePosts);
   const [viewForm, setViewForm] = useState(false);
   const [viewPostDetails, setViewPostDetails] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -52,18 +53,22 @@ const blog = () => {
     <BlogPost post={item} sendDetails={handlePostDetails} />
   );
 
- const handleScrollToSection = (sectionId: string | null) => {
-  if (sectionId === null) {
-    console.log("Received null sectionId");
-    return;
-  }
-}
+  const handleScrollToSection = (sectionId: string | null) => {
+    if (sectionId === null) {
+      console.log("Received null sectionId");
+      return;
+    }
+  };
 
   return (
     <ScrollView showsHorizontalScrollIndicator={false}>
       <Header scrollToSection={handleScrollToSection}></Header>
       <View style={styles.blogContainer}>
-        <Text style={styles.title}>Blog</Text>
+        <View style={styles.titleContainer}>
+          <View style={styles.titleDecoration}></View>
+          <Text style={styles.title}>Blog</Text>
+          <View style={styles.titleDecoration}></View>
+        </View>
         <Text style={styles.subtitle}>
           En nuestro Blog encontraras novedades, consejos y articulos de
           interés.
@@ -115,7 +120,7 @@ export default blog;
 
 const styles = StyleSheet.create({
   blogContainer: {
-    height: height*0.9,
+    height: height * 0.9,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -150,7 +155,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
-    marginTop: "auto",
   },
   hideFormButtonText: {
     color: "#fff",
@@ -165,12 +169,28 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
   },
+  // estilos del titulo
   title: {
     marginTop: 20,
     fontSize: 24,
     fontWeight: "bold",
     color: "#fff",
     marginBottom: 8,
+  },
+  titleDecoration: {
+    width: 60,
+    height: 3,
+    backgroundColor: "#ff6b35",
+    marginHorizontal: 30,
+    marginVertical: 20,
+    borderRadius: 2,
+    alignSelf: "flex-end",
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
   },
   subtitle: {
     fontSize: 16,

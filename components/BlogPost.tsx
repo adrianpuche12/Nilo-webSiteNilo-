@@ -25,26 +25,41 @@ const totalGapSpace = width - 4 * postWidth;
 const gap = totalGapSpace / 4;
 
 const BlogPost = ({ post, sendDetails }: BlogPostProps) => {
+
+  const [hovered, setHovered] = useState(false);
+
   const handleDetails = () => {
     sendDetails(post);
   };
 
+  const truncateText = (text: string) => {
+    const maxLength = 80;
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
   return (
-    <View style={styles.postContainer}>
-      <View style={styles.leftBorder}></View>
-      <Image
-        source={require("../assets/images/logo.png")}
-        style={styles.postImage}
-      />
-      <Text style={styles.postDate}>
-        Articulo{"\n"}por Nilo Solutions, {post.date}
-      </Text>
-      <Text style={styles.postTitle}>{post.title}</Text>
-      <Text style={styles.postContent}>{post.description}</Text>
-      <TouchableOpacity onPress={handleDetails} style={styles.readMoreButton}>
-        <Text style={styles.buttonText}>Leer articulo</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity onPress={handleDetails}
+      //@ts-ignore
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <View style={styles.postContainer}>
+        <View style={styles.leftBorder}></View>
+        <Image
+          source={require("../assets/images/logo.png")}
+          style={styles.postImage}
+        />
+        <Text style={styles.postDate}>
+          Articulo{"\n"}por Nilo Solutions, {post.date}
+        </Text>
+        <Text style={styles.postTitle}>{post.title}</Text>
+        <View style={styles.titleUnderline} />
+        <Text style={styles.postDescription}>
+          {truncateText(post.description)}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -57,28 +72,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#1a1a1a",
     borderRadius: 20,
     padding: 20,
-    marginBottom: 15,
+    marginBottom: 60,
     width: width * 0.2,
-    height: height * 0.5,
+    height: height * 0.6,
     flex: 1,
   },
   postTitle: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#fff",
-    marginBottom: 8,
+    marginBottom: 15,
     lineHeight: 24,
   },
   postDate: {
-    fontSize: 14,
+    fontSize: 11,
     color: "#888",
     marginBottom: 12,
     fontStyle: "italic",
   },
-  postContent: {
-    fontSize: 16,
+  postDescription: {
+    fontSize: 14,
     color: "#ccc",
-    lineHeight: 22,
+    marginBottom: 15,
+    height: 66,
+    overflow: "hidden",
   },
   titleDate: {
     display: "flex",
@@ -115,9 +132,18 @@ const styles = StyleSheet.create({
     left: 0,
     top: 20,
     width: 4,
-    height: 55,
+    height: 120,
     backgroundColor: "#ff6b35",
     borderTopRightRadius: 3,
     borderBottomRightRadius: 3,
+  },
+  titleUnderline: {
+    marginBottom: 10,
+    width: "70%",
+    height: 4,
+    backgroundColor: "#ff6b35",
+    borderRadius: 1,
+    //@ts-ignore
+    transition: "all 0.4s ease",
   },
 });

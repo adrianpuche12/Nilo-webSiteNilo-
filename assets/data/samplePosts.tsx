@@ -1,0 +1,58 @@
+export const samplePosts = [
+  {
+    id: "1",
+    title: "Transformación Digital: El Futuro de tu Empresa",
+    description: "Descubre cómo la transformación digital puede revolucionar tu negocio y llevarlo al siguiente nivel. Exploramos las mejores prácticas y herramientas para implementar con éxito.",
+    content: "La transformación digital no es solo adoptar nuevas tecnologías, sino reimaginar completamente cómo opera tu negocio. En este artículo exploramos estrategias probadas para modernizar procesos, mejorar la experiencia del cliente y aumentar la eficiencia operativa. Desde la automatización hasta la inteligencia artificial, te mostramos el camino hacia el futuro.",
+    date: "15/12/2024, 10:30",
+  },
+  {
+    id: "2", 
+    title: "Ciberseguridad en 2024: Protege tu Negocio",
+    description: "Las amenazas cibernéticas evolucionan constantemente. Te explicamos las principales vulnerabilidades y cómo crear una estrategia sólida de ciberseguridad.",
+    content: "En un mundo cada vez más conectado, la ciberseguridad se ha vuelto crítica para cualquier empresa. Analizamos las amenazas más comunes como ransomware, phishing y ataques de ingeniería social. También proporcionamos una guía práctica para implementar medidas de protección efectivas, desde firewalls hasta capacitación del personal.",
+    date: "12/12/2024, 14:15",
+  },
+  {
+    id: "3",
+    title: "Inteligencia Artificial: Casos de Uso Reales",
+    description: "La IA ya no es ciencia ficción. Conoce aplicaciones prácticas que pueden transformar tu industria, desde chatbots hasta análisis predictivo.",
+    content: "La inteligencia artificial está transformando industrias enteras. Desde chatbots que mejoran el servicio al cliente hasta algoritmos de análisis predictivo que optimizan la cadena de suministro. Exploramos casos de uso reales en diferentes sectores: salud, finanzas, retail y manufactura. Descubre cómo tu empresa puede beneficiarse de estas tecnologías emergentes.",
+    date: "08/12/2024, 16:45",
+  },
+  {
+    id: "4",
+    title: "Cloud Computing: Ventajas y Mejores Prácticas",
+    description: "Migrar a la nube puede ser intimidante. Te explicamos los beneficios, riesgos y estrategias para una transición exitosa al cloud computing.",
+    content: "La migración a la nube ofrece escalabilidad, reducción de costos y mayor flexibilidad. Sin embargo, requiere planificación cuidadosa. Analizamos diferentes modelos de cloud (IaaS, PaaS, SaaS), estrategias de migración y mejores prácticas de seguridad. También discutimos cómo elegir el proveedor adecuado y gestionar la transición sin interrumpir las operaciones.",
+    date: "05/12/2024, 09:20",
+  },
+  {
+    id: "5",
+    title: "Automatización de Procesos: Eficiencia Máxima",
+    description: "Aprende cómo automatizar tareas repetitivas puede liberar tiempo valioso y reducir errores humanos en tu organización.",
+    content: "La automatización de procesos empresariales (BPA) puede transformar radicalmente la eficiencia operativa. Desde la automatización de workflows hasta la integración de sistemas, exploramos herramientas como RPA (Robotic Process Automation) y plataformas low-code. Incluimos casos de estudio de empresas que han logrado ahorros significativos automatizando procesos manuales.",
+    date: "02/12/2024, 11:30",
+  },
+  {
+    id: "6",
+    title: "Big Data: Convierte Datos en Decisiones",
+    description: "Los datos son el nuevo petróleo. Descubre cómo extraer insights valiosos de grandes volúmenes de información para tomar mejores decisiones.",
+    content: "En la era digital, las empresas generan cantidades masivas de datos. El desafío es convertir esta información en insights accionables. Exploramos técnicas de análisis de big data, herramientas de visualización y metodologías para la toma de decisiones basada en datos. También discutimos la importancia de la calidad de datos y la gobernanza de información.",
+    date: "28/11/2024, 13:45",
+  },
+  {
+    id: "7",
+    title: "Desarrollo de Apps Móviles: Tendencias 2024",
+    description: "El mercado móvil continúa creciendo. Conoce las últimas tendencias en desarrollo de aplicaciones y cómo pueden beneficiar a tu negocio.",
+    content: "Las aplicaciones móviles son esenciales para llegar a los clientes modernos. Analizamos tendencias como Progressive Web Apps (PWA), desarrollo cross-platform, realidad aumentada y comercio móvil. También exploramos frameworks populares como React Native y Flutter, y estrategias para crear apps que generen engagement y conversiones.",
+    date: "25/11/2024, 15:20",
+  },
+  {
+    id: "8",
+    title: "IoT en la Empresa: Conectando el Mundo Físico",
+    description: "Internet of Things está revolucionando industrias. Descubre aplicaciones empresariales del IoT y cómo implementar soluciones inteligentes.",
+    content: "El Internet de las Cosas (IoT) conecta dispositivos físicos con el mundo digital, creando nuevas oportunidades de eficiencia y innovación. Exploramos aplicaciones en manufactura inteligente, gestión de activos, monitoreo ambiental y ciudades inteligentes. También discutimos desafíos como seguridad, interoperabilidad y gestión de datos en ecosistemas IoT.",
+    date: "22/11/2024, 08:15",
+  },
+];

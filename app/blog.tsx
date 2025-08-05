@@ -6,7 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import BlogForm from "@/components/BlogForm";
 import BlogPost from "@/components/BlogPost";
 import BlogPostDetails from "@/components/BlogPostDetails";
@@ -14,6 +14,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { ScrollView } from "react-native-gesture-handler";
 import { samplePosts } from "@/assets/data/samplePosts";
+import { useBreakpoint } from "@/hooks/useBreakpoints";
 
 const { width, height } = Dimensions.get("window");
 interface Post {
@@ -23,19 +24,43 @@ interface Post {
   date: string;
   description: string;
 }
-const postWidth = width * 0.2;
-const totalGapSpace = width - 4 * postWidth;
-const gap = totalGapSpace / 4;
 
 const blog = () => {
   const [posts, setPosts] = useState<Post[]>(samplePosts);
   const [viewForm, setViewForm] = useState(false);
   const [viewPostDetails, setViewPostDetails] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [screenDimensions, setScreenDimensions] = useState(
+    Dimensions.get("window")
+  );
+  const { isMobile, isTablet, isDesktop, isLargeDesktop } = useBreakpoint();
+
+  // Hook para detectar cambios en las dimensiones
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", ({ window }) => {
+      setScreenDimensions(window);
+    });
+
+    return () => subscription?.remove();
+  }, []);
+
+  // Cálculos dinámicos basados en breakpoints
+  const getPostsPerScreen = () => {
+    if (isTablet) return 2;
+    if (isDesktop) return 3;
+    if (isLargeDesktop) return 4;
+    return 3; // fallback
+  };
+
+  const postsPerScreen = getPostsPerScreen();
+  const postWidth = screenDimensions.width * (0.8 / postsPerScreen);
+  const totalGapSpace = screenDimensions.width - postsPerScreen * postWidth;
+  const gap = totalGapSpace / postsPerScreen;
 
   const handleAddPost = (newPost: Post) => {
     setPosts([...posts, newPost]);
     console.log("Lista de posts: ", [...posts, newPost]);
+    setViewForm(false);
   };
   const toggleViewForm = () => {
     setViewForm(!viewForm);
@@ -77,27 +102,44 @@ const blog = () => {
           data={posts}
           renderItem={renderPost}
           keyExtractor={(item) => item.id}
-          horizontal={true}
+          horizontal={isMobile ? false : true}
           showsHorizontalScrollIndicator={false}
           decelerationRate="fast"
-          // pagingEnabled={true}
           contentContainerStyle={{
-            gap: gap,
+            gap: !isMobile ? gap : 0,
             alignItems: "center",
-            paddingHorizontal: gap / 2, // Solo padding izquierdo
+            paddingHorizontal: gap / 2,
           }}
-          style={styles.scrollView}
+          style={[
+            styles.scrollView,
+            { width: screenDimensions.width },
+            isMobile && styles.mobileScrollView,
+          ]}
         />
         <TouchableOpacity
           onPress={toggleViewForm}
-          style={styles.hideFormButton}
+          style={[styles.hideFormButton, isMobile && styles.mobileHideFormButton]}
         >
-          <Text style={styles.hideFormButtonText}>{`Crear un nuevo post`}</Text>
+          <Text style={[styles.hideFormButtonText]}>{ isMobile ? `+` : `Crear un nuevo post`}</Text>
         </TouchableOpacity>
       </View>
 
       {viewForm && (
-        <View style={[styles.formSection, !viewForm && styles.hiddenForm]}>
+        <View
+          style={[
+            styles.formSection,
+            !viewForm && styles.hiddenForm,
+            {
+              width: screenDimensions.width * 0.8,
+              left: screenDimensions.width / 2,
+              transform: [
+                { translateX: -(screenDimensions.width * 0.8) / 2 },
+                { translateY: -200 },
+              ],
+              top: screenDimensions.height * 0.6,
+            },
+          ]}
+        >
           <BlogForm onAddPost={handleAddPost} />
         </View>
       )}
@@ -110,7 +152,7 @@ const blog = () => {
           />
         </View>
       )}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { width: screenDimensions.width }]}>
         <Footer />
       </View>
     </ScrollView>
@@ -120,25 +162,25 @@ export default blog;
 
 const styles = StyleSheet.create({
   blogContainer: {
-    height: height * 0.9,
+    flex: 1,
+    minHeight: Dimensions.get("window").height * 0.9,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#000",
   },
   formSection: {
-    height: height * 0.73,
     bottom: 0,
-    width: width * 0.8,
     position: "absolute",
-    top: height * 0.45,
-    left: "50%",
-    transform: [{ translateX: -(width * 0.8) / 2 }, { translateY: -200 }],
   },
   scrollView: {
-    width: width,
     backgroundColor: "#000",
   },
+  mobileScrollView: {
+    marginBottom: 30,
+    height: Dimensions.get("window").height * 0.73,
+  },
+
   hiddenForm: {
     top: 99999,
   },
@@ -155,6 +197,18 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
+  },
+  mobileHideFormButton: {
+    position: "fixed", // o "absolute" si fixed no funciona en React Native
+    left: "auto",
+    top: "98%", // Centrado verticalmente
+   // Ajustar para centrar exactamente
+    borderRadius: 0,
+    borderTopLeftRadius: 30,
+    borderBottomLeftRadius: 30,
+    paddingHorizontal: 16,
+    right: 0, // Resetear el right del estilo padre
+    bottom: "auto",
   },
   hideFormButtonText: {
     color: "#fff",
@@ -195,7 +249,8 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: "#ccc",
-    marginBottom: 12,
+    marginBottom: 18,
+    textAlign: "center",
   },
   footer: {
     bottom: 0,

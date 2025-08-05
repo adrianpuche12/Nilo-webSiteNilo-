@@ -41,7 +41,7 @@ const TeamCard = ({ member, onPress }: TeamMemberCardProps) => {
       columns = 4
       padding = 50
     } else if (bp.isLargeDesktop) {
-      columns = 8
+      columns = 6
       padding = 80
     }
 

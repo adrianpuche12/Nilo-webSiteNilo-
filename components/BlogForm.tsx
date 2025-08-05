@@ -4,9 +4,10 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  ScrollView,
+  Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useBreakpoint } from "@/hooks/useBreakpoints";
 
 // Define el objeto post para despues guardar los post en su state
 interface Post {
@@ -21,8 +22,23 @@ interface BlogFormProps {
   post?: Post;
   onAddPost: (post: Post) => void;
 }
+const { width, height } = Dimensions.get("window");
 
 const BlogForm = ({ post, onAddPost }: BlogFormProps) => {
+  const { isMobile, isTablet, isDesktop, isLargeDesktop } = useBreakpoint();
+
+  // Hook para detectar cambios en las dimensiones
+  const [screenDimensions, setScreenDimensions] = useState(
+    Dimensions.get("window")
+  );
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", ({ window }) => {
+      setScreenDimensions(window);
+    });
+
+    return () => subscription?.remove();
+  }, []);
+
   const [formData, setFormData] = useState({
     title: post?.title || "",
     content: post?.content || "",
@@ -61,7 +77,9 @@ const BlogForm = ({ post, onAddPost }: BlogFormProps) => {
   };
 
   return (
-    <View style={styles.formContainer}>
+    <View
+      style={[styles.formContainer, isMobile && styles.mobileFormContainer]}
+    >
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Título</Text>
         <TextInput
@@ -108,14 +126,19 @@ export default BlogForm;
 
 const styles = StyleSheet.create({
   formContainer: {
+    width: "100%",
     borderColor: "#444444",
     borderWidth: 1,
     borderRadius: 20,
     padding: 20,
     paddingTop: 60,
-    height: "100%",
+    flexShrink: 1,
     backgroundColor: "#1A1A1A",
-
+  },
+  mobileFormContainer: {
+    width: "100%",
+    padding: 10,
+    paddingTop: 30,
   },
   title: {
     fontSize: 28,

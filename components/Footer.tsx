@@ -1,6 +1,5 @@
 "use client"
 import Text from "@/components/ui/CustomText"
-import { RegisterButton } from "@/components/ui/AppButtons"
 import { View, TouchableOpacity, TextInput, StyleSheet, Image, useWindowDimensions } from "react-native"
 
 const Footer = () => {
@@ -297,7 +296,6 @@ const Footer = () => {
               placeholder="Ingresá tu e-mail"
               placeholderTextColor="#999"
             />
-            <RegisterButton onPress={() => {}} />
           </View>
           <Text
             style={[
@@ -341,6 +339,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     borderColor: "#ff6b35",
     borderTopWidth: 2,
+    width: "100%",
+    alignSelf: "stretch",
+    marginTop: -45,
   },
   footerContent: {
     flexDirection: "row",
@@ -348,6 +349,9 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     justifyContent: "space-between",
     flexWrap: "wrap",
+    maxWidth: 1200,
+    alignSelf: "center",
+    width: "100%",
   },
   footerContentTabletOrMobile: {
     paddingHorizontal: 16,
@@ -355,9 +359,9 @@ const styles = StyleSheet.create({
   },
   footerContentMobile: {
     flexDirection: "column",
-    paddingHorizontal: 12,
+    paddingHorizontal: 20,
     paddingVertical: 20,
-    gap: 25,
+    gap: 30,
   },
   logoSection: {
     flex: 1,
@@ -412,7 +416,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   linkItem: {
-    marginBottom: 10,
+    marginBottom: 12,
   },
   linkText: {
     color: "#fff",
@@ -422,8 +426,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   linkTextMobile: {
-    fontSize: 12,
+    fontSize: 13,
     textAlign: "center",
+    lineHeight: 20,
   },
   // NEW ADDRESS SECTION
   addressSection: {
@@ -491,13 +496,15 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitleMobile: {
-    fontSize: 12,
-    marginBottom: 10,
+    fontSize: 13,
+    marginBottom: 15,
+    marginTop: 5,
     textAlign: "center",
+    fontWeight: "600",
   },
   socialIcons: {
     flexDirection: "row",
-    justifyContent: "flex-start",
+    justifyContent: "center",
   },
   socialIcon: {
     width: 35,
@@ -533,27 +540,34 @@ const styles = StyleSheet.create({
   newsletterSection: {
     flex: 1,
     minWidth: 250,
+    backgroundColor: "#000",
   },
   newsletterSectionTabletOrMobile: {
     minWidth: 220,
+    backgroundColor: "#000",
   },
   newsletterSectionMobile: {
     flex: 0,
-    minWidth: "100%",
+    width: "100%",
+    maxWidth: "100%",
     alignItems: "center",
+    backgroundColor: "#000",
   },
   emailContainer: {
     flexDirection: "row",
     marginBottom: 10,
+    backgroundColor: "transparent",
   },
   emailContainerTabletOrMobile: {
-    
+    backgroundColor: "transparent",
   },
   emailContainerMobile: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     gap: 10,
     width: "100%",
+    maxWidth: 300,
+    backgroundColor: "transparent",
   },
   emailInput: {
     flex: 1,
@@ -572,7 +586,7 @@ const styles = StyleSheet.create({
   },
   emailInputMobile: {
     flex: 0,
-    width: "50%",
+    width: "80%",
     marginRight: 0,
     fontSize: 12,
     paddingHorizontal: 10,
@@ -582,6 +596,7 @@ const styles = StyleSheet.create({
     color: "#999",
     fontSize: 12,
     marginTop: 5,
+    backgroundColor: "#000",
   },
   privacyTextTabletOrMobile: {
     fontSize: 11,
@@ -589,16 +604,23 @@ const styles = StyleSheet.create({
   privacyTextMobile: {
     fontSize: 10,
     textAlign: "center",
+    backgroundColor: "#000",
   },
   copyrightSection: {
     borderTopWidth: 1,
     borderTopColor: "#333",
     paddingVertical: 15,
+    paddingHorizontal: 20,
     alignItems: "center",
+    maxWidth: 1200,
+    alignSelf: "center",
+    width: "100%",
+    backgroundColor: "#000",
   },
   copyrightText: {
     color: "#999",
     fontSize: 12,
+    backgroundColor: "#000",
   },
   copyrightTextTabletOrMobile: {
     fontSize: 11,
@@ -606,6 +628,7 @@ const styles = StyleSheet.create({
   copyrightTextMobile: {
     fontSize: 10,
     textAlign: "center",
+    backgroundColor: "#000",
   },
 })
 

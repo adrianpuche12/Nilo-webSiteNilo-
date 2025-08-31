@@ -109,6 +109,7 @@ const ClientTestimonials = ({ clients = defaultClients }: ClientTestimonialsProp
               styles.titleDecorationLeft,
               bp.isTabletOrMobile && styles.titleDecorationTabletOrMobile,
               bp.isMobile && styles.titleDecorationMobile,
+              { display: 'none' }
             ]}
           />
           <View style={styles.titleWrapper}>
@@ -117,6 +118,7 @@ const ClientTestimonials = ({ clients = defaultClients }: ClientTestimonialsProp
                 styles.sectionSubtitle,
                 bp.isTabletOrMobile && styles.sectionSubtitleTabletOrMobile,
                 bp.isMobile && styles.sectionSubtitleMobile,
+                { display: 'none' }
               ]}
             >
               NUESTROS CLIENTES
@@ -126,6 +128,7 @@ const ClientTestimonials = ({ clients = defaultClients }: ClientTestimonialsProp
                 styles.sectionTitle,
                 bp.isTabletOrMobile && styles.sectionTitleTabletOrMobile,
                 bp.isMobile && styles.sectionTitleMobile,
+                { display: 'none' }
               ]}
             >
               Confían en <Text style={styles.titleAccent}>nosotros</Text>
@@ -136,11 +139,12 @@ const ClientTestimonials = ({ clients = defaultClients }: ClientTestimonialsProp
               styles.titleDecorationRight,
               bp.isTabletOrMobile && styles.titleDecorationTabletOrMobile,
               bp.isMobile && styles.titleDecorationMobile,
+              { display: 'none' }
             ]}
           />
         </View>
 
-        <ScrollView
+        {/* <ScrollView
           ref={scrollViewRef}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -173,7 +177,7 @@ const ClientTestimonials = ({ clients = defaultClients }: ClientTestimonialsProp
               />
             </View>
           ))}
-        </ScrollView>
+        </ScrollView> */}
       </View>
     </View>
   )
@@ -193,7 +197,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     paddingVertical: 30,
     paddingBottom: 40,
-    borderColor: "#ff6b35",
+    borderColor: "#FF6600",
     // borderBottomWidth: 2,
     // borderTopWidth: 2,
     alignItems: "center",
@@ -225,7 +229,7 @@ const styles = StyleSheet.create({
   titleDecorationLeft: {
     width: 40,
     height: 2,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     marginRight: 20,
   },
   titleDecorationTabletOrMobile: {
@@ -241,7 +245,7 @@ const styles = StyleSheet.create({
   titleDecorationRight: {
     width: 40,
     height: 2,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     marginLeft: 20,
   },
   titleWrapper: {
@@ -250,7 +254,7 @@ const styles = StyleSheet.create({
   sectionSubtitle: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#ff6b35",
+    color: "#FF6600",
     letterSpacing: 2,
     marginBottom: 8,
     textTransform: "uppercase",
@@ -282,7 +286,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   titleAccent: {
-    color: "#ff6b35",
+    color: "#FF6600",
     fontStyle: "italic",
   },
   scrollContainer: {

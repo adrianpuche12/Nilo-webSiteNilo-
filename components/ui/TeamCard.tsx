@@ -232,10 +232,10 @@ const styles = StyleSheet.create({
   },
   memberCardHovered: {
     elevation: 20,
-    shadowColor: "#ff6b35",
+    shadowColor: "#FF6600",
     shadowOpacity: 0.2,
     shadowRadius: 24,
-    borderColor: "#ff6b35",
+    borderColor: "#FF6600",
     backgroundColor: "#222",
   },
 
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     top: 20,
     width: 4,
     height: 40,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     borderTopRightRadius: 3,
     borderBottomRightRadius: 3,
     //@ts-ignore
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     height: 60,
     top: 10,
     width: 5,
-    shadowColor: "#ff6b35",
+    shadowColor: "#FF6600",
     shadowOffset: { width: 2, height: 0 },
     shadowOpacity: 0.6,
     shadowRadius: 8,
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     position: "relative",
     elevation: 4,
-    shadowColor: "#ff6b35",
+    shadowColor: "#FF6600",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     width: 110,
     height: 110,
     borderRadius: 55,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     opacity: 0.2,
     top: -5,
     left: -5,
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 3,
-    borderColor: "#ff6b35",
+    borderColor: "#FF6600",
   },
   profileImageTabletOrMobile: {
     width: 80,
@@ -447,12 +447,12 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   memberNameHovered: {
-    color: "#ff6b35",
+    color: "#FF6600",
   },
 
   memberRole: {
     fontSize: 14,
-    color: "#ff6b35",
+    color: "#FF6600",
     fontWeight: "600",
     marginBottom: 8,
     textAlign: "center",
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
   roleUnderline: {
     width: 40,
     height: 3,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     borderRadius: 1,
     transition: "all 0.4s ease",
   },
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
 
   quoteIcon: {
     fontSize: 32,
-    color: "#ff6b35",
+    color: "#FF6600",
     fontWeight: "bold",
     marginBottom: 8,
     opacity: 0.7,

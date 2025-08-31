@@ -1,9 +1,7 @@
 "use client";
 
-import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import { View, Text, StyleSheet, useWindowDimensions, ScrollView } from "react-native";
 import { useState } from "react";
-import { FilterButton } from "@/components/ui/AppButtons";
-import TeamCard from "@/components/ui/TeamCard";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -31,86 +29,82 @@ interface TeamSectionProps {
 const defaultTeamMembers: TeamMember[] = [
   {
     id: 1,
-    name: "Mateo Pellegrini",
-    role: "CO-Founder & CEO",
-    category: "CO-FOUNDER",
+    name: "Peter Bauman",
+    role: "Founder & CEO",
+    category: "FOUNDER",
     quote: "Transformamos ideas en soluciones digitales innovadoras",
-    image: "mateo.png",
+    image: "peter.png",
   },
   {
     id: 2,
+    name: "Mateo Pellegrini",
+    role: "Web Developer",
+    category: "FRONTEND",
+    quote: "Creando experiencias digitales únicas",
+    image: "mateo.png",
+  },
+  {
+    id: 3,
     name: "Ulises Pellegrini",
-    role: "CO-Founder & CTO",
-    category: "CO-FOUNDER",
+    role: "Web Developer",
+    category: "BACKEND",
     quote: "La tecnología es el puente hacia el futuro",
     image: "ulises.png",
   },
   {
-    id: 3,
-    name: "Carlos Rodríguez",
-    role: "Senior Frontend Developer",
-    category: "FRONTEND",
-    quote: "Creando experiencias que conectan con los usuarios",
-    image: "/placeholder.svg?height=120&width=120",
-  },
-  {
     id: 4,
-    name: "Ana Martínez",
-    role: "Frontend Developer",
+    name: "Alex Vasquez",
+    role: "Web Developer",
     category: "FRONTEND",
-    quote: "El diseño y la funcionalidad van de la mano",
-    image: "/placeholder.svg?height=120&width=120",
+    quote: "Desarrollando interfaces modernas y funcionales",
+    image: "alex.png",
   },
   {
     id: 5,
-    name: "Luis Torres",
-    role: "Backend Developer",
-    category: "BACKEND",
-    quote: "Construyendo la arquitectura del mañana",
-    image: "/placeholder.svg?height=120&width=120",
+    name: "Adrian Pucheta",
+    role: "Web Developer",
+    category: "FRONTEND",
+    quote: "Creando experiencias web extraordinarias",
+    image: "adrian.png",
   },
   {
     id: 6,
-    name: "Sofia Herrera",
-    role: "DevOps Engineer",
-    category: "DEVOPS",
-    quote: "Automatizando el camino hacia la excelencia",
-    image: "/placeholder.svg?height=120&width=120",
+    name: "Daniel Mera",
+    role: "Web Developer",
+    category: "BACKEND",
+    quote: "Construyendo arquitecturas robustas y escalables",
+    image: "daniel.png",
   },
   {
     id: 7,
-    name: "Diego Morales",
-    role: "QA Tester",
-    category: "TESTING",
-    quote: "La calidad no es un accidente, es una elección",
-    image: "/placeholder.svg?height=120&width=120",
+    name: "Tomas Coronel",
+    role: "Web Developer",
+    category: "BACKEND",
+    quote: "Desarrollando soluciones backend eficientes",
+    image: "tomas.png",
   },
   {
     id: 8,
-    name: "Valentina López",
-    role: "UX/UI Designer",
-    category: "UX/UI",
-    quote: "Diseñando experiencias que inspiran",
-    image: "/placeholder.svg?height=120&width=120",
+    name: "Jeronimo Azulay",
+    role: "Web Developer",
+    category: "FRONTEND",
+    quote: "Innovando en el desarrollo web moderno",
+    image: "jeronimo.png",
   },
   {
     id: 9,
-    name: "Roberto Silva",
-    role: "Marketing Manager",
-    category: "MARKETING",
-    quote: "Conectando marcas con audiencias digitales",
-    image: "/placeholder.svg?height=120&width=120",
+    name: "Joaquin Urquiza",
+    role: "Web Developer",
+    category: "BACKEND",
+    quote: "Optimizando sistemas y bases de datos",
+    image: "joaquin.png",
   },
 ];
 
 const defaultCategories = [
-  "CO-FOUNDER",
+  "FOUNDER",
   "FRONTEND",
   "BACKEND",
-  "DEVOPS",
-  "TESTING",
-  "UX/UI",
-  "MARKETING",
 ];
 
 const TeamSection = ({
@@ -119,81 +113,10 @@ const TeamSection = ({
   title = "Quiénes Somos",
   subtitle = "CONOCE A NUESTRO EQUIPO",
 }: TeamSectionProps) => {
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  // Simplificamos: no usamos filtros, mostramos todos los miembros
   const bp = useBreakpoint();
 
-  const filteredMembers = teamMembers.filter(
-    (member) => member.category === selectedCategory
-  );
-  // Crear animaciones para cada miembro del equipo
-  // Crear un número máximo de animaciones posibles
-  const maxMembers = 10;
-
-  const cardAnimations = Array.from({ length: maxMembers }, () => ({
-    opacity: useSharedValue(0),
-    translateY: useSharedValue(50),
-    scale: useSharedValue(0.8),
-  }));
-
-  const animatedStyles = cardAnimations.map((animation) =>
-    useAnimatedStyle(() => ({
-      opacity: animation.opacity.value,
-      transform: [
-        { translateY: animation.translateY.value },
-        { scale: animation.scale.value },
-      ],
-    }))
-  );
-
-  // Efecto para animar las cards cuando cambia la categoría
-  useEffect(() => {
-    cardAnimations.forEach((animation) => {
-      animation.opacity.value = 0;
-      animation.translateY.value = 50;
-      animation.scale.value = 0.8;
-    });
-
-    filteredMembers.forEach((_, index) => {
-      if (index < maxMembers) {
-        const delay = index * 150;
-
-        cardAnimations[index].opacity.value = withDelay(
-          delay,
-          withSpring(1, {
-            damping: 15,
-            stiffness: 100,
-          })
-        );
-
-        cardAnimations[index].translateY.value = withDelay(
-          delay,
-          withSpring(0, {
-            damping: 20,
-            stiffness: 150,
-          })
-        );
-
-        cardAnimations[index].scale.value = withDelay(
-          delay,
-          withSpring(1, {
-            damping: 15,
-            stiffness: 100,
-          })
-        );
-      }
-    });
-  }, [selectedCategory, filteredMembers.length]);
-
-  const getJustifyContent = () => {
-    const memberCount = filteredMembers.length;
-    if (memberCount === 1) return "center";
-    if (memberCount === 2) return "space-around";
-    return "flex-start";
-  };
-
-  const handleMemberPress = (member: TeamMember) => {
-    console.log("Member pressed:", member.name);
-  };
+  // Simplificamos: no necesitamos animaciones complejas para el carousel
 
   return (
     <View style={styles.container}>
@@ -440,6 +363,7 @@ const TeamSection = ({
             styles.teamDivider,
             bp.isTabletOrMobile && styles.teamDividerTabletOrMobile,
             bp.isMobile && styles.teamDividerMobile,
+            { display: 'none' }
           ]}
         >
           <View style={styles.dividerLine} />
@@ -455,48 +379,55 @@ const TeamSection = ({
           <View style={styles.dividerLine} />
         </View>
 
-        {/* Main Content - Team Filters and Cards */}
-        <View
-          style={[
-            styles.mainContent,
-            bp.isTabletOrMobile && styles.mainContentTabletOrMobile,
-            bp.isMobile && styles.mainContentMobile,
-          ]}
-        >
-          {/* Filter Buttons */}
-          <View
-            style={[
-              styles.filterContainer,
-              bp.isTabletOrMobile && styles.filterContainerTabletOrMobile,
-              bp.isMobile && styles.filterContainerMobile,
+        {/* Team Carousel */}
+        {/* <View style={[
+          styles.carouselContainer,
+          bp.isMobile && styles.carouselContainerMobile,
+        ]}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={[
+              styles.carouselContent,
+              bp.isMobile && styles.carouselContentMobile,
             ]}
+            style={styles.carouselScrollView}
           >
-            {categories.map((category) => (
-              <FilterButton
-                key={category}
-                title={category}
-                isActive={selectedCategory === category}
-                onPress={() => setSelectedCategory(category)}
-              />
+            {/* Duplicamos los miembros para efecto infinito */}
+            {/* {[...teamMembers, ...teamMembers].map((member, index) => (
+              <View 
+                key={`${member.id}-${index}`}
+                style={[
+                  styles.devCard,
+                  // Aplicamos alturas asimétricas
+                  index % 3 === 0 && styles.devCardTall,
+                  index % 3 === 1 && styles.devCardMedium,
+                  index % 3 === 2 && styles.devCardShort,
+                  bp.isMobile && styles.devCardMobile,
+                ]}
+              >
+                <View style={styles.devCardContent}>
+                  <Text 
+                    style={[
+                      styles.devName,
+                      bp.isMobile && styles.devNameMobile,
+                    ]}
+                  >
+                    {member.name}
+                  </Text>
+                  <Text 
+                    style={[
+                      styles.devRole,
+                      bp.isMobile && styles.devRoleMobile,
+                    ]}
+                  >
+                    Web Developer
+                  </Text>
+                </View>
+              </View>
             ))}
-          </View>
-
-          {/* Team Members Cards */}
-          <View
-            style={[
-              styles.membersContainer,
-              { justifyContent: getJustifyContent() },
-              bp.isTabletOrMobile && styles.membersContainerTabletOrMobile,
-              bp.isMobile && styles.membersContainerMobile,
-            ]}
-          >
-            {filteredMembers.map((member, index) => (
-              <Animated.View key={member.id} style={animatedStyles[index]}>
-                <TeamCard member={member} onPress={handleMemberPress} />
-              </Animated.View>
-            ))}
-          </View>
-        </View>
+          </ScrollView>
+        </View> */}
       </View>
     </View>
   );
@@ -549,7 +480,7 @@ const styles = StyleSheet.create({
   titleDecorationLeft: {
     width: 50,
     height: 3,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     marginRight: 25,
     borderRadius: 2,
   },
@@ -566,7 +497,7 @@ const styles = StyleSheet.create({
   titleDecorationRight: {
     width: 50,
     height: 3,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     marginLeft: 25,
     borderRadius: 2,
   },
@@ -576,7 +507,7 @@ const styles = StyleSheet.create({
   sectionSubtitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#ff6b35",
+    color: "#FF6600",
     letterSpacing: 3,
     marginBottom: 12,
     textTransform: "uppercase",
@@ -608,7 +539,7 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   titleAccent: {
-    color: "#ff6b35",
+    color: "#FF6600",
     fontStyle: "italic",
   },
 
@@ -665,7 +596,7 @@ const styles = StyleSheet.create({
   infoTitleUnderline: {
     width: 60,
     height: 3,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     borderRadius: 2,
   },
   infoTitleUnderlineTabletOrMobile: {
@@ -679,7 +610,7 @@ const styles = StyleSheet.create({
   infoQuote: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#ff6b35",
+    color: "#FF6600",
     textAlign: "center",
     fontStyle: "italic",
     marginBottom: 25,
@@ -770,7 +701,7 @@ const styles = StyleSheet.create({
   dividerText: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#ff6b35",
+    color: "#FF6600",
     letterSpacing: 2,
     paddingHorizontal: 20,
   },
@@ -785,50 +716,405 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
 
+  // Carousel Styles
+  carouselContainer: {
+    paddingVertical: 30,
+    overflow: "hidden",
+  },
+  carouselContainerMobile: {
+    paddingVertical: 20,
+  },
+  
+  carouselScrollView: {
+    paddingVertical: 10,
+  },
+  
+  carouselContent: {
+    paddingHorizontal: 20,
+    alignItems: "flex-end",
+    gap: 20,
+  },
+  carouselContentMobile: {
+    paddingHorizontal: 15,
+    gap: 15,
+    alignItems: "center",
+  },
+  
+  // Developer Cards - Asimétricas
+  devCard: {
+    backgroundColor: "#1a1a1a",
+    borderRadius: 16,
+    padding: 20,
+    width: 200,
+    borderWidth: 1,
+    borderColor: "#333",
+    elevation: 6,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    marginRight: 15,
+    // @ts-ignore - transition for web
+    transition: "all 0.3s ease",
+  },
+  
+  // Alturas asimétricas
+  devCardTall: {
+    minHeight: 180,
+    marginTop: 0,
+  },
+  devCardMedium: {
+    minHeight: 160,
+    marginTop: 20,
+  },
+  devCardShort: {
+    minHeight: 140,
+    marginTop: 40,
+  },
+  
+  devCardMobile: {
+    width: 160,
+    padding: 16,
+    borderRadius: 12,
+    marginRight: 12,
+    minHeight: 120,
+    marginTop: 0,
+  },
+  
+  devCardContent: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
+  
+  devName: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: 8,
+    letterSpacing: 0.5,
+  },
+  devNameMobile: {
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  
+  devRole: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#FF6600",
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
+  devRoleMobile: {
+    fontSize: 10,
+  },
+
   // Team Content
   mainContent: {
     flexDirection: "row",
     gap: 40,
     alignItems: "flex-start",
+    minHeight: 450,
   },
   mainContentTabletOrMobile: {
     gap: 30,
+    minHeight: 400,
   },
   mainContentMobile: {
     flexDirection: "column",
     gap: 25,
     alignItems: "center",
+    minHeight: "auto",
   },
   filterContainer: {
-    flex: 1,
-    maxWidth: 200,
+    flex: 0,
+    width: 220,
+    alignSelf: "flex-start",
+    paddingRight: 20,
+    backgroundColor: "#111",
+    borderRadius: 12,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: "#333",
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
   },
   filterContainerTabletOrMobile: {
-    maxWidth: 180,
+    width: 200,
+    paddingRight: 15,
+    padding: 16,
   },
   filterContainerMobile: {
     flex: 0,
-    maxWidth: "100%",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "center",
+    paddingRight: 0,
+    marginBottom: 20,
+    padding: 16,
+    backgroundColor: "#111",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#333",
+  },
+  
+  filterTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#fff",
+    marginBottom: 8,
+    letterSpacing: 1,
+  },
+  filterTitleTabletOrMobile: {
+    fontSize: 15,
+    marginBottom: 6,
+  },
+  filterTitleMobile: {
+    fontSize: 14,
+    marginBottom: 6,
+    textAlign: "center",
+  },
+  
+  filterTitleUnderline: {
+    width: 40,
+    height: 2,
+    backgroundColor: "#FF6600",
+    marginBottom: 16,
+    borderRadius: 1,
+  },
+  filterTitleUnderlineTabletOrMobile: {
+    width: 35,
+    marginBottom: 14,
+  },
+  filterTitleUnderlineMobile: {
+    width: 30,
+    marginBottom: 12,
+    alignSelf: "center",
+  },
+  
+  filterButtons: {
     gap: 8,
   },
-  membersContainer: {
+  // Professional Team Styles
+  professionalTeamContainer: {
     flex: 2,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 5,
-    justifyContent: "flex-start",
+    paddingLeft: 20,
   },
-  membersContainerTabletOrMobile: {
-    gap: 8,
+  professionalTeamContainerTabletOrMobile: {
+    paddingLeft: 15,
   },
-  membersContainerMobile: {
+  professionalTeamContainerMobile: {
     flex: 0,
     width: "100%",
-    gap: 12,
+    paddingLeft: 0,
+    marginTop: 20,
+  },
+  
+  teamGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 20,
+    justifyContent: "space-between",
+    alignItems: "stretch",
+  },
+  teamGridMobile: {
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 25,
     justifyContent: "center",
+  },
+  
+  professionalCard: {
+    backgroundColor: "#1a1a1a",
+    borderRadius: 16,
+    padding: 24,
+    width: "48%",
+    minWidth: 280,
+    borderWidth: 1,
+    borderColor: "#333",
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    position: "relative",
+    overflow: "hidden",
+    // @ts-ignore - transition for web compatibility
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    cursor: "pointer",
+  },
+  
+  cardBackgroundGradient: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: "30%",
+    backgroundColor: "rgba(255, 102, 0, 0.05)",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+  },
+  professionalCardTabletOrMobile: {
+    width: "47%",
+    minWidth: 250,
+    padding: 20,
+    borderRadius: 14,
+  },
+  professionalCardMobile: {
+    width: "100%",
+    maxWidth: 350,
+    padding: 20,
+    borderRadius: 12,
+  },
+  
+  cardHeader: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  
+  avatarPlaceholder: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "#FF6600",
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 4,
+    shadowColor: "#FF6600",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  avatarPlaceholderTabletOrMobile: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+  },
+  avatarPlaceholderMobile: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+  },
+  
+  avatarInitials: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#fff",
+    letterSpacing: 1,
+  },
+  avatarInitialsTabletOrMobile: {
+    fontSize: 24,
+  },
+  avatarInitialsMobile: {
+    fontSize: 20,
+  },
+  
+  cardContent: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  cardContentTabletOrMobile: {
+    marginBottom: 18,
+  },
+  cardContentMobile: {
+    marginBottom: 16,
+  },
+  
+  memberName: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: 8,
+    letterSpacing: 0.5,
+  },
+  memberNameTabletOrMobile: {
+    fontSize: 18,
+    marginBottom: 6,
+  },
+  memberNameMobile: {
+    fontSize: 16,
+    marginBottom: 6,
+  },
+  
+  memberRole: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#FF6600",
+    textAlign: "center",
+    marginBottom: 12,
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
+  memberRoleTabletOrMobile: {
+    fontSize: 13,
+    marginBottom: 10,
+  },
+  memberRoleMobile: {
+    fontSize: 12,
+    marginBottom: 10,
+  },
+  
+  memberQuote: {
+    fontSize: 13,
+    color: "#ccc",
+    textAlign: "center",
+    lineHeight: 18,
+    fontStyle: "italic",
+    paddingHorizontal: 8,
+  },
+  memberQuoteTabletOrMobile: {
+    fontSize: 12,
+    lineHeight: 16,
+    paddingHorizontal: 6,
+  },
+  memberQuoteMobile: {
+    fontSize: 11,
+    lineHeight: 15,
+    paddingHorizontal: 4,
+  },
+  
+  cardFooter: {
+    alignItems: "center",
+  },
+  
+  specializationTag: {
+    backgroundColor: "#333",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#FF6600",
+  },
+  specializationTagTabletOrMobile: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 18,
+  },
+  specializationTagMobile: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 16,
+  },
+  
+  specializationText: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#FF6600",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
+  specializationTextTabletOrMobile: {
+    fontSize: 9,
+  },
+  specializationTextMobile: {
+    fontSize: 8,
   },
 });
 

@@ -212,40 +212,16 @@ const ContactSection = ({
           </View>
 
           {/* Main Form Content */}
-          <View
-            style={[
-              styles.formContent,
-              bp.isTabletOrMobile && styles.formContentTabletOrMobile,
-              bp.isMobile && styles.formContentMobile,
-            ]}
-          >
-            {/* Left Column */}
-            <View
-              style={[styles.leftColumn, bp.isMobile && styles.columnMobile]}
-            >
+          {bp.isMobile ? (
+            // Mobile: Single column layout
+            <View style={styles.formContentMobile}>
               {/* Email Field */}
-              <View
-                style={[
-                  styles.fieldContainer,
-                  bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
-                  bp.isMobile && styles.fieldContainerMobile,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.fieldLabel,
-                    bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
-                    bp.isMobile && styles.fieldLabelMobile,
-                  ]}
-                >
-                  E-MAIL*
-                </Text>
+              <View style={styles.fieldContainerMobile}>
+                <Text style={styles.fieldLabelMobile}>E-MAIL*</Text>
                 <TextInput
                   style={[
-                    styles.textInput,
+                    styles.textInputMobile,
                     focusedField === "email" && styles.textInputFocused,
-                    bp.isTabletOrMobile && styles.textInputTabletOrMobile,
-                    bp.isMobile && styles.textInputMobile,
                   ]}
                   placeholder="tuemail@gmail.com"
                   placeholderTextColor="#888"
@@ -256,40 +232,16 @@ const ContactSection = ({
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
-                <Text
-                  style={[
-                    styles.errorText,
-                    bp.isTabletOrMobile && styles.errorTextTabletOrMobile,
-                    bp.isMobile && styles.errorTextMobile,
-                  ]}
-                >
-                  {errors.email || " "}
-                </Text>
+                <Text style={styles.errorTextMobile}>{errors.email || " "}</Text>
               </View>
 
               {/* First Name Field */}
-              <View
-                style={[
-                  styles.fieldContainer,
-                  bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
-                  bp.isMobile && styles.fieldContainerMobile,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.fieldLabel,
-                    bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
-                    bp.isMobile && styles.fieldLabelMobile,
-                  ]}
-                >
-                  NOMBRE*
-                </Text>
+              <View style={styles.fieldContainerMobile}>
+                <Text style={styles.fieldLabelMobile}>NOMBRE*</Text>
                 <TextInput
                   style={[
-                    styles.textInput,
+                    styles.textInputMobile,
                     focusedField === "firstName" && styles.textInputFocused,
-                    bp.isTabletOrMobile && styles.textInputTabletOrMobile,
-                    bp.isMobile && styles.textInputMobile,
                   ]}
                   placeholder="Tu nombre"
                   placeholderTextColor="#888"
@@ -298,87 +250,16 @@ const ContactSection = ({
                   onFocus={() => setFocusedField("firstName")}
                   onBlur={() => setFocusedField(null)}
                 />
-                <Text
-                  style={[
-                    styles.errorText,
-                    bp.isTabletOrMobile && styles.errorTextTabletOrMobile,
-                    bp.isMobile && styles.errorTextMobile,
-                  ]}
-                >
-                  {errors.firstName || " "}
-                </Text>
-              </View>
-            </View>
-
-            {/* Right Column */}
-            <View
-              style={[styles.rightColumn, bp.isMobile && styles.columnMobile]}
-            >
-              {/* Company Field */}
-              <View
-                style={[
-                  styles.fieldContainer,
-                  bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
-                  bp.isMobile && styles.fieldContainerMobile,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.fieldLabel,
-                    bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
-                    bp.isMobile && styles.fieldLabelMobile,
-                  ]}
-                >
-                  EMPRESA*
-                </Text>
-                <TextInput
-                  style={[
-                    styles.textInput,
-                    focusedField === "company" && styles.textInputFocused,
-                    bp.isTabletOrMobile && styles.textInputTabletOrMobile,
-                    bp.isMobile && styles.textInputMobile,
-                  ]}
-                  placeholder="Nombre de tu empresa"
-                  placeholderTextColor="#888"
-                  value={formData.company}
-                  onChangeText={(text) => updateFormData("company", text)}
-                  onFocus={() => setFocusedField("company")}
-                  onBlur={() => setFocusedField(null)}
-                />
-                <Text
-                  style={[
-                    styles.errorText,
-                    bp.isTabletOrMobile && styles.errorTextTabletOrMobile,
-                    bp.isMobile && styles.errorTextMobile,
-                  ]}
-                >
-                  {errors.company || " "}
-                </Text>
+                <Text style={styles.errorTextMobile}>{errors.firstName || " "}</Text>
               </View>
 
               {/* Last Name Field */}
-              <View
-                style={[
-                  styles.fieldContainer,
-                  bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
-                  bp.isMobile && styles.fieldContainerMobile,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.fieldLabel,
-                    bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
-                    bp.isMobile && styles.fieldLabelMobile,
-                  ]}
-                >
-                  APELLIDO*
-                </Text>
+              <View style={styles.fieldContainerMobile}>
+                <Text style={styles.fieldLabelMobile}>APELLIDO*</Text>
                 <TextInput
                   style={[
-                    styles.textInput,
+                    styles.textInputMobile,
                     focusedField === "lastName" && styles.textInputFocused,
-                    bp.isTabletOrMobile && styles.textInputTabletOrMobile,
-                    bp.isMobile && styles.textInputMobile,
                   ]}
                   placeholder="Tu apellido"
                   placeholderTextColor="#888"
@@ -387,149 +268,390 @@ const ContactSection = ({
                   onFocus={() => setFocusedField("lastName")}
                   onBlur={() => setFocusedField(null)}
                 />
-                <Text
+                <Text style={styles.errorTextMobile}>{errors.lastName || " "}</Text>
+              </View>
+
+              {/* Company Field */}
+              <View style={styles.fieldContainerMobile}>
+                <Text style={styles.fieldLabelMobile}>EMPRESA*</Text>
+                <TextInput
                   style={[
-                    styles.errorText,
-                    bp.isTabletOrMobile && styles.errorTextTabletOrMobile,
-                    bp.isMobile && styles.errorTextMobile,
+                    styles.textInputMobile,
+                    focusedField === "company" && styles.textInputFocused,
                   ]}
-                >
-                  {errors.lastName || " "}
-                </Text>
+                  placeholder="Nombre de tu empresa"
+                  placeholderTextColor="#888"
+                  value={formData.company}
+                  onChangeText={(text) => updateFormData("company", text)}
+                  onFocus={() => setFocusedField("company")}
+                  onBlur={() => setFocusedField(null)}
+                />
+                <Text style={styles.errorTextMobile}>{errors.company || " "}</Text>
               </View>
             </View>
-          </View>
-
-          {/* Phone Field - Full Width */}
-          <View
-            style={[
-              styles.fieldContainer,
-              bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
-              bp.isMobile && styles.fieldContainerMobile,
-            ]}
-          >
-            <Text
-              style={[
-                styles.fieldLabel,
-                bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
-                bp.isMobile && styles.fieldLabelMobile,
-              ]}
-            >
-              TELÉFONO*
-            </Text>
+          ) : (
+            // Desktop/Tablet: Two column layout
             <View
               style={[
-                styles.phoneContainer,
-                bp.isTabletOrMobile && styles.phoneContainerTabletOrMobile,
-                bp.isMobile && styles.phoneContainerMobile,
+                styles.formContent,
+                bp.isTabletOrMobile && styles.formContentTabletOrMobile,
               ]}
             >
-              <TextInput
-                style={[
-                  styles.phoneInput,
-                  styles.countryCode,
-                  bp.isTabletOrMobile && styles.phoneInputTabletOrMobile,
-                  bp.isMobile && styles.phoneInputMobile,
-                ]}
-                value={formData.countryCode}
-                onChangeText={(text) => updateFormData("countryCode", text)}
-                placeholder="+54"
-                placeholderTextColor="#888"
-              />
-              <TextInput
-                style={[
-                  styles.phoneInput,
-                  styles.areaCode,
-                  focusedField === "areaCode" && styles.textInputFocused,
-                  bp.isTabletOrMobile && styles.phoneInputTabletOrMobile,
-                  bp.isMobile && styles.phoneInputMobile,
-                ]}
-                value={formData.areaCode}
-                onChangeText={(text) => updateFormData("areaCode", text)}
-                placeholder="9"
-                placeholderTextColor="#888"
-                keyboardType="numeric"
-                onFocus={() => setFocusedField("areaCode")}
-                onBlur={() => setFocusedField(null)}
-              />
-              <TextInput
-                style={[
-                  styles.phoneInput,
-                  styles.phoneNumber,
-                  focusedField === "phoneNumber" && styles.textInputFocused,
-                  bp.isTabletOrMobile && styles.phoneInputTabletOrMobile,
-                  bp.isMobile && styles.phoneInputMobile,
-                ]}
-                value={formData.phoneNumber}
-                onChangeText={(text) => updateFormData("phoneNumber", text)}
-                placeholder="011 222233"
-                placeholderTextColor="#888"
-                keyboardType="numeric"
-                onFocus={() => setFocusedField("phoneNumber")}
-                onBlur={() => setFocusedField(null)}
-                editable={true}
-                selectTextOnFocus={true}
-              />
-            </View>
-            <Text
-              style={[
-                styles.errorText,
-                bp.isTabletOrMobile && styles.errorTextTabletOrMobile,
-                bp.isMobile && styles.errorTextMobile,
-              ]}
-            >
-              {errors.areaCode || errors.phoneNumber
-                ? "Teléfono completo es requerido"
-                : " "}
-            </Text>
-          </View>
+              {/* Left Column */}
+              <View style={styles.leftColumn}>
+                {/* Email Field */}
+                <View
+                  style={[
+                    styles.fieldContainer,
+                    bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.fieldLabel,
+                      bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
+                    ]}
+                  >
+                    E-MAIL*
+                  </Text>
+                  <TextInput
+                    style={[
+                      styles.textInput,
+                      focusedField === "email" && styles.textInputFocused,
+                      bp.isTabletOrMobile && styles.textInputTabletOrMobile,
+                    ]}
+                    placeholder="tuemail@gmail.com"
+                    placeholderTextColor="#888"
+                    value={formData.email}
+                    onChangeText={(text) => updateFormData("email", text)}
+                    onFocus={() => setFocusedField("email")}
+                    onBlur={() => setFocusedField(null)}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                  <Text
+                    style={[
+                      styles.errorText,
+                      bp.isTabletOrMobile && styles.errorTextTabletOrMobile,
+                    ]}
+                  >
+                    {errors.email || " "}
+                  </Text>
+                </View>
 
-          {/* Message Field - Full Width */}
-          <View
-            style={[
-              styles.fieldContainer,
-              bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
-              bp.isMobile && styles.fieldContainerMobile,
-            ]}
-          >
-            <Text
+                {/* First Name Field */}
+                <View
+                  style={[
+                    styles.fieldContainer,
+                    bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.fieldLabel,
+                      bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
+                    ]}
+                  >
+                    NOMBRE*
+                  </Text>
+                  <TextInput
+                    style={[
+                      styles.textInput,
+                      focusedField === "firstName" && styles.textInputFocused,
+                      bp.isTabletOrMobile && styles.textInputTabletOrMobile,
+                    ]}
+                    placeholder="Tu nombre"
+                    placeholderTextColor="#888"
+                    value={formData.firstName}
+                    onChangeText={(text) => updateFormData("firstName", text)}
+                    onFocus={() => setFocusedField("firstName")}
+                    onBlur={() => setFocusedField(null)}
+                  />
+                  <Text
+                    style={[
+                      styles.errorText,
+                      bp.isTabletOrMobile && styles.errorTextTabletOrMobile,
+                    ]}
+                  >
+                    {errors.firstName || " "}
+                  </Text>
+                </View>
+              </View>
+
+              {/* Right Column */}
+              <View style={styles.rightColumn}>
+                {/* Company Field */}
+                <View
+                  style={[
+                    styles.fieldContainer,
+                    bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.fieldLabel,
+                      bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
+                    ]}
+                  >
+                    EMPRESA*
+                  </Text>
+                  <TextInput
+                    style={[
+                      styles.textInput,
+                      focusedField === "company" && styles.textInputFocused,
+                      bp.isTabletOrMobile && styles.textInputTabletOrMobile,
+                    ]}
+                    placeholder="Nombre de tu empresa"
+                    placeholderTextColor="#888"
+                    value={formData.company}
+                    onChangeText={(text) => updateFormData("company", text)}
+                    onFocus={() => setFocusedField("company")}
+                    onBlur={() => setFocusedField(null)}
+                  />
+                  <Text
+                    style={[
+                      styles.errorText,
+                      bp.isTabletOrMobile && styles.errorTextTabletOrMobile,
+                    ]}
+                  >
+                    {errors.company || " "}
+                  </Text>
+                </View>
+
+                {/* Last Name Field */}
+                <View
+                  style={[
+                    styles.fieldContainer,
+                    bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.fieldLabel,
+                      bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
+                    ]}
+                  >
+                    APELLIDO*
+                  </Text>
+                  <TextInput
+                    style={[
+                      styles.textInput,
+                      focusedField === "lastName" && styles.textInputFocused,
+                      bp.isTabletOrMobile && styles.textInputTabletOrMobile,
+                    ]}
+                    placeholder="Tu apellido"
+                    placeholderTextColor="#888"
+                    value={formData.lastName}
+                    onChangeText={(text) => updateFormData("lastName", text)}
+                    onFocus={() => setFocusedField("lastName")}
+                    onBlur={() => setFocusedField(null)}
+                  />
+                  <Text
+                    style={[
+                      styles.errorText,
+                      bp.isTabletOrMobile && styles.errorTextTabletOrMobile,
+                    ]}
+                  >
+                    {errors.lastName || " "}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {/* Phone Field - Full Width */}
+          {bp.isMobile ? (
+            <View style={styles.fieldContainerMobile}>
+              <Text style={styles.fieldLabelMobile}>TELÉFONO*</Text>
+              <View style={styles.phoneContainerMobile}>
+                <TextInput
+                  style={[styles.phoneInputMobile, styles.countryCodeMobile]}
+                  value={formData.countryCode}
+                  onChangeText={(text) => updateFormData("countryCode", text)}
+                  placeholder="+54"
+                  placeholderTextColor="#888"
+                />
+                <TextInput
+                  style={[
+                    styles.phoneInputMobile,
+                    styles.areaCodeMobile,
+                    focusedField === "areaCode" && styles.textInputFocused,
+                  ]}
+                  value={formData.areaCode}
+                  onChangeText={(text) => updateFormData("areaCode", text)}
+                  placeholder="9"
+                  placeholderTextColor="#888"
+                  keyboardType="numeric"
+                  onFocus={() => setFocusedField("areaCode")}
+                  onBlur={() => setFocusedField(null)}
+                />
+                <TextInput
+                  style={[
+                    styles.phoneInputMobile,
+                    styles.phoneNumberMobile,
+                    focusedField === "phoneNumber" && styles.textInputFocused,
+                  ]}
+                  value={formData.phoneNumber}
+                  onChangeText={(text) => updateFormData("phoneNumber", text)}
+                  placeholder="011 222233"
+                  placeholderTextColor="#888"
+                  keyboardType="numeric"
+                  onFocus={() => setFocusedField("phoneNumber")}
+                  onBlur={() => setFocusedField(null)}
+                  editable={true}
+                  selectTextOnFocus={true}
+                />
+              </View>
+              <Text style={styles.errorTextMobile}>
+                {errors.areaCode || errors.phoneNumber
+                  ? "Teléfono completo es requerido"
+                  : " "}
+              </Text>
+            </View>
+          ) : (
+            <View
               style={[
-                styles.fieldLabel,
-                bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
-                bp.isMobile && styles.fieldLabelMobile,
+                styles.fieldContainer,
+                bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
               ]}
             >
-              DEJANOS TU CONSULTA O SOLICITUD DE COTIZACIÓN*
-            </Text>
-            <TextInput
-              style={[
-                styles.textArea,
-                focusedField === "message" && styles.textInputFocused,
-                bp.isTabletOrMobile && styles.textAreaTabletOrMobile,
-                bp.isMobile && styles.textAreaMobile,
-              ]}
-              placeholder="Cuéntanos sobre tu proyecto, necesidades específicas, presupuesto estimado, tiempos, etc."
-              placeholderTextColor="#888"
-              value={formData.message}
-              onChangeText={(text) => updateFormData("message", text)}
-              onFocus={() => setFocusedField("message")}
-              onBlur={() => setFocusedField(null)}
-              multiline
-              numberOfLines={5}
-              textAlignVertical="top"
-            />
-            {errors.message && (
+              <Text
+                style={[
+                  styles.fieldLabel,
+                  bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
+                ]}
+              >
+                TELÉFONO*
+              </Text>
+              <View
+                style={[
+                  styles.phoneContainer,
+                  bp.isTabletOrMobile && styles.phoneContainerTabletOrMobile,
+                ]}
+              >
+                <TextInput
+                  style={[
+                    styles.phoneInput,
+                    styles.countryCode,
+                    bp.isTabletOrMobile && styles.phoneInputTabletOrMobile,
+                  ]}
+                  value={formData.countryCode}
+                  onChangeText={(text) => updateFormData("countryCode", text)}
+                  placeholder="+54"
+                  placeholderTextColor="#888"
+                />
+                <TextInput
+                  style={[
+                    styles.phoneInput,
+                    styles.areaCode,
+                    focusedField === "areaCode" && styles.textInputFocused,
+                    bp.isTabletOrMobile && styles.phoneInputTabletOrMobile,
+                  ]}
+                  value={formData.areaCode}
+                  onChangeText={(text) => updateFormData("areaCode", text)}
+                  placeholder="9"
+                  placeholderTextColor="#888"
+                  keyboardType="numeric"
+                  onFocus={() => setFocusedField("areaCode")}
+                  onBlur={() => setFocusedField(null)}
+                />
+                <TextInput
+                  style={[
+                    styles.phoneInput,
+                    styles.phoneNumber,
+                    focusedField === "phoneNumber" && styles.textInputFocused,
+                    bp.isTabletOrMobile && styles.phoneInputTabletOrMobile,
+                  ]}
+                  value={formData.phoneNumber}
+                  onChangeText={(text) => updateFormData("phoneNumber", text)}
+                  placeholder="011 222233"
+                  placeholderTextColor="#888"
+                  keyboardType="numeric"
+                  onFocus={() => setFocusedField("phoneNumber")}
+                  onBlur={() => setFocusedField(null)}
+                  editable={true}
+                  selectTextOnFocus={true}
+                />
+              </View>
               <Text
                 style={[
                   styles.errorText,
                   bp.isTabletOrMobile && styles.errorTextTabletOrMobile,
-                  bp.isMobile && styles.errorTextMobile,
                 ]}
               >
-                {errors.message}
+                {errors.areaCode || errors.phoneNumber
+                  ? "Teléfono completo es requerido"
+                  : " "}
               </Text>
-            )}
-          </View>
+            </View>
+          )}
+
+          {/* Message Field - Full Width */}
+          {bp.isMobile ? (
+            <View style={styles.fieldContainerMobile}>
+              <Text style={styles.fieldLabelMobile}>CONSULTA*</Text>
+              <TextInput
+                style={[
+                  styles.textAreaMobile,
+                  focusedField === "message" && styles.textInputFocused,
+                ]}
+                placeholder="Cuéntanos sobre tu proyecto, necesidades específicas, presupuesto estimado, tiempos, etc."
+                placeholderTextColor="#888"
+                value={formData.message}
+                onChangeText={(text) => updateFormData("message", text)}
+                onFocus={() => setFocusedField("message")}
+                onBlur={() => setFocusedField(null)}
+                multiline
+                numberOfLines={5}
+                textAlignVertical="top"
+              />
+              {errors.message && (
+                <Text style={styles.errorTextMobile}>{errors.message}</Text>
+              )}
+            </View>
+          ) : (
+            <View
+              style={[
+                styles.fieldContainer,
+                bp.isTabletOrMobile && styles.fieldContainerTabletOrMobile,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.fieldLabel,
+                  bp.isTabletOrMobile && styles.fieldLabelTabletOrMobile,
+                ]}
+              >
+                DEJANOS TU CONSULTA O SOLICITUD DE COTIZACIÓN*
+              </Text>
+              <TextInput
+                style={[
+                  styles.textArea,
+                  focusedField === "message" && styles.textInputFocused,
+                  bp.isTabletOrMobile && styles.textAreaTabletOrMobile,
+                ]}
+                placeholder="Cuéntanos sobre tu proyecto, necesidades específicas, presupuesto estimado, tiempos, etc."
+                placeholderTextColor="#888"
+                value={formData.message}
+                onChangeText={(text) => updateFormData("message", text)}
+                onFocus={() => setFocusedField("message")}
+                onBlur={() => setFocusedField(null)}
+                multiline
+                numberOfLines={5}
+                textAlignVertical="top"
+              />
+              {errors.message && (
+                <Text
+                  style={[
+                    styles.errorText,
+                    bp.isTabletOrMobile && styles.errorTextTabletOrMobile,
+                  ]}
+                >
+                  {errors.message}
+                </Text>
+              )}
+            </View>
+          )}
 
           {/* Submit Button */}
           <View
@@ -588,6 +710,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     paddingVertical: 80,
     alignItems: "center",
+    minHeight: "100vh",
+    marginTop: -50,
   },
   contentWrapper: {
     width: "40%",
@@ -595,12 +719,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   contentWrapperTabletOrMobile: {
-    width: "60%",
+    width: "70%",
     paddingHorizontal: 16,
   },
   contentWrapperMobile: {
-    width: "90%",
-    paddingHorizontal: 12,
+    width: "95%",
+    paddingHorizontal: 8,
   },
   titleContainer: {
     flexDirection: "row",
@@ -620,7 +744,7 @@ const styles = StyleSheet.create({
   titleDecorationLeft: {
     width: 60,
     height: 3,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     marginRight: 30,
     borderRadius: 2,
   },
@@ -637,7 +761,7 @@ const styles = StyleSheet.create({
   titleDecorationRight: {
     width: 60,
     height: 3,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     marginLeft: 30,
     borderRadius: 2,
   },
@@ -647,7 +771,7 @@ const styles = StyleSheet.create({
   sectionSubtitle: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#ff6b35",
+    color: "#FF6600",
     letterSpacing: 3,
     marginBottom: 12,
     textTransform: "uppercase",
@@ -719,11 +843,11 @@ const styles = StyleSheet.create({
   },
   formContainerTabletOrMobile: {
     borderRadius: 20,
-    padding: 30,
+    padding: 25,
   },
   formContainerMobile: {
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 12,
+    padding: 16,
   },
   formHeader: {
     alignItems: "center",
@@ -752,7 +876,7 @@ const styles = StyleSheet.create({
   formTitleUnderline: {
     width: 80,
     height: 4,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     borderRadius: 2,
   },
   formTitleUnderlineTabletOrMobile: {
@@ -792,22 +916,27 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   fieldContainerMobile: {
-    marginBottom: 6,
+    marginBottom: 12,
   },
   fieldLabel: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#ff6b35",
+    color: "#FF6600",
     marginBottom: 8,
     letterSpacing: 0.5,
+    flexWrap: "wrap",
   },
   fieldLabelTabletOrMobile: {
     fontSize: 11,
     marginBottom: 7,
   },
   fieldLabelMobile: {
-    fontSize: 10,
-    marginBottom: 6,
+    fontSize: 12,
+    marginBottom: 8,
+    lineHeight: 16,
+    color: "#FF6600",
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
   textInput: {
     backgroundColor: "#2a2a2a",
@@ -818,6 +947,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     borderWidth: 2,
     borderColor: "#444",
+    width: "100%",
     //@ts-ignore
     transition: "transform 0.2s ease-in-out",
   },
@@ -828,20 +958,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   textInputMobile: {
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 13,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    fontSize: 16,
+    minHeight: 48,
+    color: "#fff",
+    backgroundColor: "#2a2a2a",
+    borderWidth: 2,
+    borderColor: "#444",
   },
   textInputFocused: {
-    borderColor: "#ff6b35",
+    borderColor: "#FF6600",
     backgroundColor: "#333",
     elevation: 4,
-    shadowColor: "#ff6b35",
+    shadowColor: "#FF6600",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
-    transform: [{ scale: 1.05 }],
+    transform: [{ scale: 1.02 }],
   },
   textInputError: {
     borderColor: "#ff4444",
@@ -857,6 +992,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#444",
     minHeight: 120,
+    width: "100%",
     transition: "transform 0.2s ease-in-out",
   },
   textAreaTabletOrMobile: {
@@ -867,11 +1003,15 @@ const styles = StyleSheet.create({
     minHeight: 100,
   },
   textAreaMobile: {
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 13,
-    minHeight: 80,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    fontSize: 16,
+    minHeight: 120,
+    color: "#fff",
+    backgroundColor: "#2a2a2a",
+    borderWidth: 2,
+    borderColor: "#444",
   },
   phoneContainer: {
     flexDirection: "row",
@@ -879,10 +1019,12 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   phoneContainerTabletOrMobile: {
-    gap: 12,
+    gap: 10,
   },
   phoneContainerMobile: {
-    gap: 8,
+    gap: 6,
+    flexDirection: "row",
+    width: "100%",
   },
   phoneInput: {
     backgroundColor: "#2a2a2a",
@@ -898,26 +1040,35 @@ const styles = StyleSheet.create({
   },
   phoneInputTabletOrMobile: {
     borderRadius: 10,
-    paddingHorizontal: 14,
+    paddingHorizontal: 12,
     paddingVertical: 12,
     fontSize: 14,
   },
   phoneInputMobile: {
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    fontSize: 13,
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 14,
+    fontSize: 14,
+    minHeight: 48,
+    color: "#fff",
+    backgroundColor: "#2a2a2a",
+    borderWidth: 2,
+    borderColor: "#444",
+    textAlign: "center",
   },
   countryCode: {
-    flex: 1,
-    maxWidth: 80,
+    flex: 0,
+    width: 80,
+    minWidth: 60,
   },
   areaCode: {
-    flex: 1,
-    maxWidth: 80,
+    flex: 0,
+    width: 70,
+    minWidth: 50,
   },
   phoneNumber: {
-    flex: 3,
+    flex: 1,
+    minWidth: 100,
   },
   errorText: {
     color: "#ff4444",
@@ -933,6 +1084,9 @@ const styles = StyleSheet.create({
   errorTextMobile: {
     fontSize: 9,
     marginTop: 4,
+    color: "#ff4444",
+    fontWeight: "600",
+    marginLeft: 5,
   },
   submitContainer: {
     alignItems: "center",
@@ -965,16 +1119,33 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 16,
     marginBottom: 5,
+    paddingHorizontal: 10,
   },
   privacyTextTabletOrMobile: {
     fontSize: 11,
     lineHeight: 15,
     marginBottom: 4,
+    paddingHorizontal: 8,
   },
   privacyTextMobile: {
-    fontSize: 10,
-    lineHeight: 14,
-    marginBottom: 3,
+    fontSize: 11,
+    lineHeight: 16,
+    marginBottom: 4,
+    paddingHorizontal: 5,
+    color: "#888",
+    textAlign: "center",
+  },
+  countryCodeMobile: {
+    width: 60,
+    minWidth: 50,
+  },
+  areaCodeMobile: {
+    width: 60,
+    minWidth: 45,
+  },
+  phoneNumberMobile: {
+    flex: 1,
+    minWidth: 80,
   },
 });
 

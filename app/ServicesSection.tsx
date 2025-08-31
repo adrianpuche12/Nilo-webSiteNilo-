@@ -10,6 +10,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import ServiceCard from "@/components/ui/ServiceCard";
+import { useSequentialAnimation, useFadeInAnimation } from "@/components/animations/ModernAnimations";
 
 interface Service {
   id: number;
@@ -85,10 +86,9 @@ const ServicesSection = ({
   const { width } = useWindowDimensions();
   const bp = useBreakpoint();
 
-  const cardAnimations = services.map(() => ({
-    opacity: useSharedValue(0),
-    translateX: useSharedValue(-100),
-  }));
+  // Usar las nuevas animaciones modernas
+  const titleAnimation = useFadeInAnimation(0, 800);
+  const cardAnimations = useSequentialAnimation(services, isView ? 200 : 0);
 
   const handleServicePress = (service: Service) => {
     if (onServicePress) {
@@ -97,72 +97,33 @@ const ServicesSection = ({
     console.log(`Navegando a: ${service.route}`);
   };
 
-  useEffect(() => {
-    if (isView) {
-      // Animar cada card con delay escalonado
-      cardAnimations.forEach((animation, index) => {
-        const delay = index * 150;
-
-        animation.opacity.value = withDelay(
-          delay,
-          withTiming(1, { duration: 600 })
-        );
-        animation.translateX.value = withDelay(
-          delay,
-          withSpring(0, {
-            damping: 20,
-            stiffness: 100,
-          })
-        );
-      });
-    } else {
-      cardAnimations.forEach((animation) => {
-        animation.opacity.value = withTiming(0, { duration: 300 });
-        animation.translateX.value = withTiming(-100, { duration: 300 });
-      });
-    }
-  }, [isView]);
-
-  const getAnimatedStyle = (index: number) => {
-    return useAnimatedStyle(() => ({
-      opacity: cardAnimations[index].opacity.value,
-      transform: [{ translateX: cardAnimations[index].translateX.value }],
-    }));
-  };
-
   const getColumnsAndWidth = () => {
-    let columns = 3;
-    let gap = 24;
-    let horizontalPadding = 40;
-
+    let cardWidth;
+    let gap = 30;
+    
     if (bp.isMobile) {
-      columns = 2;
-      gap = 14;
-      horizontalPadding = 28;
-    } else if (bp.isTablet) {
-      columns = 3;
-      gap = 16;
-      horizontalPadding = 32;
-    } else if (bp.isDesktop) {
-      columns = 4;
-      gap = 20;
-      horizontalPadding = 36;
-    } else if (bp.isLargeDesktop) {
-      columns = 6;
-      gap = 24;
-      horizontalPadding = 40;
+      cardWidth = Math.min(width - 40, 400); // Card centrada en mobile
+    } else {
+      // Desktop/Tablet: 2 cards por fila
+      const containerPadding = 40; // ContentWrapper padding
+      const availableWidth = Math.min(width - (containerPadding * 2), 1400); // Max container width
+      cardWidth = Math.floor((availableWidth - gap) / 2); // 2 columnas exactas
     }
 
-    const availableWidth = width - horizontalPadding;
-    const cardWidth = (availableWidth - gap * (columns - 1)) / columns;
-
-    return { columns, cardWidth, gap };
+    return { cardWidth, gap };
   };
 
   const { cardWidth, gap } = getColumnsAndWidth();
 
   return (
     <View style={styles.container}>
+      <View style={styles.parallaxBackground} />
+      <View style={styles.floatingShapes}>
+        <View style={[styles.floatingShape, styles.shape1]} />
+        <View style={[styles.floatingShape, styles.shape2]} />
+        <View style={[styles.floatingShape, styles.shape3]} />
+      </View>
+      
       <View
         style={[
           styles.contentWrapper,
@@ -177,23 +138,7 @@ const ServicesSection = ({
             bp.isMobile && styles.titleContainerMobile,
           ]}
         >
-          <View
-            style={[
-              styles.titleDecorationLeft,
-              bp.isTablet && styles.titleDecorationTablet,
-              bp.isMobile && styles.titleDecorationMobile,
-            ]}
-          />
-          <View style={styles.titleWrapper}>
-            <Text
-              style={[
-                styles.sectionSubtitle,
-                bp.isTablet && styles.sectionSubtitleTablet,
-                bp.isMobile && styles.sectionSubtitleMobile,
-              ]}
-            >
-              Lo que hacemos
-            </Text>
+          <View style={styles.headerSection}>
             <Text
               style={[
                 styles.sectionTitle,
@@ -203,20 +148,22 @@ const ServicesSection = ({
             >
               Nuestros <Text style={styles.titleAccent}>Servicios</Text>
             </Text>
+            <Text
+              style={[
+                styles.sectionDescription,
+                bp.isTablet && styles.sectionDescriptionTablet,
+                bp.isMobile && styles.sectionDescriptionMobile,
+              ]}
+            >
+              Transformamos ideas en experiencias digitales extraordinarias que impulsan tu negocio hacia el futuro
+            </Text>
           </View>
-          <View
-            style={[
-              styles.titleDecorationRight,
-              bp.isTablet && styles.titleDecorationTablet,
-              bp.isMobile && styles.titleDecorationMobile,
-            ]}
-          />
         </View>
 
         <View
           style={[
             styles.servicesGrid,
-            { gap },
+            { gap: bp.isMobile ? 0 : 30 },
             bp.isTablet && styles.servicesGridTablet,
             bp.isMobile && styles.servicesGridMobile,
           ]}
@@ -224,7 +171,21 @@ const ServicesSection = ({
           {services.map((service, index) => (
             <Animated.View
               key={service.id}
-              style={[getAnimatedStyle(index), { width: cardWidth }]}
+              style={[
+                cardAnimations[index], 
+                { 
+                  width: cardWidth,
+                  marginBottom: 30,
+                  ...(bp.isMobile && { 
+                    alignSelf: 'center',
+                    marginHorizontal: 'auto'
+                  }),
+                  ...(!bp.isMobile && {
+                    flexBasis: `${Math.floor((cardWidth / (Math.min(width - 80, 1400))) * 100)}%`,
+                    maxWidth: cardWidth
+                  })
+                }
+              ]}
             >
               <ServiceCard
                 service={service}
@@ -259,11 +220,56 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     paddingVertical: 80,
     alignItems: "center",
+    position: "relative",
+    overflow: "hidden",
+    marginTop: 27,
+  },
+  parallaxBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: "radial-gradient(circle at 20% 80%, rgba(255, 102, 0, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 102, 0, 0.12) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(255, 102, 0, 0.06) 0%, transparent 50%)",
+  },
+  floatingShapes: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    overflow: "hidden",
+    zIndex: 1,
+  },
+  floatingShape: {
+    position: "absolute",
+    backgroundColor: "rgba(255, 102, 0, 0.1)",
+    borderRadius: 50,
+  },
+  shape1: {
+    width: 80,
+    height: 80,
+    top: "20%",
+    left: "10%",
+  },
+  shape2: {
+    width: 120,
+    height: 120,
+    top: "60%",
+    right: "15%",
+  },
+  shape3: {
+    width: 60,
+    height: 60,
+    top: "80%",
+    left: "20%",
   },
   contentWrapper: {
     width: "100%",
-    maxWidth: 1200,
+    maxWidth: 1400,
     paddingHorizontal: 20,
+    position: "relative",
+    zIndex: 2,
   },
   contentWrapperTablet: {
     paddingHorizontal: 16,
@@ -272,11 +278,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   titleContainer: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 60,
+    marginBottom: 80,
     paddingHorizontal: 20,
+  },
+  headerSection: {
+    alignItems: "center",
+    textAlign: "center",
   },
   titleContainerTablet: {
     marginBottom: 50,
@@ -289,14 +298,14 @@ const styles = StyleSheet.create({
   titleDecorationLeft: {
     width: 50,
     height: 3,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     marginRight: 25,
     borderRadius: 2,
   },
   titleDecorationRight: {
     width: 50,
     height: 3,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     marginLeft: 25,
     borderRadius: 2,
   },
@@ -316,7 +325,7 @@ const styles = StyleSheet.create({
   sectionSubtitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#ff6b35",
+    color: "#FF6600",
     letterSpacing: 3,
     marginBottom: 12,
     textTransform: "uppercase",
@@ -332,23 +341,43 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   sectionTitle: {
-    fontSize: 40,
-    fontWeight: "800",
+    fontSize: 64,
+    fontWeight: "700",
     color: "#fff",
     textAlign: "center",
     letterSpacing: 0.5,
-    lineHeight: 42,
+    lineHeight: 68,
+    marginBottom: 20,
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 4 },
+    textShadowRadius: 20,
   },
   sectionTitleTablet: {
+    fontSize: 48,
+    lineHeight: 52,
+  },
+  sectionTitleMobile: {
     fontSize: 32,
     lineHeight: 36,
   },
-  sectionTitleMobile: {
-    fontSize: 24,
+  sectionDescription: {
+    fontSize: 20,
+    color: "rgba(255, 255, 255, 0.9)",
+    textAlign: "center",
     lineHeight: 28,
+    maxWidth: 600,
+    marginTop: 10,
+  },
+  sectionDescriptionTablet: {
+    fontSize: 18,
+    lineHeight: 24,
+  },
+  sectionDescriptionMobile: {
+    fontSize: 16,
+    lineHeight: 22,
   },
   titleAccent: {
-    color: "#ff6b35",
+    color: "#FF6600",
     fontStyle: "italic",
   },
   servicesGrid: {
@@ -356,6 +385,8 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     marginBottom: 50,
+    width: "100%",
+    alignItems: "stretch",
   },
   servicesGridTablet: {
     marginBottom: 40,
@@ -363,6 +394,8 @@ const styles = StyleSheet.create({
   servicesGridMobile: {
     marginBottom: 30,
     justifyContent: "center",
+    flexDirection: "column",
+    alignItems: "center",
   },
 });
 

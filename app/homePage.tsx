@@ -123,7 +123,7 @@ const NiloSolutionsHome = () => {
             >
               <View style={[styles.cardHeader, bp.isMobile && styles.cardHeaderMobile]}>
                 <View style={[styles.cardDots, bp.isMobile && styles.cardDotsMobile]}>
-                  <View style={[styles.dot, { backgroundColor: "#ff6b35" }, bp.isMobile && styles.dotMobile]} />
+                  <View style={[styles.dot, { backgroundColor: "#FF6600" }, bp.isMobile && styles.dotMobile]} />
                   <View style={[styles.dot, { backgroundColor: "#fff" }, bp.isMobile && styles.dotMobile]} />
                   <View style={[styles.dot, { backgroundColor: "#fff" }, bp.isMobile && styles.dotMobile]} />
                 </View>
@@ -280,9 +280,10 @@ const styles = StyleSheet.create({
     minHeight: height * 0.75,
   },
   heroSectionMobile: {
-    paddingVertical: 40,
+    paddingVertical: 50,
     paddingHorizontal: 12,
-    minHeight: "auto",
+    minHeight: height * 0.6,
+    paddingBottom: 60,
   },
 
   /* -------- HERO CONTENT -------- */
@@ -321,7 +322,7 @@ const styles = StyleSheet.create({
   /* -------- HERO SUBTITLE -------- */
   heroSubtitle: {
     fontSize: 14,
-    color: "#ff6b35",
+    color: "#FF6600",
     fontWeight: "600",
     letterSpacing: 2,
     marginBottom: 20,
@@ -356,7 +357,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   heroTitleAccent: {
-    color: "#ff6b35",
+    color: "#FF6600",
   },
 
   /* -------- HERO DESCRIPTION -------- */
@@ -493,7 +494,7 @@ const styles = StyleSheet.create({
   /* -------- CARD SUBTITLE -------- */
   cardSubtitle: {
     fontSize: 16,
-    color: "#ff6b35",
+    color: "#FF6600",
     marginBottom: 24,
   },
   cardSubtitleTabletOrMobile: {
@@ -524,7 +525,7 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#ff6b35",
+    color: "#FF6600",
     marginBottom: 4,
   },
   statNumberTabletOrMobile: {
@@ -569,7 +570,7 @@ const styles = StyleSheet.create({
   circle1: {
     width: 100,
     height: 100,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     top: 20,
     right: 20,
   },
@@ -613,7 +614,7 @@ const styles = StyleSheet.create({
   diamond1: {
     width: 80,
     height: 80,
-    backgroundColor: "#ff6b35",
+    backgroundColor: "#FF6600",
     bottom: 40,
     right: 60,
   },

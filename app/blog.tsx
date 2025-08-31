@@ -184,44 +184,10 @@ const styles = StyleSheet.create({
   hiddenForm: {
     top: 99999,
   },
-  hideFormButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    backgroundColor: "#ff6b35",
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 30,
-    elevation: 3,
-    shadowColor: "#ff6b35",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-  },
-  mobileHideFormButton: {
-    position: "fixed", // o "absolute" si fixed no funciona en React Native
-    left: "auto",
-    top: "98%", // Centrado verticalmente
-   // Ajustar para centrar exactamente
-    borderRadius: 0,
-    borderTopLeftRadius: 30,
-    borderBottomLeftRadius: 30,
-    paddingHorizontal: 16,
-    right: 0, // Resetear el right del estilo padre
-    bottom: "auto",
-  },
-  hideFormButtonText: {
-    color: "#fff",
-    fontSize: 16,
+  buttonContainer: {
     alignSelf: "center",
-  },
-  hidePostDetailsButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    backgroundColor: "#007AFF",
-    borderRadius: 8,
-    padding: 10,
+    marginTop: 20,
+    marginBottom: 20,
   },
   // estilos del titulo
   title: {

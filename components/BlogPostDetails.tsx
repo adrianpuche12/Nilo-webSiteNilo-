@@ -88,21 +88,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
-  closeButton: {
-    backgroundColor: "#ff6b35",
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 30,
-    elevation: 3,
-    shadowColor: "#ff6b35",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+  closeButtonContainer: {
     marginTop: "auto",
-  },
-  closeButtonText: {
-    color: "#fff",
-    textAlign: "center",
-    fontWeight: "bold",
+    alignSelf: "center",
+    paddingVertical: 10,
   },
 });

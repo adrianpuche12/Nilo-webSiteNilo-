@@ -3,11 +3,38 @@ import { useState } from "react"
 import { Pressable, StyleSheet, type GestureResponderEvent, Platform, useWindowDimensions } from "react-native"
 import Text from "@/components/ui/CustomText"
 import { useRouter } from "expo-router"
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  interpolateColor,
+} from "react-native-reanimated"
+import { useEffect } from "react"
 
-const useHover = () => {
+// Unified hover animation hook following reference page pattern
+const useUnifiedHover = () => {
   const [isHovered, setIsHovered] = useState(false)
+  const scale = useSharedValue(1)
+  const shadowOpacity = useSharedValue(0.3)
+
+  useEffect(() => {
+    if (isHovered) {
+      scale.value = withTiming(1.05, { duration: 200 })
+      shadowOpacity.value = withTiming(0.5, { duration: 200 })
+    } else {
+      scale.value = withTiming(1, { duration: 200 })
+      shadowOpacity.value = withTiming(0.3, { duration: 200 })
+    }
+  }, [isHovered])
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    shadowOpacity: shadowOpacity.value,
+  }))
+
   return {
     isHovered,
+    animatedStyle,
     eventHandlers:
       Platform.OS === "web"
         ? {
@@ -20,30 +47,33 @@ const useHover = () => {
 
 export const LoginButton = () => {
   const router = useRouter()
-  const { isHovered, eventHandlers } = useHover()
+  const { isHovered, animatedStyle, eventHandlers } = useUnifiedHover()
   const bp = useBreakpoint()
 
   return (
-    <Pressable
-      style={[
-        styles.loginButton,
-        bp.isTablet && styles.loginButtonTablet,
-        bp.isMobile && styles.loginButtonMobile,
-        isHovered && styles.loginButtonHover,
-      ]}
-      onPress={() => router.push("/")}
-      {...eventHandlers}
-    >
-      <Text
+    <Animated.View style={[animatedStyle]}>
+      <Pressable
         style={[
-          styles.loginButtonText,
-          bp.isTablet && styles.loginButtonTextTablet,
-          bp.isMobile && styles.loginButtonTextMobile,
+          styles.primaryButton,
+          styles.primaryButtonSecondary,
+          bp.isTablet && styles.buttonTablet,
+          bp.isMobile && styles.buttonMobile,
         ]}
+        onPress={() => router.push("/")}
+        {...eventHandlers}
       >
-        INICIAR SESIÓN
-      </Text>
-    </Pressable>
+        <Text
+          style={[
+            styles.primaryButtonText,
+            styles.primaryButtonTextDark,
+            bp.isTablet && styles.buttonTextTablet,
+            bp.isMobile && styles.buttonTextMobile,
+          ]}
+        >
+          INICIAR SESIÓN
+        </Text>
+      </Pressable>
+    </Animated.View>
   )
 }
 
@@ -52,30 +82,31 @@ export const EmailConsultButton = ({
 }: {
   onPress?: (event: GestureResponderEvent) => void
 }) => {
-  const { isHovered, eventHandlers } = useHover()
+  const { isHovered, animatedStyle, eventHandlers } = useUnifiedHover()
   const bp = useBreakpoint()
 
   return (
-    <Pressable
-      style={[
-        styles.consultButton,
-        bp.isTablet && styles.consultButtonTablet,
-        bp.isMobile && styles.consultButtonMobile,
-        isHovered && styles.consultButtonHover,
-      ]}
-      onPress={onPress}
-      {...eventHandlers}
-    >
-      <Text
+    <Animated.View style={[animatedStyle]}>
+      <Pressable
         style={[
-          styles.consultButtonText,
-          bp.isTablet && styles.consultButtonTextTablet,
-          bp.isMobile && styles.consultButtonTextMobile,
+          styles.outlineButton,
+          bp.isTablet && styles.buttonTablet,
+          bp.isMobile && styles.buttonMobile,
         ]}
+        onPress={onPress}
+        {...eventHandlers}
       >
-        CONSULTAR
-      </Text>
-    </Pressable>
+        <Text
+          style={[
+            styles.outlineButtonText,
+            bp.isTablet && styles.buttonTextTablet,
+            bp.isMobile && styles.buttonTextMobile,
+          ]}
+        >
+          CONSULTAR
+        </Text>
+      </Pressable>
+    </Animated.View>
   )
 }
 
@@ -84,30 +115,31 @@ export const RegisterButton = ({
 }: {
   onPress?: (event: GestureResponderEvent) => void
 }) => {
-  const { isHovered, eventHandlers } = useHover()
+  const { isHovered, animatedStyle, eventHandlers } = useUnifiedHover()
   const bp = useBreakpoint()
 
   return (
-    <Pressable
-      style={[
-        styles.registerButton,
-        bp.isTablet && styles.registerButtonTablet,
-        bp.isMobile && styles.registerButtonMobile,
-        isHovered && styles.registerButtonHover,
-      ]}
-      onPress={onPress}
-      {...eventHandlers}
-    >
-      <Text
+    <Animated.View style={[animatedStyle, { backgroundColor: 'transparent', maxWidth: 150 }]}>
+      <Pressable
         style={[
-          styles.registerButtonText,
-          bp.isTablet && styles.registerButtonTextTablet,
-          bp.isMobile && styles.registerButtonTextMobile,
+          styles.primaryButton,
+          bp.isTablet && styles.buttonTablet,
+          bp.isMobile && styles.buttonMobile,
         ]}
+        onPress={onPress}
+        {...eventHandlers}
       >
-        REGISTRARSE
-      </Text>
-    </Pressable>
+        <Text
+          style={[
+            styles.primaryButtonText,
+            bp.isTablet && styles.buttonTextTablet,
+            bp.isMobile && styles.buttonTextMobile,
+          ]}
+        >
+          REGISTRARSE
+        </Text>
+      </Pressable>
+    </Animated.View>
   )
 }
 
@@ -116,30 +148,33 @@ export const StartProjectButton = ({
 }: {
   onPress?: (event: GestureResponderEvent) => void
 }) => {
-  const { isHovered, eventHandlers } = useHover()
+  const { isHovered, animatedStyle, eventHandlers } = useUnifiedHover()
   const bp = useBreakpoint()
 
   return (
-    <Pressable
-      style={[
-        styles.startProjectButton,
-        bp.isTablet && styles.startProjectButtonTablet,
-        bp.isMobile && styles.startProjectButtonMobile,
-        isHovered && styles.startProjectButtonHover,
-      ]}
-      onPress={onPress}
-      {...eventHandlers}
-    >
-      <Text
+    <Animated.View style={[animatedStyle]}>
+      <Pressable
         style={[
-          styles.startProjectButtonText,
-          bp.isTablet && styles.startProjectButtonTextTablet,
-          bp.isMobile && styles.startProjectButtonTextMobile,
+          styles.primaryButton,
+          styles.primaryButtonLarge,
+          bp.isTablet && styles.buttonTablet,
+          bp.isMobile && styles.buttonMobile,
         ]}
+        onPress={onPress}
+        {...eventHandlers}
       >
-        COMENZAR PROYECTO
-      </Text>
-    </Pressable>
+        <Text
+          style={[
+            styles.primaryButtonText,
+            styles.primaryButtonTextLarge,
+            bp.isTablet && styles.buttonTextTablet,
+            bp.isMobile && styles.buttonTextMobile,
+          ]}
+        >
+          COMENZAR PROYECTO
+        </Text>
+      </Pressable>
+    </Animated.View>
   )
 }
 
@@ -148,30 +183,33 @@ export const ViewPortfolioButton = ({
 }: {
   onPress?: (event: GestureResponderEvent) => void
 }) => {
-  const { isHovered, eventHandlers } = useHover()
+  const { isHovered, animatedStyle, eventHandlers } = useUnifiedHover()
   const bp = useBreakpoint()
 
   return (
-    <Pressable
-      style={[
-        styles.viewPortfolioButton,
-        bp.isTablet && styles.viewPortfolioButtonTablet,
-        bp.isMobile && styles.viewPortfolioButtonMobile,
-        isHovered && styles.viewPortfolioButtonHover,
-      ]}
-      onPress={onPress}
-      {...eventHandlers}
-    >
-      <Text
+    <Animated.View style={[animatedStyle]}>
+      <Pressable
         style={[
-          styles.viewPortfolioButtonText,
-          bp.isTablet && styles.viewPortfolioButtonTextTablet,
-          bp.isMobile && styles.viewPortfolioButtonTextMobile,
+          styles.outlineButton,
+          styles.outlineButtonLarge,
+          bp.isTablet && styles.buttonTablet,
+          bp.isMobile && styles.buttonMobile,
         ]}
+        onPress={onPress}
+        {...eventHandlers}
       >
-        VER PORTAFOLIO
-      </Text>
-    </Pressable>
+        <Text
+          style={[
+            styles.outlineButtonText,
+            styles.outlineButtonTextLarge,
+            bp.isTablet && styles.buttonTextTablet,
+            bp.isMobile && styles.buttonTextMobile,
+          ]}
+        >
+          VER PORTAFOLIO
+        </Text>
+      </Pressable>
+    </Animated.View>
   )
 }
 
@@ -184,33 +222,31 @@ export const FilterButton = ({
   isActive?: boolean
   onPress?: (event: GestureResponderEvent) => void
 }) => {
-  const { isHovered, eventHandlers } = useHover()
+  const { isHovered, animatedStyle, eventHandlers } = useUnifiedHover()
   const bp = useBreakpoint()
 
   return (
-    <Pressable
-      style={[
-        styles.filterButton,
-        bp.isTablet && styles.filterButtonTablet,
-        bp.isMobile && styles.filterButtonMobile,
-        isActive && styles.filterButtonActive,
-        isHovered && !isActive && styles.filterButtonHover,
-        isHovered && isActive && styles.filterButtonActiveHover,
-      ]}
-      onPress={onPress}
-      {...eventHandlers}
-    >
-      <Text
+    <Animated.View style={[animatedStyle]}>
+      <Pressable
         style={[
-          styles.filterButtonText,
-          bp.isTablet && styles.filterButtonTextTablet,
-          bp.isMobile && styles.filterButtonTextMobile,
-          isActive && styles.filterButtonTextActive,
+          isActive ? styles.primaryButton : styles.secondaryButton,
+          bp.isTablet && styles.buttonTablet,
+          bp.isMobile && styles.buttonMobile,
         ]}
+        onPress={onPress}
+        {...eventHandlers}
       >
-        {title}
-      </Text>
-    </Pressable>
+        <Text
+          style={[
+            isActive ? styles.primaryButtonText : styles.secondaryButtonText,
+            bp.isTablet && styles.buttonTextTablet,
+            bp.isMobile && styles.buttonTextMobile,
+          ]}
+        >
+          {title}
+        </Text>
+      </Pressable>
+    </Animated.View>
   )
 }
 
@@ -221,33 +257,36 @@ export const SendButton = ({
   onPress?: (event: GestureResponderEvent) => void
   disabled?: boolean
 }) => {
-  const { isHovered, eventHandlers } = useHover()
+  const { isHovered, animatedStyle, eventHandlers } = useUnifiedHover()
   const bp = useBreakpoint()
 
   return (
-    <Pressable
-      style={[
-        styles.sendButton,
-        bp.isTablet && styles.sendButtonTablet,
-        bp.isMobile && styles.sendButtonMobile,
-        isHovered && styles.sendButtonHover,
-        disabled && styles.sendButtonDisabled,
-      ]}
-      onPress={onPress}
-      disabled={disabled}
-      {...eventHandlers}
-    >
-      <Text
+    <Animated.View style={[!disabled && animatedStyle]}>
+      <Pressable
         style={[
-          styles.sendButtonText,
-          bp.isTablet && styles.sendButtonTextTablet,
-          bp.isMobile && styles.sendButtonTextMobile,
-          disabled && styles.sendButtonTextDisabled,
+          styles.primaryButton,
+          styles.primaryButtonLarge,
+          bp.isTablet && styles.buttonTablet,
+          bp.isMobile && styles.buttonMobile,
+          disabled && styles.disabledButton,
         ]}
+        onPress={onPress}
+        disabled={disabled}
+        {...(disabled ? {} : eventHandlers)}
       >
-        ENVIAR
-      </Text>
-    </Pressable>
+        <Text
+          style={[
+            styles.primaryButtonText,
+            styles.primaryButtonTextLarge,
+            bp.isTablet && styles.buttonTextTablet,
+            bp.isMobile && styles.buttonTextMobile,
+            disabled && styles.disabledButtonText,
+          ]}
+        >
+          ENVIAR
+        </Text>
+      </Pressable>
+    </Animated.View>
   )
 }
 
@@ -261,154 +300,210 @@ const useBreakpoint = () => {
   }
 }
 
-/* ------------------------- STYLES ---------------------------- */
+// Export unified button component for reuse
+export const UnifiedButton = ({
+  title,
+  onPress,
+  variant = "primary",
+  size = "medium",
+  disabled = false,
+}: {
+  title: string
+  onPress?: (event: GestureResponderEvent) => void
+  variant?: "primary" | "secondary" | "outline"
+  size?: "small" | "medium" | "large"
+  disabled?: boolean
+}) => {
+  const { isHovered, animatedStyle, eventHandlers } = useUnifiedHover()
+  const bp = useBreakpoint()
+
+  const getButtonStyle = () => {
+    switch (variant) {
+      case "secondary":
+        return styles.secondaryButton
+      case "outline":
+        return [
+          styles.outlineButton,
+          size === "large" && styles.outlineButtonLarge,
+        ]
+      default:
+        return [
+          styles.primaryButton,
+          size === "large" && styles.primaryButtonLarge,
+        ]
+    }
+  }
+
+  const getTextStyle = () => {
+    switch (variant) {
+      case "secondary":
+        return styles.secondaryButtonText
+      case "outline":
+        return [
+          styles.outlineButtonText,
+          size === "large" && styles.outlineButtonTextLarge,
+        ]
+      default:
+        return [
+          styles.primaryButtonText,
+          size === "large" && styles.primaryButtonTextLarge,
+        ]
+    }
+  }
+
+  return (
+    <Animated.View style={[!disabled && animatedStyle]}>
+      <Pressable
+        style={[
+          getButtonStyle(),
+          bp.isTablet && styles.buttonTablet,
+          bp.isMobile && styles.buttonMobile,
+          disabled && styles.disabledButton,
+        ]}
+        onPress={onPress}
+        disabled={disabled}
+        {...(disabled ? {} : eventHandlers)}
+      >
+        <Text
+          style={[
+            getTextStyle(),
+            bp.isTablet && styles.buttonTextTablet,
+            bp.isMobile && styles.buttonTextMobile,
+            disabled && styles.disabledButtonText,
+          ]}
+        >
+          {title}
+        </Text>
+      </Pressable>
+    </Animated.View>
+  )
+}
+
+/* ------------------------- UNIFIED STYLES ---------------------------- */
 const styles = StyleSheet.create({
-  /* -------- LOGIN -------- */
-  loginButton: {
-    backgroundColor: "#ff6b35",
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-  loginButtonTablet: { paddingHorizontal: 13, paddingVertical: 7, borderRadius: 18 },
-  loginButtonMobile: { paddingHorizontal: 11, paddingVertical: 6, borderRadius: 16 },
-  loginButtonHover: { backgroundColor: "#ff8b60" },
-  loginButtonText: { color: "#000", fontSize: 14, fontWeight: "bold" },
-  loginButtonTextTablet: { fontSize: 13 },
-  loginButtonTextMobile: { fontSize: 13, textAlign: "center" },
-
-  /* -------- CONSULT -------- */
-  consultButton: {
-    backgroundColor: "#000",
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 5,
-  },
-  consultButtonTablet: { paddingHorizontal: 13, paddingVertical: 7 },
-  consultButtonMobile: { paddingHorizontal: 11, paddingVertical: 6 },
-  consultButtonHover: { backgroundColor: "#222" },
-  consultButtonText: { color: "#fff", fontSize: 13, fontWeight: "bold" },
-  consultButtonTextTablet: { fontSize: 11 },
-  consultButtonTextMobile: { fontSize: 11 },
-
-  /* -------- REGISTER -------- */
-  registerButton: {
-    backgroundColor: "#ff6b35",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    justifyContent: "center",
-  },
-  registerButtonTablet: { paddingHorizontal: 18, paddingVertical: 9 },
-  registerButtonMobile: { paddingHorizontal: 16, paddingVertical: 8 },
-  registerButtonHover: { backgroundColor: "#ff8b60" },
-  registerButtonText: { color: "#fff", fontSize: 12, fontWeight: "bold" },
-  registerButtonTextTablet: { fontSize: 11 },
-  registerButtonTextMobile: { fontSize: 11 },
-
-  /* -------- START PROJECT -------- */
-  startProjectButton: {
-    backgroundColor: "#ff6b35",
+  /* -------- BASE BUTTON STYLES -------- */
+  // Primary button - main call-to-action following reference design
+  primaryButton: {
+    backgroundColor: "#FF6600",
     paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 30,
-    elevation: 3,
-    shadowColor: "#ff6b35",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    // @ts-ignore
-    transition: "transform 0.2s ease-in-out"
-  },
-  startProjectButtonTablet: { paddingHorizontal: 28, paddingVertical: 14, borderRadius: 28 },
-  startProjectButtonMobile: { paddingHorizontal: 24, paddingVertical: 12, borderRadius: 26 },
-  startProjectButtonHover: { backgroundColor: "#ff8b60" , transform: [{ scale: 1.05 }]},
-  startProjectButtonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-  startProjectButtonTextTablet: { fontSize: 15 },
-  startProjectButtonTextMobile: { fontSize: 14 },
-
-  /* -------- VIEW PORTFOLIO -------- */
-  viewPortfolioButton: {
-    borderWidth: 2,
-    borderColor: "#fff",
-    paddingHorizontal: 32,
-    paddingVertical: 14,
-    borderRadius: 30,
-    transition: "transform 0.2s ease-in-out",
-  },
-  viewPortfolioButtonTablet: { paddingHorizontal: 28, paddingVertical: 12, borderRadius: 28 },
-  viewPortfolioButtonMobile: { paddingHorizontal: 24, paddingVertical: 10, borderRadius: 26 },
-  viewPortfolioButtonHover: { backgroundColor: "#ffffff22" , transform: [{ scale: 1.05 }] },
-  viewPortfolioButtonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
-  viewPortfolioButtonTextTablet: { fontSize: 15 },
-  viewPortfolioButtonTextMobile: { fontSize: 14 },
-
-  /* -------- FILTER -------- */
-  filterButton: {
-    backgroundColor: "#2a2a2a",
-    paddingHorizontal: 20,
     paddingVertical: 12,
-    borderRadius: 25,
-    marginBottom: 12,
-    borderWidth: 2,
-    borderColor: "#2a2a2a",
-    transition: "transform 0.2s ease-in-out",
-  },
-  filterButtonTablet: { paddingHorizontal: 18, paddingVertical: 10 },
-  filterButtonMobile: { paddingHorizontal: 16, paddingVertical: 9 },
-  filterButtonHover: { backgroundColor: "#3a3a3a", borderColor: "#4a4a4a",transform: [{ scale: 1.05 }]},
-  filterButtonActive: {
-    backgroundColor: "#ff6b35",
-    borderColor: "#ff6b35",
-    elevation: 4,
-    shadowColor: "#ff6b35",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-  },
-  filterButtonActiveHover: { backgroundColor: "#ff8b60", borderColor: "#ff8b60",transform: [{ scale: 1.05 }] },
-  filterButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#ccc",
-    textAlign: "center",
-    letterSpacing: 0.5,
-  },
-  filterButtonTextTablet: { fontSize: 13 },
-  filterButtonTextMobile: { fontSize: 12 },
-  filterButtonTextActive: { color: "#fff", fontWeight: "700" },
-
-  /* -------- SEND -------- */
-  sendButton: {
-    backgroundColor: "#ff6b35",
-    paddingHorizontal: 40,
-    paddingVertical: 15,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
     elevation: 4,
-    shadowColor: "#ff6b35",
+    shadowColor: "#FF6600",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
-    minWidth: 150,
+    // @ts-ignore - transition for web compatibility
+    transition: "all 0.2s ease",
   },
-  sendButtonTablet: {
-    paddingHorizontal: 34,
-    paddingVertical: 13,
-    borderRadius: 23,
-    minWidth: 130,
+  primaryButtonSecondary: {
+    backgroundColor: "#FF6600",
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
   },
-  sendButtonMobile: {
+  primaryButtonLarge: {
+    paddingHorizontal: 40,
+    paddingVertical: 16,
+    borderRadius: 30,
+  },
+  primaryButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "700",
+    textAlign: "center",
+    letterSpacing: 0.5,
+  },
+  primaryButtonTextDark: {
+    color: "#000",
+  },
+  primaryButtonTextLarge: {
+    fontSize: 16,
+    letterSpacing: 1,
+  },
+
+  // Secondary button - neutral/inactive states
+  secondaryButton: {
+    backgroundColor: "#2a2a2a",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#444",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    // @ts-ignore - transition for web compatibility
+    transition: "all 0.2s ease",
+  },
+  secondaryButtonText: {
+    color: "#ccc",
+    fontSize: 14,
+    fontWeight: "600",
+    textAlign: "center",
+    letterSpacing: 0.5,
+  },
+
+  // Outline button - border style following reference
+  outlineButton: {
+    backgroundColor: "transparent",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#fff",
+    // @ts-ignore - transition for web compatibility
+    transition: "all 0.2s ease",
+  },
+  outlineButtonLarge: {
+    paddingHorizontal: 32,
+    paddingVertical: 14,
+    borderRadius: 30,
+  },
+  outlineButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
+    textAlign: "center",
+    letterSpacing: 0.5,
+  },
+  outlineButtonTextLarge: {
+    fontSize: 16,
+  },
+
+  // Disabled state
+  disabledButton: {
+    backgroundColor: "#666",
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  disabledButtonText: {
+    color: "#999",
+  },
+
+  /* -------- RESPONSIVE BREAKPOINTS -------- */
+  buttonTablet: {
     paddingHorizontal: 28,
-    paddingVertical: 11,
-    borderRadius: 21,
-    minWidth: 110,
+    paddingVertical: 10,
+    borderRadius: 22,
   },
-  sendButtonHover: { backgroundColor: "#ff8b60", elevation: 6, shadowOpacity: 0.4 },
-  sendButtonDisabled: { backgroundColor: "#666", elevation: 0, shadowOpacity: 0 },
-  sendButtonText: { color: "#fff", fontSize: 16, fontWeight: "700", letterSpacing: 1 },
-  sendButtonTextTablet: { fontSize: 15 },
-  sendButtonTextMobile: { fontSize: 14 },
-  sendButtonTextDisabled: { color: "#999" },
+  buttonMobile: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 18,
+  },
+  buttonTextTablet: {
+    fontSize: 13,
+  },
+  buttonTextMobile: {
+    fontSize: 12,
+  },
 })

@@ -3,11 +3,11 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
   Dimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useBreakpoint } from "@/hooks/useBreakpoints";
+import { UnifiedButton } from "@/components/ui/AppButtons";
 
 // Define el objeto post para despues guardar los post en su state
 interface Post {
@@ -115,9 +115,12 @@ const BlogForm = ({ post, onAddPost }: BlogFormProps) => {
           textAlignVertical="top"
         />
       </View>
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Publicar Blog</Text>
-      </TouchableOpacity>
+      <UnifiedButton 
+        title="PUBLICAR BLOG"
+        onPress={handleSubmit}
+        variant="primary"
+        size="large"
+      />
     </View>
   );
 };
@@ -168,25 +171,5 @@ const styles = StyleSheet.create({
   textArea: {
     height: 80,
     paddingTop: 15,
-  },
-  submitButton: {
-    alignSelf: "center",
-    width: "18%",
-    backgroundColor: "#ff6b35",
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 30,
-    elevation: 3,
-    shadowColor: "#ff6b35",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    marginTop: 20,
-  },
-  submitButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-    textAlign: "center",
   },
 });

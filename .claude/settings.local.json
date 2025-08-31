@@ -9,7 +9,8 @@
       "Bash(npm start)",
       "WebFetch(domain:educate.nilosolutions.com)",
       "Bash(copy:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

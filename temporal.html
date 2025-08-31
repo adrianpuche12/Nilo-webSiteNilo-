@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestros Servicios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .services-container {
+            min-height: 100vh;
+            padding: 80px 20px;
+            position: relative;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-30px) rotate(180deg); opacity: 1; }
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            perspective: 1000px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: slideInUp 0.8s ease-out forwards;
+        }
+
+        .service-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            filter: blur(8px) brightness(1.2);
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+
+        .service-card[data-service="ui-ux"]::after {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImRlc2lnbkdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmY2YjZiO3N0b3Atb3BhY2l0eTowLjgiLz4KPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZWU1YTI0O3N0b3Atb3BhY2l0eTowLjgiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNkZXNpZ25HcmFkKSIvPgo8Y2lyY2xlIGN4PSI4MCIgY3k9IjEwMCIgcj0iNDAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zKSIvPgo8cmVjdCB4PSIxNTAiIHk9IjUwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgcng9IjEwIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMikiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHg9IjMwMCIgeT0iMjAwIj4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjUpIj4KPHBhdGggZD0iTTkgMTJsLTEuNS0xLjUtMS41IDEuNUw5IDEyem0tMS41IDEuNUw5IDE1bC0xLjUtMS41eiIvPgo8L3N2Zz4KPC9zdmc+Cjwvc3ZnPg==');
+        }
+
+        .service-card[data-service="web-dev"]::after {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9IndlYkdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNGVjZGM0O3N0b3Atb3BhY2l0eTowLjgiLz4KPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNDRhMDhkO3N0b3Atb3BhY2l0eTowLjgiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCN3ZWJHcmFkKSIvPgo8cmVjdCB4PSI1MCIgeT0iNDAiIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiByeD0iMTUiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4yKSIvPgo8cmVjdCB4PSI3MCIgeT0iNzAiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQpIi8+CjxyZWN0IHg9IjE4MCIgeT0iNzAiIHdpZHRoPSIxNDAiIGhlaWdodD0iMTAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zKSIvPgo8cmVjdCB4PSIxODAiIHk9IjkwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMykiLz4KPHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHg9IjMwMCIgeT0iMjIwIj4KPGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iOCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjUpIi8+Cjwvc3ZnPgo8L3N2Zz4=');
+        }
+
+        .service-card[data-service="mobile-apps"]::after {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9Im1vYmlsZUdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNDViN2QxO3N0b3Atb3BhY2l0eTowLjgiLz4KPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojOTZjOTNkO3N0b3Atb3BhY2l0eTowLjgiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNtb2JpbGVHcmFkKSIvPgo8cmVjdCB4PSIxNDAiIHk9IjMwIiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjI0MCIgcng9IjIwIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMykiLz4KPHN2ZyB4PSIxNjAiIHk9IjYwIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjYwIiByeD0iNSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQpIi8+CjxyZWN0IHk9IjgwIiB3aWR0aD0iNDAiIGhlaWdodD0iOCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjMpIi8+CjxyZWN0IHk9Ijk1IiB3aWR0aD0iNjAiIGhlaWdodD0iOCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjMpIi8+Cjwvc3ZnPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyNDAiIHI9IjEyIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNSkiLz4KPC9zdmc+');
+        }
+
+        .service-card[data-service="ecommerce"]::after {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImVjb21tZXJjZUdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjA5M2ZiO3N0b3Atb3BhY2l0eTowLjgiLz4KPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZjU1NzZjO3N0b3Atb3BhY2l0eTowLjgiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNlY29tbWVyY2VHcmFkKSIvPgo8c3ZnIHdpZHRoPSIxMDAiIGhlaWdodD0iODAiIHg9IjUwIiB5PSI4MCI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjMpIi8+CjxwYXRoIGQ9Ik0yMCAyMGg2MHY0MEgyMHoiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4yKSIvPgo8L3N2Zz4KPGNpcmNsZSBjeD0iMzAwIiBjeT0iMTAwIiByPSIzMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjI1KSIvPgo8Y2lyY2xlIGN4PSIzMjAiIGN5PSIyMDAiIHI9IjIwIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMykiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHg9IjIwMCIgeT0iMTgwIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjMwIiByeD0iNSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQpIi8+Cjwvc3ZnPgo8L3N2Zz4=');
+        }
+
+        .service-card[data-service="consulting"]::after {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImNvbnN1bHRpbmdHcmFkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzRmYWNmZTtzdG9wLW9wYWNpdHk6MC44Ii8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzAwZjJmZTtzdG9wLW9wYWNpdHk6MC44Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9InVybCgjY29uc3VsdGluZ0dyYWQpIi8+CjxjaXJjbGUgY3g9IjEwMCIgY3k9IjgwIiByPSI1MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjIpIi8+Cjxwb2x5Z29uIHBvaW50cz0iMjAwLDUwIDI4MCw5MCAzMDAsMTgwIDIyMCwyMjAgMTQwLDE4MCAxMjAsOTAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4yNSkiLz4KPHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHg9IjMwMCIgeT0iMTgwIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMjUiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zKSIvPgo8L3N2Zz4KPGxpbmUgeDE9IjUwIiB5MT0iMjAwIiB4Mj0iMTUwIiB5Mj0iMjUwIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC40KSIgc3Ryb2tlLXdpZHRoPSIzIi8+Cjwvc3ZnPg==');
+        }
+
+        .service-card[data-service="maintenance"]::after {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9Im1haW50ZW5hbmNlR3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM0M2U5N2I7c3RvcC1vcGFjaXR5OjAuOCIvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMzOGY5ZDc7c3RvcC1vcGFjaXR5OjAuOCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSJ1cmwoI21haW50ZW5hbmNlR3JhZCkiLz4KPHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHg9IjEwMCIgeT0iNTAiPgo8Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSIzNSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjI1KSIvPgo8cmVjdCB4PSIzMCIgeT0iMzAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQpIi8+Cjwvc3ZnPgo8cG9seWdvbiBwb2ludHM9IjI1MCw4MCAzMjAsNjAgMzUwLDEyMCAzMDAsMTgwIDI0MCwxNjAgMjEwLDEwMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjIpIi8+CjxyZWN0IHg9IjYwIiB5PSIyMDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iNDAiIHJ4PSI4IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMykiLz4KPC9zdmc+');
+        }
+
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(3) { animation-delay: 0.3s; }
+        .service-card:nth-child(4) { animation-delay: 0.4s; }
+        .service-card:nth-child(5) { animation-delay: 0.5s; }
+        .service-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-card:hover::after {
+            opacity: 0.25;
+            filter: blur(6px) brightness(1.4);
+            transform: scale(1.05);
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border-radius: 20px;
+            font-size: 2.5rem;
+            box-shadow: 0 10px 30px rgba(238, 90, 36, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:nth-child(2) .service-icon {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4);
+        }
+
+        .service-card:nth-child(3) .service-icon {
+            background: linear-gradient(135deg, #45b7d1, #96c93d);
+            box-shadow: 0 10px 30px rgba(69, 183, 209, 0.4);
+        }
+
+        .service-card:nth-child(4) .service-icon {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.4);
+        }
+
+        .service-card:nth-child(5) .service-icon {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.4);
+        }
+
+        .service-card:nth-child(6) .service-icon {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            box-shadow: 0 10px 30px rgba(67, 233, 123, 0.4);
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .service-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .service-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .service-link {
+            display: inline-flex;
+            align-items: center;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+            transition: width 0.3s ease;
+        }
+
+        .service-card:hover .service-link::before {
+            width: 100%;
+        }
+
+        .service-link .arrow {
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover .service-link .arrow {
+            transform: translateX(5px);
+        }
+
+        .pulse-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(4);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            animation: parallaxMove 20s ease-in-out infinite;
+        }
+
+        @keyframes parallaxMove {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(-20px) translateY(-10px); }
+            50% { transform: translateX(20px) translateY(-20px); }
+            75% { transform: translateX(-10px) translateY(10px); }
+        }
+
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .service-card {
+                padding: 30px;
+            }
+        }
+
+        .glow-effect {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: rotate 8s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card:hover .glow-effect {
+            opacity: 1;
+        }
+
+        @keyframes rotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="services-container">
+        <div class="parallax-bg"></div>
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        
+        <div class="content">
+            <div class="header">
+                <h1>Nuestros Servicios</h1>
+                <p>Transformamos ideas en experiencias digitales extraordinarias que impulsan tu negocio hacia el futuro</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card" data-service="ui-ux">
+                    <div class="glow-effect"></div>
+                    <div class="pulse-effect"></div>
+                    <div class="service-icon">🎨</div>
+                    <h3 class="service-title">UI/UX Design</h3>
+                    <p class="service-description">
+                        Creamos experiencias digitales intuitivas y atractivas que conectan con tus usuarios de manera efectiva.
+                    </p>
+                    <a href="#" class="service-link">
+                        Saber más <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="service-card" data-service="web-dev">
+                    <div class="glow-effect"></div>
+                    <div class="pulse-effect"></div>
+                    <div class="service-icon">💻</div>
+                    <h3 class="service-title">Desarrollo Web</h3>
+                    <p class="service-description">
+                        Desarrollamos sitios web modernos, responsivos y optimizados para el mejor rendimiento y experiencia.
+                    </p>
+                    <a href="#" class="service-link">
+                        Saber más <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="service-card" data-service="mobile-apps">
+                    <div class="glow-effect"></div>
+                    <div class="pulse-effect"></div>
+                    <div class="service-icon">📱</div>
+                    <h3 class="service-title">Apps Móviles</h3>
+                    <p class="service-description">
+                        Creamos aplicaciones móviles nativas y multiplataforma con las últimas tecnologías del mercado.
+                    </p>
+                    <a href="#" class="service-link">
+                        Saber más <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="service-card" data-service="ecommerce">
+                    <div class="glow-effect"></div>
+                    <div class="pulse-effect"></div>
+                    <div class="service-icon">🛒</div>
+                    <h3 class="service-title">E-commerce</h3>
+                    <p class="service-description">
+                        Desarrollamos tiendas online completas con sistemas de pago seguros y gestión avanzada.
+                    </p>
+                    <a href="#" class="service-link">
+                        Saber más <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="service-card" data-service="consulting">
+                    <div class="glow-effect"></div>
+                    <div class="pulse-effect"></div>
+                    <div class="service-icon">💡</div>
+                    <h3 class="service-title">Consultoría Tech</h3>
+                    <p class="service-description">
+                        Asesoramos en la transformación digital de tu empresa con estrategias tecnológicas efectivas.
+                    </p>
+                    <a href="#" class="service-link">
+                        Saber más <span class="arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="service-card" data-service="maintenance">
+                    <div class="glow-effect"></div>
+                    <div class="pulse-effect"></div>
+                    <div class="service-icon">🔧</div>
+                    <h3 class="service-title">Mantenimiento</h3>
+                    <p class="service-description">
+                        Brindamos soporte técnico continuo y mantenimiento para garantizar el óptimo funcionamiento.
+                    </p>
+                    <a href="#" class="service-link">
+                        Saber más <span class="arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animación de entrada escalonada
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.service-card');
+            
+            // Efecto de hover avanzado
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-15px) rotateX(8deg) scale(1.02)';
+                    
+                    // Efecto de onda
+                    const pulse = this.querySelector('.pulse-effect');
+                    pulse.style.animation = 'none';
+                    setTimeout(() => {
+                        pulse.style.animation = 'pulse 1s ease-out';
+                    }, 10);
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) rotateX(0deg) scale(1)';
+                });
+
+                // Efecto de click
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.service-link')) {
+                        this.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            this.style.transform = 'translateY(-15px) rotateX(8deg) scale(1.02)';
+                        }, 150);
+                    }
+                });
+            });
+
+            // Animación de paralaje en scroll
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const parallax = document.querySelector('.parallax-bg');
+                const shapes = document.querySelectorAll('.shape');
+                
+                parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
+                
+                shapes.forEach((shape, index) => {
+                    const speed = 0.3 + (index * 0.1);
+                    shape.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
+
+            // Efecto de mouse tracking
+            document.addEventListener('mousemove', function(e) {
+                const cards = document.querySelectorAll('.service-card');
+                
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    
+                    const deltaX = (e.clientX - centerX) / 50;
+                    const deltaY = (e.clientY - centerY) / 50;
+                    
+                    if (card.matches(':hover')) {
+                        card.style.transform = `translateY(-15px) rotateX(${deltaY * 2}deg) rotateY(${deltaX * 2}deg) scale(1.02)`;
+                    }
+                });
+            });
+
+            // Animación de aparición de texto
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            }, observerOptions);
+
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+
+            // Efecto de partículas flotantes
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = Math.random() * 6 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = 'rgba(255, 255, 255, 0.6)';
+                particle.style.borderRadius = '50%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = '100%';
+                particle.style.pointerEvents = 'none';
+                particle.style.animation = `floatUp ${Math.random() * 3 + 4}s linear forwards`;
+                
+                document.querySelector('.floating-shapes').appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 7000);
+            }
+
+            // Crear partículas periódicamente
+            setInterval(createParticle, 2000);
+        });
+
+        // Animación CSS para partículas
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes floatUp {
+                to {
+                    transform: translateY(-100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

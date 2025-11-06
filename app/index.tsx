@@ -1,64 +1,70 @@
-import { Slot } from "expo-router";
-import { ScrollView, View } from "react-native";
-import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
-import { useRef, useState } from "react";
-import "react-native-reanimated";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import Services from "@/app/ServicesSection";
-import HomePage from "@/app/homePage";
-import Team from "@/app/TeamSection";
 import Contact from "@/app/ContactSection";
+import HomePage from "@/app/homePage";
+import Services from "@/app/ServicesSection";
+// import Team from "@/app/TeamSection";
+import Footer from "@/components/Footer";
+import N8nProjectsSection from "@/app/N8nProjectsSection";
+import ExperienceSection from "@/app/ExperienceSection";
+import Header from "@/components/Header";
 import ClientTestimonials from "@/components/ui/ClientTestimonials";
+
+import * as SplashScreen from "expo-splash-screen";
+import { useRef, useState } from "react";
+import { ScrollView, View } from "react-native";
+import "react-native-reanimated";
 import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withSpring,
   interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
 } from "react-native-reanimated";
+
 SplashScreen.preventAutoHideAsync();
 
 export default function Home() {
   const scrollViewRef = useRef<ScrollView>(null);
   const [sectionPositions, setSectionPositions] = useState<Record<string, number>>({});
 
-  // estado para  la animacion de scroll de cambio de seccion
-  const [currentSection, setCurrentSection] = useState<string>("inicio"); 
+  const [currentSection, setCurrentSection] = useState<string>("inicio");
   const [serviceIsViewed, setServiceIsViewed] = useState<boolean>(false);
 
-  //  Valores animados para cada sección
-
-
+  // 🔹 Valores animados para cada sección
   const serviciosOpacity = useSharedValue(0);
   const serviciosTranslateY = useSharedValue(50);
+
+  const proyectosOpacity = useSharedValue(0);
+  const proyectosTranslateY = useSharedValue(50);
+
+  const experienciaOpacity = useSharedValue(0);
+  const experienciaTranslateY = useSharedValue(50);
 
   const quienesOpacity = useSharedValue(0);
   const quienesTranslateY = useSharedValue(50);
 
   const contactoOpacity = useSharedValue(0);
   const contactoTranslateY = useSharedValue(50);
-  
 
   // Scroll value para efectos parallax
   const scrollY = useSharedValue(100);
 
- 
-
-  // Función para animar secciones
+  // 🔹 Función para animar secciones
   const animateSection = (sectionId: string, isVisible: boolean) => {
     const duration = 800;
-    const springConfig = {
-      damping: 150,
-      stiffness: 100,
-    };
+    const springConfig = { damping: 150, stiffness: 100 };
 
     switch (sectionId) {
       case "servicios":
         serviciosOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
         serviciosTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
+        break;
+      case "proyectos":
+        proyectosOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
+        proyectosTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
+        break;
+      case "experiencia":
+        experienciaOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
+        experienciaTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
         break;
       case "quienes":
         quienesOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
@@ -71,86 +77,79 @@ export default function Home() {
     }
   };
 
-  // Función para detectar cambio de sección
+  // 🔹 Detectar scroll y visibilidad de secciones
   const handleScroll = (event: any) => {
     const currentScrollY = event.nativeEvent.contentOffset.y;
-    scrollY.value = currentScrollY; // Para efectos parallax
+    scrollY.value = currentScrollY;
 
-    const offset = 200; // Distancia antes de activar animación
-    const sections = ["inicio", "servicios", "quienes", "contacto"];
+    const offset = 200;
+    const sections = ["inicio", "servicios", "proyectos", "experiencia", "quienes", "contacto"];
     let newCurrentSection = "inicio";
 
-    // Animar todas las secciones basado en su visibilidad
     sections.forEach((section) => {
       if (sectionPositions[section] !== undefined) {
         const sectionTop = sectionPositions[section];
-
         const sectionVisible = currentScrollY + 200 >= sectionTop - 500;
 
-        if (section === "servicios") {
-          setServiceIsViewed(sectionVisible);
-        }
-        
-        // Animar sección si está visible
+        if (section === "servicios") setServiceIsViewed(sectionVisible);
+
         animateSection(section, sectionVisible);
 
-        // Detectar sección actual
-        if (currentScrollY + offset >= sectionTop) {
-          newCurrentSection = section;
-        }
+        if (currentScrollY + offset >= sectionTop) newCurrentSection = section;
       }
     });
 
-    // Solo hacer console.log si cambió la sección
-    if (newCurrentSection !== currentSection) {
-      setCurrentSection(newCurrentSection);
-    }
+    if (newCurrentSection !== currentSection) setCurrentSection(newCurrentSection);
   };
-  // 🎨 Estilos animados para cada sección
 
-  const serviciosAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: serviciosOpacity.value,
-      transform: [
-        { translateY: serviciosTranslateY.value },
-        { scale: interpolate(serviciosOpacity.value, [0.3, 1], [0.95, 1]) },
-      ],
-    };
-  });
+  // 🔹 Estilos animados para cada sección
+  const serviciosAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: serviciosOpacity.value,
+    transform: [
+      { translateY: serviciosTranslateY.value },
+      { scale: interpolate(serviciosOpacity.value, [0.3, 1], [0.95, 1]) },
+    ],
+  }));
 
-  const quienesAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: quienesOpacity.value,
-      transform: [
-        { translateY: quienesTranslateY.value },
-        { scale: interpolate(quienesOpacity.value, [0.3, 1], [0.95, 1]) },
-      ],
-    };
-  });
+  const proyectosAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: proyectosOpacity.value,
+    transform: [
+      { translateY: proyectosTranslateY.value },
+      { scale: interpolate(proyectosOpacity.value, [0.3, 1], [0.95, 1]) },
+    ],
+  }));
 
-  const contactoAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: contactoOpacity.value,
-      transform: [
-        { translateY: contactoTranslateY.value },
-        { scale: interpolate(contactoOpacity.value, [0.3, 1], [0.95, 1]) },
-      ],
-    };
-  });
+  const experienciaAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: experienciaOpacity.value,
+    transform: [
+      { translateY: experienciaTranslateY.value },
+      { scale: interpolate(experienciaOpacity.value, [0.3, 1], [0.95, 1]) },
+    ],
+  }));
 
-  // Función para guardar la posición de cada sección
+  const quienesAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: quienesOpacity.value,
+    transform: [
+      { translateY: quienesTranslateY.value },
+      { scale: interpolate(quienesOpacity.value, [0.3, 1], [0.95, 1]) },
+    ],
+  }));
+
+  const contactoAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: contactoOpacity.value,
+    transform: [
+      { translateY: contactoTranslateY.value },
+      { scale: interpolate(contactoOpacity.value, [0.3, 1], [0.95, 1]) },
+    ],
+  }));
+
+  // 🔹 Guardar posición de secciones
   const handleSectionLayout = (sectionId: string, event: any) => {
     const { y } = event.nativeEvent.layout;
-    setSectionPositions((prev) => {
-      const newPositions = {
-        ...prev,
-        [sectionId]: y,
-      };
-      return newPositions;
-    });
+    setSectionPositions((prev) => ({ ...prev, [sectionId]: y }));
   };
 
-  // Función para hacer scroll a una sección específica
+  // 🔹 Scroll manual a secciones
   const scrollToSection = (sectionId: string) => {
     if (scrollViewRef?.current && sectionPositions[sectionId] !== undefined) {
       scrollViewRef.current.scrollTo({
@@ -160,6 +159,7 @@ export default function Home() {
     }
   };
 
+  // 🔹 Render principal
   return (
     <>
       <ScrollView
@@ -170,8 +170,8 @@ export default function Home() {
         scrollEventThrottle={16}
       >
         <Header scrollToSection={scrollToSection} isIndexPage={true} />
-        <View
-          onLayout={(event) => handleSectionLayout("inicio", event)}>
+
+        <View onLayout={(event) => handleSectionLayout("inicio", event)}>
           <HomePage />
         </View>
 
@@ -179,14 +179,21 @@ export default function Home() {
           style={serviciosAnimatedStyle}
           onLayout={(event) => handleSectionLayout("servicios", event)}
         >
-          <Services isView={serviceIsViewed}/>
+          <Services isView={serviceIsViewed} />
         </Animated.View>
 
         <Animated.View
-          style={quienesAnimatedStyle}
-          onLayout={(event) => handleSectionLayout("quienes", event)}
+          style={proyectosAnimatedStyle}
+          onLayout={(event) => handleSectionLayout("proyectos", event)}
         >
-          <Team />
+          <N8nProjectsSection />
+        </Animated.View>
+
+        <Animated.View
+          style={experienciaAnimatedStyle}
+          onLayout={(event) => handleSectionLayout("experiencia", event)}
+        >
+          <ExperienceSection />
         </Animated.View>
 
         <Animated.View
@@ -196,7 +203,6 @@ export default function Home() {
           <Contact />
         </Animated.View>
 
-        <ClientTestimonials />
         <Footer />
       </ScrollView>
     </>

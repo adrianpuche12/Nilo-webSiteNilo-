@@ -2,232 +2,97 @@ import Contact from "@/app/ContactSection";
 import HomePage from "@/app/homePage";
 import Services from "@/app/ServicesSection";
 import ProductsSection from "@/app/ProductsSection";
-// import Team from "@/app/TeamSection";
-import Footer from "@/components/Footer";
 import N8nProjectsSection from "@/app/N8nProjectsSection";
 import ExperienceSection from "@/app/ExperienceSection";
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import ClientTestimonials from "@/components/ui/ClientTestimonials";
+import Reveal from "@/components/ui/Reveal";
+import { COLOR } from "@/constants/theme";
 
 import * as SplashScreen from "expo-splash-screen";
-import { useRef, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { AccessibilityInfo, ScrollView, View, type LayoutChangeEvent, type NativeScrollEvent, type NativeSyntheticEvent } from "react-native";
 import "react-native-reanimated";
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
 
 SplashScreen.preventAutoHideAsync();
 
+/** Alto del header fijo (components/Header.tsx → inner.height). */
+const HEADER_HEIGHT = 72;
+const SECTIONS = ["inicio", "servicios", "productos", "proyectos", "experiencia", "contacto"] as const;
+type SectionId = (typeof SECTIONS)[number];
+
 export default function Home() {
   const scrollViewRef = useRef<ScrollView>(null);
-  const [sectionPositions, setSectionPositions] = useState<Record<string, number>>({});
+  const [sectionPositions, setSectionPositions] = useState<Partial<Record<SectionId, number>>>({});
+  const [currentSection, setCurrentSection] = useState<SectionId>("inicio");
+  // Secciones que ya aparecieron: se animan una sola vez y nunca vuelven a ocultarse.
+  const [shown, setShown] = useState<Set<SectionId>>(() => new Set<SectionId>(["inicio"]));
+  const [reduceMotion, setReduceMotion] = useState(false);
 
-  const [currentSection, setCurrentSection] = useState<string>("inicio");
-  const [serviceIsViewed, setServiceIsViewed] = useState<boolean>(false);
+  useEffect(() => {
+    AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion).catch(() => undefined);
+  }, []);
 
-  // 🔹 Valores animados para cada sección
-  const serviciosOpacity = useSharedValue(0);
-  const serviciosTranslateY = useSharedValue(50);
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const y = event.nativeEvent.contentOffset.y;
+    const viewport = event.nativeEvent.layoutMeasurement.height;
+    let active: SectionId = "inicio";
+    const newlyShown: SectionId[] = [];
 
-  const productosOpacity = useSharedValue(0);
-  const productosTranslateY = useSharedValue(50);
-
-  const proyectosOpacity = useSharedValue(0);
-  const proyectosTranslateY = useSharedValue(50);
-
-  const experienciaOpacity = useSharedValue(0);
-  const experienciaTranslateY = useSharedValue(50);
-
-  const quienesOpacity = useSharedValue(0);
-  const quienesTranslateY = useSharedValue(50);
-
-  const contactoOpacity = useSharedValue(0);
-  const contactoTranslateY = useSharedValue(50);
-
-  // Scroll value para efectos parallax
-  const scrollY = useSharedValue(100);
-
-  // 🔹 Función para animar secciones
-  const animateSection = (sectionId: string, isVisible: boolean) => {
-    const duration = 800;
-    const springConfig = { damping: 150, stiffness: 100 };
-
-    switch (sectionId) {
-      case "servicios":
-        serviciosOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
-        serviciosTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
-        break;
-      case "productos":
-        productosOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
-        productosTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
-        break;
-      case "proyectos":
-        proyectosOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
-        proyectosTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
-        break;
-      case "experiencia":
-        experienciaOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
-        experienciaTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
-        break;
-      case "quienes":
-        quienesOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
-        quienesTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
-        break;
-      case "contacto":
-        contactoOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
-        contactoTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
-        break;
+    for (const id of SECTIONS) {
+      const top = sectionPositions[id];
+      if (top === undefined) continue;
+      if (!shown.has(id) && y + viewport * 0.85 >= top) newlyShown.push(id);
+      if (y + HEADER_HEIGHT + 120 >= top) active = id;
     }
+
+    if (newlyShown.length) setShown((prev) => new Set([...prev, ...newlyShown]));
+    if (active !== currentSection) setCurrentSection(active);
   };
 
-  // 🔹 Detectar scroll y visibilidad de secciones
-  const handleScroll = (event: any) => {
-    const currentScrollY = event.nativeEvent.contentOffset.y;
-    scrollY.value = currentScrollY;
-
-    const offset = 200;
-    const sections = ["inicio", "servicios", "productos", "proyectos", "experiencia", "quienes", "contacto"];
-    let newCurrentSection = "inicio";
-
-    sections.forEach((section) => {
-      if (sectionPositions[section] !== undefined) {
-        const sectionTop = sectionPositions[section];
-        const sectionVisible = currentScrollY + 200 >= sectionTop - 500;
-
-        if (section === "servicios") setServiceIsViewed(sectionVisible);
-
-        animateSection(section, sectionVisible);
-
-        if (currentScrollY + offset >= sectionTop) newCurrentSection = section;
-      }
-    });
-
-    if (newCurrentSection !== currentSection) setCurrentSection(newCurrentSection);
-  };
-
-  // 🔹 Estilos animados para cada sección
-  const serviciosAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: serviciosOpacity.value,
-    transform: [
-      { translateY: serviciosTranslateY.value },
-      { scale: interpolate(serviciosOpacity.value, [0.3, 1], [0.95, 1]) },
-    ],
-  }));
-
-  const productosAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: productosOpacity.value,
-    transform: [
-      { translateY: productosTranslateY.value },
-      { scale: interpolate(productosOpacity.value, [0.3, 1], [0.95, 1]) },
-    ],
-  }));
-
-  const proyectosAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: proyectosOpacity.value,
-    transform: [
-      { translateY: proyectosTranslateY.value },
-      { scale: interpolate(proyectosOpacity.value, [0.3, 1], [0.95, 1]) },
-    ],
-  }));
-
-  const experienciaAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: experienciaOpacity.value,
-    transform: [
-      { translateY: experienciaTranslateY.value },
-      { scale: interpolate(experienciaOpacity.value, [0.3, 1], [0.95, 1]) },
-    ],
-  }));
-
-  const quienesAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: quienesOpacity.value,
-    transform: [
-      { translateY: quienesTranslateY.value },
-      { scale: interpolate(quienesOpacity.value, [0.3, 1], [0.95, 1]) },
-    ],
-  }));
-
-  const contactoAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: contactoOpacity.value,
-    transform: [
-      { translateY: contactoTranslateY.value },
-      { scale: interpolate(contactoOpacity.value, [0.3, 1], [0.95, 1]) },
-    ],
-  }));
-
-  // 🔹 Guardar posición de secciones
-  const handleSectionLayout = (sectionId: string, event: any) => {
+  const handleSectionLayout = (sectionId: SectionId) => (event: LayoutChangeEvent) => {
     const { y } = event.nativeEvent.layout;
     setSectionPositions((prev) => ({ ...prev, [sectionId]: y }));
   };
 
-  // 🔹 Scroll manual a secciones
   const scrollToSection = (sectionId: string) => {
-    if (scrollViewRef?.current && sectionPositions[sectionId] !== undefined) {
-      scrollViewRef.current.scrollTo({
-        y: sectionPositions[sectionId],
-        animated: true,
-      });
+    const top = sectionPositions[sectionId as SectionId];
+    if (scrollViewRef.current && top !== undefined) {
+      scrollViewRef.current.scrollTo({ y: Math.max(0, top - HEADER_HEIGHT), animated: true });
     }
   };
 
-  // 🔹 Render principal
+  const section = (id: Exclude<SectionId, "inicio">, content: ReactNode) => (
+    <Reveal shown={shown.has(id)} reduceMotion={reduceMotion} onLayout={handleSectionLayout(id)}>
+      {content}
+    </Reveal>
+  );
+
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: COLOR.bg }}>
+      {/* Header fuera del ScrollView: queda fijo arriba. */}
+      <Header scrollToSection={scrollToSection} isIndexPage currentSection={currentSection} />
+
       <ScrollView
         ref={scrollViewRef}
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#000000" }}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: COLOR.bg }}
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}
       >
-        <Header scrollToSection={scrollToSection} isIndexPage={true} />
-
-        <View onLayout={(event) => handleSectionLayout("inicio", event)}>
-          <HomePage />
+        <View onLayout={handleSectionLayout("inicio")}>
+          <HomePage onStartProject={() => scrollToSection("contacto")} onViewWork={() => scrollToSection("productos")} />
         </View>
 
-        <Animated.View
-          style={serviciosAnimatedStyle}
-          onLayout={(event) => handleSectionLayout("servicios", event)}
-        >
-          <Services isView={serviceIsViewed} />
-        </Animated.View>
+        {section("servicios", <Services onContact={() => scrollToSection("contacto")} />)}
+        {section("productos", <ProductsSection />)}
+        {section("proyectos", <N8nProjectsSection />)}
+        {section("experiencia", <ExperienceSection />)}
+        {section("contacto", <Contact />)}
 
-        <Animated.View
-          style={productosAnimatedStyle}
-          onLayout={(event) => handleSectionLayout("productos", event)}
-        >
-          <ProductsSection />
-        </Animated.View>
-
-        <Animated.View
-          style={proyectosAnimatedStyle}
-          onLayout={(event) => handleSectionLayout("proyectos", event)}
-        >
-          <N8nProjectsSection />
-        </Animated.View>
-
-        <Animated.View
-          style={experienciaAnimatedStyle}
-          onLayout={(event) => handleSectionLayout("experiencia", event)}
-        >
-          <ExperienceSection />
-        </Animated.View>
-
-        <Animated.View
-          style={contactoAnimatedStyle}
-          onLayout={(event) => handleSectionLayout("contacto", event)}
-        >
-          <Contact />
-        </Animated.View>
-
-        <Footer />
+        <Footer scrollToSection={scrollToSection} />
       </ScrollView>
-    </>
+    </View>
   );
 }

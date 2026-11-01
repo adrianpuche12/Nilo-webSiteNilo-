@@ -1,439 +1,137 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  Image,
-  Platform,
-  Pressable,
-  Modal,
-  useWindowDimensions,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import Text from "@/components/ui/CustomText";
-import { LoginButton, EmailConsultButton } from "@/components/ui/AppButtons";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  interpolateColor,
-} from "react-native-reanimated";
+import { useState } from "react";
+import { View, Text, Image, Pressable, Modal, StyleSheet, Platform } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import Button from "@/components/ui/Button";
+import { COLOR, FONT, MAX_WIDTH } from "@/constants/theme";
+import { useBreakpoint } from "@/hooks/useBreakpoints";
 
-type HeaderProps = {
+type NavItem = { label: string; sectionId?: string; url?: string };
+
+const INDEX_NAV: NavItem[] = [
+  { label: "Servicios", sectionId: "servicios" },
+  { label: "Productos", sectionId: "productos" },
+  { label: "Automatización", sectionId: "proyectos" },
+  { label: "Experiencia", sectionId: "experiencia" },
+  { label: "Blog", url: "/blog" },
+];
+const OTHER_NAV: NavItem[] = [{ label: "Inicio", url: "/" }];
+
+interface Props {
   scrollToSection: (sectionId: string) => void;
+  /** true solo en la home (app/index.tsx). Default false: el blog y otras páginas navegan con URLs. */
   isIndexPage?: boolean;
-};
+  currentSection?: string; // ya existe en index.tsx; pasarlo para marcar el link activo
+}
 
-type SectionButtonProps = {
-  text: string;
-  sectionId: string;
-  onPress: (sectionId: string) => void;
-};
-
-/* ---------- HEADER ---------- */
-const Header = ({ scrollToSection, isIndexPage }: HeaderProps) => {
+/**
+ * Header rediseñado.
+ * - Se elimina el banner naranja "BANNER PARA OFERTAS PROMOS" + input de email (placeholder en producción).
+ * - Se elimina "Quiénes somos" (apuntaba a TeamSection, que está comentada → link muerto).
+ * - "INICIAR SESIÓN" (que llevaba a "/") se reemplaza por el CTA "Hablemos" → contacto.
+ * - ES/EN queda visual hasta que exista i18n (ver README).
+ * - Debe renderizarse FUERA del ScrollView para quedar fijo (ver README §3).
+ */
+export default function Header({ scrollToSection, isIndexPage = false, currentSection }: Props) {
   const router = useRouter();
-  const bp = useBreakpoint();
-  const [menuVisible, setMenuVisible] = useState(false);
-  const toggleMenu = () => setMenuVisible((prev) => !prev);
-  const handleEmailConsult = () => console.log("Consultando email…");
+  const { isMobile, isTablet } = useBreakpoint();
+  const [open, setOpen] = useState(false);
+  const items = isIndexPage ? INDEX_NAV : OTHER_NAV;
 
-  // Definir el array de navegación
-  const indexSectionNavItems = [
-    {
-      id: 1,
-      text: "INICIO",
-      sectionId: "inicio",
-    },
-    {
-      id: 2,
-      text: "SERVICIOS",
-      sectionId: "servicios",
-    },
-    {
-      id: 6,
-      text: "PRODUCTOS",
-      sectionId: "productos",
-    },
-    {
-      id: 3,
-      text: "QUIÉNES SOMOS",
-      sectionId: "quienes",
-    },
-    {
-      id: 4,
-      text: "CONTÁCTANOS",
-      sectionId: "contacto",
-    },
-    {
-      id: 5,
-      text: "BLOG",
-      sectionId: "blog",
-      url: "/blog",
-    },
-  ];
-  const otherPagesNavItems = [
-    {
-      id: 1,
-      text: "HOME",
-      sectionId: "home",
-      url: "/",
-    },
-  ];
-  // define que items se van a renderizar en el header dependiendo de la url actual
-  const itemsToRender = isIndexPage ? indexSectionNavItems : otherPagesNavItems;
-
-  // Función para obtener el estilo animado de cada botón
-  const renderNavItems = (vertical = false) => (
-    <View
-      style={[
-        vertical ? styles.navContainerVertical : styles.navContainer,
-        bp.isTabletOrMobile && styles.navContainerTabletOrMobile,
-      ]}
-    >
-      {itemsToRender.map((item) => (
-        <Animated.View key={item.id}>
-          <SectionButton
-            text={item.text}
-            sectionId={item.sectionId}
-            onPress={handleNavigation}
-          />
-        </Animated.View>
-      ))}
-    </View>
-  );
-
-  // Función para manejar la navegación
-  const handleNavigation = (sectionId: string) => {
-    const currentItem = itemsToRender.find(
-      (item) => item.sectionId === sectionId
-    );
-
-    if (currentItem && 'url' in currentItem && currentItem.url) {
-      // Si hay una URL, navegar a esa URL
-      console.log(`Navegando a ${currentItem.url}`);
-      router.push(currentItem.url as any)
-    } else {
-      scrollToSection(sectionId);
-    }
+  const go = (item: NavItem) => {
+    setOpen(false);
+    if (item.url) router.push(item.url as never);
+    else if (item.sectionId) scrollToSection(item.sectionId);
+  };
+  const toContact = () => {
+    setOpen(false);
+    if (isIndexPage) scrollToSection("contacto");
+    else router.push("/" as never);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#000" />
+    <View style={styles.bar}>
+      <View style={styles.inner}>
+        <Pressable onPress={() => (isIndexPage ? scrollToSection("inicio") : router.push("/" as never))} accessibilityLabel="Nilo Solutions — inicio">
+          <Image source={require("@/assets/images/logo.png")} style={styles.logo} resizeMode="contain" />
+        </Pressable>
 
-      {/* --------- MAIN HEADER --------- */}
-      <View
-        style={[
-          styles.mainHeader,
-          bp.isTabletOrMobile && styles.mainHeaderTabletOrMobile,
-          bp.isMobile && styles.mainHeaderMobile,
-        ]}
-      >
-        {/* Logo */}
-        <View style={styles.logoContainer}>
-          <Image
-            source={require("@/assets/images/logo.png")}
-            style={[
-              styles.logoImage,
-              bp.isTabletOrMobile && styles.logoImageTabletOrMobile,
-              bp.isMobile && styles.logoImageMobile,
-            ]}
-            resizeMode="contain"
-          />
-        </View>
-
-        {/* Navegación desktop/tablet */}
-        {!bp.isMobile && renderNavItems()}
-
-        {/* Navegación mobile */}
-        {bp.isMobile && (
-          <>
-            <Pressable onPress={toggleMenu} style={styles.burgerButton}>
-              <Ionicons name="menu" size={28} color="#fff" />
-            </Pressable>
-            <Modal visible={menuVisible} animationType="slide" transparent>
-              <Pressable style={styles.modalOverlay} onPress={toggleMenu}>
-                <View style={styles.modalContent}>
-                  {renderNavItems(true)}
-                  <View style={styles.modalFooter}>
-                    <LoginButton />
-                  </View>
-                </View>
-              </Pressable>
-            </Modal>
-          </>
-        )}
-
-        {!bp.isMobile && (
-          <View style={styles.rightSection}>
-            <View style={styles.languageSelector}>
-              <Text
-                style={[
-                  styles.languageText,
-                  bp.isTabletOrMobile && styles.languageTextTabletOrMobile,
-                ]}
-              >
-                ES
-              </Text>
-              <Text
-                style={[
-                  styles.languageText,
-                  bp.isTabletOrMobile && styles.languageTextTabletOrMobile,
-                ]}
-              >
-                EN
-              </Text>
-            </View>
-            <LoginButton />
+        {!isMobile && (
+          <View style={[styles.nav, isTablet && { gap: 20 }]}>
+            {items.map((it) => (
+              <NavLink key={it.label} item={it} active={!!it.sectionId && it.sectionId === currentSection} onPress={() => go(it)} />
+            ))}
           </View>
         )}
+
+        {!isMobile && (
+          <View style={styles.right}>
+            {/* Selector ES/EN oculto hasta que exista i18n (README del rediseño, §6). */}
+            <Button label="Hablemos" size="sm" onPress={toContact} />
+          </View>
+        )}
+
+        {isMobile && (
+          <Pressable onPress={() => setOpen(true)} style={styles.burger} accessibilityLabel="Abrir menú">
+            <Feather name="menu" size={24} color={COLOR.ink} />
+          </Pressable>
+        )}
       </View>
 
-      {/* --------- PROMO BANNER --------- */}
-      <View
-        style={[
-          styles.promoBanner,
-          bp.isTabletOrMobile && styles.promoBannerTabletOrMobile,
-          bp.isMobile && styles.promoBannerMobile,
-        ]}
-      >
-        <Text
-          style={[
-            styles.promoText,
-            bp.isTabletOrMobile && styles.promoTextTabletOrMobile,
-            bp.isMobile && styles.promoTextMobile,
-          ]}
-        >
-          BANNER PARA OFERTAS PROMOS
-        </Text>
-        <View
-          style={[
-            styles.emailSection,
-            bp.isMobile && styles.emailSectionMobile,
-          ]}
-        >
-          <TextInput
-            style={[
-              styles.emailInput,
-              bp.isTabletOrMobile && styles.emailInputTabletOrMobile,
-              bp.isMobile && styles.emailInputMobile,
-            ]}
-            placeholder="Ingresá tu e‑mail"
-            placeholderTextColor="#666"
-          />
-          <EmailConsultButton onPress={handleEmailConsult} />
-        </View>
-      </View>
-    </SafeAreaView>
+      <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
+        <Pressable style={styles.overlay} onPress={() => setOpen(false)}>
+          <Pressable style={styles.drawer} onPress={() => {}}>
+            <Pressable onPress={() => setOpen(false)} style={styles.close} accessibilityLabel="Cerrar menú">
+              <Feather name="x" size={24} color={COLOR.ink} />
+            </Pressable>
+            {items.map((it) => (
+              <Pressable key={it.label} onPress={() => go(it)} style={styles.drawerLink}>
+                <Text style={styles.drawerText}>{it.label}</Text>
+              </Pressable>
+            ))}
+            <View style={{ marginTop: 24 }}>
+              <Button label="Hablemos" onPress={toContact} fullWidth />
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
+    </View>
   );
-};
+}
 
-/* ---------- BUTTON ---------- */
-const SectionButton = ({ text, sectionId, onPress }: SectionButtonProps) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const bp = useBreakpoint();
-
-  // Animaciones de hover para el botón
-  const buttonAnimations = {
-    scale: useSharedValue(1),
-    textColor: useSharedValue(0),
-    underlineWidth: useSharedValue(0),
-  };
-
-  useEffect(() => {
-    if (isHovered) {
-      buttonAnimations.scale.value = withTiming(1.05, { duration: 200 });
-      buttonAnimations.textColor.value = withTiming(1, { duration: 200 });
-      buttonAnimations.underlineWidth.value = withTiming(100, {
-        duration: 200,
-      });
-    } else {
-      buttonAnimations.scale.value = withTiming(1, { duration: 200 });
-      buttonAnimations.textColor.value = withTiming(0, { duration: 200 });
-      buttonAnimations.underlineWidth.value = withTiming(0, { duration: 200 });
-    }
-  }, [isHovered]);
-
-  // Estilos animados
-  const animatedButtonSectionStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: buttonAnimations.scale.value }],
-  }));
-
-  const animatedTextSectionStyle = useAnimatedStyle(() => ({
-    color: interpolateColor(
-      buttonAnimations.textColor.value,
-      [0, 1],
-      ["#ffffff", "#ff6b35"]
-    ),
-  }));
-  const animatedUnderlineSectionStyle = useAnimatedStyle(() => ({
-    width: `${buttonAnimations.underlineWidth.value}%`,
-    backgroundColor: "#ff6b35",
-  }));
-
+function NavLink({ item, active, onPress }: { item: NavItem; active: boolean; onPress: () => void }) {
+  const [hover, setHover] = useState(false);
+  const hoverProps = Platform.OS === "web" ? { onHoverIn: () => setHover(true), onHoverOut: () => setHover(false) } : {};
   return (
-    <Pressable
-      style={styles.navItem}
-      onPress={() => onPress(sectionId)}
-      onHoverIn={Platform.OS === "web" ? () => setIsHovered(true) : undefined}
-      onHoverOut={Platform.OS === "web" ? () => setIsHovered(false) : undefined}
-    >
-      <Animated.View style={[animatedButtonSectionStyle]}>
-        <Animated.Text
-          style={[
-            styles.navText,
-            bp.isTabletOrMobile && styles.navTextTabletOrMobile,
-            animatedTextSectionStyle,
-          ]}
-        >
-          {text}
-        </Animated.Text>
-        <Animated.View
-          style={[styles.underline, animatedUnderlineSectionStyle]}
-        />
-      </Animated.View>
+    <Pressable onPress={onPress} {...hoverProps} style={styles.link}>
+      <Text style={[styles.linkText, (hover || active) && { color: COLOR.ink }]}>{item.label}</Text>
+      <View style={[styles.underline, active && { backgroundColor: COLOR.orange }]} />
     </Pressable>
   );
-};
+}
 
-/* --------------------- BREAKPOINT ------------------------ */
-const useBreakpoint = () => {
-  const { width } = useWindowDimensions();
-  return {
-    isTabletOrMobile: width < 1024,
-    isMobile: width < 768,
-  };
-};
 const styles = StyleSheet.create({
-  container: { backgroundColor: "#000" },
-
-  /* — HEADER — */
-  mainHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: "#000",
+  bar: {
+    backgroundColor: "rgba(0,0,0,0.72)",
+    borderBottomWidth: 1,
+    borderBottomColor: COLOR.line,
+    zIndex: 50,
+    // @ts-ignore — solo web
+    backdropFilter: "blur(14px)",
   },
-  mainHeaderTabletOrMobile: { paddingHorizontal: 15, paddingVertical: 8 },
-  mainHeaderMobile: { paddingHorizontal: 10, paddingVertical: 8 },
-
-  /* Logo */
-  logoContainer: { alignItems: "flex-start" },
-  logoImage: { width: 160, height: 90 },
-  logoImageTabletOrMobile: { width: 120, height: 70 },
-  logoImageMobile: { width: 110, height: 60 },
-
-  /* — NAVEGACIÓN — */
-  navContainer: {
-    flexDirection: "row",
-    flex: 1,
-    justifyContent: "center",
-    marginHorizontal: 20,
-    gap: 15,
-  },
-  navContainerTabletOrMobile: { gap: 10, marginHorizontal: 15 },
-  navContainerVertical: {
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 20,
-  },
-  navItem: { marginHorizontal: 15 },
-  navText: { color: "#fff", fontSize: 15, fontWeight: "400" },
-  navTextTabletOrMobile: { fontSize: 14 },
-  navTextHover: { textDecorationLine: "underline" },
-  underline: {
-    height: 2,
-    marginTop: 4,
-    borderRadius: 1,
-  },
-
-  /* — SECCIÓN DERECHA — */
-  rightSection: { flexDirection: "row", alignItems: "center" },
-  languageSelector: { flexDirection: "row", marginRight: 15 },
-  languageText: { color: "#fff", fontSize: 14, marginHorizontal: 5 },
-  languageTextTabletOrMobile: { fontSize: 13 },
-
-  /* — BANNER — */
-  promoBanner: {
-    backgroundColor: "#ff6b35",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    gap: 10,
-  },
-  promoBannerTabletOrMobile: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  promoBannerMobile: {
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    flexWrap: "wrap",
-    justifyContent: "flex-start",
-  },
-  promoText: { color: "#000", fontSize: 15, fontWeight: "600" },
-  promoTextTabletOrMobile: { fontSize: 13 },
-  promoTextMobile: { fontSize: 10 },
-
-  /* — EMAIL — */
-  emailSection: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginLeft: "auto",
-  },
-  emailInput: {
-    backgroundColor: "#fff",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 5,
-    marginRight: 10,
-    minWidth: 200,
-    fontSize: 14,
-  },
-  emailInputTabletOrMobile: {
-    minWidth: 160,
-    fontSize: 13,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    marginRight: 8,
-  },
-  emailSectionMobile: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  emailInputMobile: {
-    minWidth: 110,
-    fontSize: 11,
-    paddingHorizontal: 7,
-    paddingVertical: 6,
-    marginRight: 3,
-  },
-
-  /* MODAL */
-  burgerButton: { padding: 8 },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "flex-end",
-  },
-  modalContent: {
-    backgroundColor: "#151414",
-    paddingVertical: 30,
-    paddingHorizontal: 24,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  modalFooter: { marginTop: 30 },
+  inner: { height: 72, maxWidth: MAX_WIDTH, width: "100%", alignSelf: "center", paddingHorizontal: 24, flexDirection: "row", alignItems: "center", gap: 32 },
+  logo: { width: 76, height: 40 },
+  nav: { flexDirection: "row", gap: 28, marginLeft: "auto" },
+  link: { paddingVertical: 6 },
+  linkText: { fontFamily: FONT.regular, fontSize: 14, color: COLOR.ink2 },
+  underline: { height: 2, borderRadius: 2, marginTop: 4, backgroundColor: "transparent" },
+  right: { flexDirection: "row", alignItems: "center", gap: 16 },
+  lang: { fontFamily: FONT.regular, fontSize: 13, color: COLOR.ink3 },
+  langOn: { color: COLOR.ink, fontFamily: FONT.medium },
+  burger: { marginLeft: "auto", padding: 8 },
+  overlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.6)", alignItems: "flex-end" },
+  drawer: { width: "86%", maxWidth: 320, height: "100%", backgroundColor: COLOR.bgRaised, borderLeftWidth: 1, borderLeftColor: COLOR.line, padding: 24 },
+  close: { alignSelf: "flex-end", padding: 8, marginBottom: 8 },
+  drawerLink: { paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: COLOR.line },
+  drawerText: { fontFamily: FONT.regular, fontSize: 18, color: COLOR.ink },
 });
-
-export default Header;

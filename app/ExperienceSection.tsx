@@ -1,16 +1,10 @@
-import React from "react";
-import {
-  View,
-  Text,
-  Linking,
-  TouchableOpacity,
-  ScrollView,
-  ImageBackground,
-} from "react-native";
-import Animated, { FadeInUp } from "react-native-reanimated";
-import { LinearGradient } from "expo-linear-gradient";
+import { View, Text, StyleSheet, Pressable, Linking } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import SectionHeader from "@/components/ui/SectionHeader";
+import { COLOR, FONT, MAX_WIDTH, RADIUS } from "@/constants/theme";
+import { useBreakpoint } from "@/hooks/useBreakpoints";
 
-const experienceData = [
+const EXPERIENCE = [
   {
     title: "Automatización y soluciones empresariales",
     description:
@@ -20,7 +14,7 @@ const experienceData = [
     title: "Educación en tecnologías emergentes",
     description:
       "Programas educativos dictados a través de la Fundación Libertad y nuestra plataforma oficial, enfocados en IA Generativa, Ciencia de Datos y Automatización Legal.",
-    link: "https://educate.nilosolutions.com/",
+    link: { label: "Visitar plataforma educativa", url: "https://educate.nilosolutions.com/" },
   },
   {
     title: "Proyectos y consultoría tecnológica",
@@ -30,114 +24,55 @@ const experienceData = [
 ];
 
 export default function ExperienceSection() {
+  const { isMobile } = useBreakpoint();
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "#0a0a0a",
-        paddingVertical: 50,
-        paddingHorizontal: 20,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 26,
-          color: "#fff",
-          fontWeight: "700",
-          textAlign: "center",
-          marginBottom: 30,
-          letterSpacing: 1,
-        }}
-      >
-        Experiencia y Proyectos Destacados
-      </Text>
-
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {experienceData.map((item, index) => (
-          <Animated.View
-            key={index}
-            entering={FadeInUp.delay(index * 200).springify().damping(15)}
-            style={{
-              marginBottom: 25,
-              borderRadius: 22,
-              overflow: "hidden",
-              shadowColor: "#8b5cf6",
-              shadowOpacity: 0.2,
-              shadowRadius: 12,
-              elevation: 6,
-            }}
-          >
-            <LinearGradient
-              colors={["#1a1a1a", "#121212", "#0a0a0a"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{
-                borderRadius: 22,
-                padding: 20,
-                borderWidth: 1,
-                borderColor: "rgba(255,255,255,0.08)",
-              }}
+    <View style={[styles.section, isMobile && styles.sectionMobile]}>
+      <View style={styles.inner}>
+        <SectionHeader
+          eyebrow="Experiencia"
+          title="Dónde ponemos el foco"
+          description="Tecnología aplicada, formación y consultoría para equipos que quieren adoptar herramientas emergentes con criterio."
+        />
+        <View style={[styles.box, isMobile && styles.boxMobile]}>
+          {EXPERIENCE.map((item, index) => (
+            <View
+              key={item.title}
+              style={[
+                styles.col,
+                isMobile && styles.colMobile,
+                index > 0 && (isMobile ? styles.dividerTop : styles.dividerLeft),
+              ]}
             >
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: "700",
-                  color: "#fff",
-                  marginBottom: 10,
-                  textTransform: "uppercase",
-                  letterSpacing: 0.5,
-                }}
-              >
-                {item.title}
-              </Text>
-
-              <Text
-                style={{
-                  color: "#ccc",
-                  fontSize: 15,
-                  lineHeight: 22,
-                }}
-              >
-                {item.description}
-              </Text>
-
+              <Text style={styles.num}>{String(index + 1).padStart(2, "0")}</Text>
+              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.desc}>{item.description}</Text>
               {item.link && (
-                <TouchableOpacity
-                  onPress={() => Linking.openURL(item.link!)}
-                  style={{
-                    marginTop: 15,
-                    paddingVertical: 10,
-                    borderRadius: 10,
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  <LinearGradient
-                    colors={["#9333ea", "#5b21b6"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={{
-                      borderRadius: 10,
-                      paddingHorizontal: 16,
-                      paddingVertical: 8,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontWeight: "600",
-                        fontSize: 14,
-                        textAlign: "center",
-                      }}
-                    >
-                      Visitar plataforma educativa ↗
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
+                <Pressable onPress={() => Linking.openURL(item.link.url)} accessibilityRole="link" style={styles.link}>
+                  <Text style={styles.linkText}>{item.link.label}</Text>
+                  <Feather name="arrow-up-right" size={16} color={COLOR.orange} />
+                </Pressable>
               )}
-            </LinearGradient>
-          </Animated.View>
-        ))}
-      </ScrollView>
+            </View>
+          ))}
+        </View>
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  section: { backgroundColor: COLOR.bg, paddingVertical: 112, borderBottomWidth: 1, borderBottomColor: COLOR.line },
+  sectionMobile: { paddingVertical: 80 },
+  inner: { maxWidth: MAX_WIDTH, width: "100%", alignSelf: "center", paddingHorizontal: 24 },
+  box: { flexDirection: "row", borderWidth: 1, borderColor: COLOR.line, borderRadius: RADIUS.lg },
+  boxMobile: { flexDirection: "column" },
+  col: { flex: 1, padding: 32 },
+  colMobile: { padding: 24 },
+  dividerLeft: { borderLeftWidth: 1, borderLeftColor: COLOR.line },
+  dividerTop: { borderTopWidth: 1, borderTopColor: COLOR.line },
+  num: { fontFamily: FONT.mono, fontSize: 14, color: COLOR.orange, marginBottom: 20 },
+  title: { fontFamily: FONT.medium, fontSize: 20, lineHeight: 26, color: COLOR.ink, marginBottom: 12 },
+  desc: { fontFamily: FONT.regular, fontSize: 15, lineHeight: 25, color: COLOR.ink2 },
+  link: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 24 },
+  linkText: { fontFamily: FONT.medium, fontSize: 14, color: COLOR.orange },
+});

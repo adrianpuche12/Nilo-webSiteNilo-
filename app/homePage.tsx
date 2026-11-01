@@ -1,639 +1,99 @@
-"use client"
+import { View, Text, StyleSheet } from "react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
+import Button from "@/components/ui/Button";
+import { COLOR, FONT, MAX_WIDTH, TYPE } from "@/constants/theme";
+import { useBreakpoint } from "@/hooks/useBreakpoints";
 
-import { View, Text, StyleSheet, useWindowDimensions, Dimensions, Animated } from "react-native"
-import { StartProjectButton, ViewPortfolioButton } from "@/components/ui/AppButtons"
-import { useComplexShapeAnimation, SHAPE_ANIMATIONS } from "@/components/animations/AnimatedShapes"
-import { useHeroSectionAnimation } from "@/components/animations/HeroAnimations"
-const { height } = Dimensions.get("window")
+interface Props {
+  onStartProject: () => void; // scrollToSection("contacto")
+  onViewWork: () => void;     // scrollToSection("productos")
+}
 
-const NiloSolutionsHome = () => {
-  const bp = useBreakpoint()
-
-  // Animaciones de entrada para toda la sección hero
-  const heroAnimations = useHeroSectionAnimation()
-
-  // Animaciones para cada forma con configuraciones diferentes (formas de fondo)
-  const circle1Animation = useComplexShapeAnimation(
-    SHAPE_ANIMATIONS.CIRCLE_PRIMARY.scale,
-    SHAPE_ANIMATIONS.CIRCLE_PRIMARY.opacity,
-  )
-
-  const circle2Animation = useComplexShapeAnimation(
-    SHAPE_ANIMATIONS.CIRCLE_SECONDARY.scale,
-    SHAPE_ANIMATIONS.CIRCLE_SECONDARY.opacity,
-  )
-
-  const square1Animation = useComplexShapeAnimation(
-    SHAPE_ANIMATIONS.SQUARE_PRIMARY.scale,
-    SHAPE_ANIMATIONS.SQUARE_PRIMARY.opacity,
-  )
+/**
+ * Hero rediseñado.
+ * - Mismo copy y mismas cifras (15+ / 10+).
+ * - Se reemplazan la tarjeta "<NilO Solutions />" con puntitos y los círculos/rombo
+ *   naranjas animados por un ANILLO que toma la "O" del logo (arco blanco con glow).
+ * - Los CTAs ahora hacen algo (antes: console.log).
+ * - Se elimina el contenedor blanco con borde negro que asomaba debajo del hero.
+ */
+export default function HomePage({ onStartProject, onViewWork }: Props) {
+  const { isMobile } = useBreakpoint();
+  const fs = isMobile ? TYPE.hero.m : TYPE.hero.d;
+  const ring = isMobile ? 300 : 440;
 
   return (
-    <View style={styles.container}>
-      {/* Hero Section */}
-      <View
-        style={[
-          styles.heroSection,
-          bp.isTabletOrMobile && styles.heroSectionTabletOrMobile,
-          bp.isMobile && styles.heroSectionMobile,
-        ]}
-      >
-        <View
-          style={[
-            styles.heroContent,
-            bp.isTabletOrMobile && styles.heroContentTabletOrMobile,
-            bp.isMobile && styles.heroContentMobile,
-          ]}
-        >
+    <View style={styles.section}>
+      <View style={[styles.inner, isMobile && styles.innerMobile]}>
+        <View style={styles.text}>
+          <Animated.Text entering={FadeInUp.duration(500)} style={styles.eyebrow}>CONSULTORA DE SOFTWARE</Animated.Text>
+          <Animated.Text entering={FadeInUp.delay(80).duration(600)} style={[styles.title, { fontSize: fs, lineHeight: fs * TYPE.hero.lh }]}>
+            Transformamos tus <Text style={{ color: COLOR.orange }}>ideas digitales</Text> en realidad.
+          </Animated.Text>
+          <Animated.Text entering={FadeInUp.delay(160).duration(600)} style={[styles.lead, { fontSize: isMobile ? TYPE.lead.m : TYPE.lead.d }]}>
+            Desarrollamos soluciones tecnológicas para empresas que buscan crecer en el mundo digital. Desde aplicaciones móviles hasta sistemas web complejos.
+          </Animated.Text>
+          <Animated.View entering={FadeInUp.delay(240).duration(600)} style={[styles.ctas, isMobile && styles.ctasMobile]}>
+            <Button label="Comenzar un proyecto" icon="arrow-right" onPress={onStartProject} fullWidth={isMobile} />
+            <Button label="Ver nuestro trabajo" variant="ghost" onPress={onViewWork} fullWidth={isMobile} />
+          </Animated.View>
+        </View>
+
+        <View style={[styles.visual, { width: ring, height: ring }]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+          <View style={[styles.glow, { width: ring * 0.64, height: ring * 0.64, borderRadius: ring }]} />
+          {/* Arco: borde blanco en 3 lados + rotación = "O" abierta del logo */}
           <View
             style={[
-              styles.heroTextContainer,
-              bp.isTabletOrMobile && styles.heroTextContainerTabletOrMobile,
-              bp.isMobile && styles.heroTextContainerMobile,
+              styles.ring,
+              { width: ring, height: ring, borderRadius: ring / 2, borderWidth: isMobile ? 14 : 22 },
             ]}
-          >
-            {/* Subtitle con animación */}
-            <Animated.Text
-              style={[
-                styles.heroSubtitle,
-                bp.isTabletOrMobile && styles.heroSubtitleTabletOrMobile,
-                bp.isMobile && styles.heroSubtitleMobile,
-                heroAnimations.subtitle,
-              ]}
-            >
-              CONSULTORA DE SOFTWARE
-            </Animated.Text>
-
-            {/* Title con animación */}
-            <Animated.Text
-              style={[
-                styles.heroTitle,
-                bp.isTabletOrMobile && styles.heroTitleTabletOrMobile,
-                bp.isMobile && styles.heroTitleMobile,
-                heroAnimations.title,
-              ]}
-            >
-              Transformamos tus{"\n"}
-              <Text style={styles.heroTitleAccent}>ideas digitales</Text>
-              {"\n"}en realidad
-            </Animated.Text>
-
-            {/* Description con animación */}
-            <Animated.Text
-              style={[
-                styles.heroDescription,
-                bp.isTabletOrMobile && styles.heroDescriptionTabletOrMobile,
-                bp.isMobile && styles.heroDescriptionMobile,
-                heroAnimations.description,
-              ]}
-            >
-              Desarrollamos soluciones tecnológicas innovadoras para empresas que buscan crecer en el mundo digital.
-              Desde aplicaciones móviles hasta sistemas web complejos.
-            </Animated.Text>
-
-            {/* Buttons con animación */}
-            <Animated.View
-              style={[
-                styles.heroButtons,
-                bp.isTabletOrMobile && styles.heroButtonsTabletOrMobile,
-                bp.isMobile && styles.heroButtonsMobile,
-                heroAnimations.buttons,
-              ]}
-            >
-              <StartProjectButton onPress={() => console.log("Comenzar proyecto")} />
-              <ViewPortfolioButton onPress={() => console.log("Ver portafolio")} />
-            </Animated.View>
-          </View>
-
-          <View
-            style={[
-              styles.heroVisual,
-              bp.isTabletOrMobile && styles.heroVisualTabletOrMobile,
-              bp.isMobile && styles.heroVisualMobile,
-            ]}
-          >
-            {/* Card con animación */}
-            <Animated.View
-              style={[
-                styles.floatingCard,
-                bp.isTabletOrMobile && styles.floatingCardTabletOrMobile,
-                bp.isMobile && styles.floatingCardMobile,
-                heroAnimations.card,
-              ]}
-            >
-              <View style={[styles.cardHeader, bp.isMobile && styles.cardHeaderMobile]}>
-                <View style={[styles.cardDots, bp.isMobile && styles.cardDotsMobile]}>
-                  <View style={[styles.dot, { backgroundColor: "#ff6b35" }, bp.isMobile && styles.dotMobile]} />
-                  <View style={[styles.dot, { backgroundColor: "#fff" }, bp.isMobile && styles.dotMobile]} />
-                  <View style={[styles.dot, { backgroundColor: "#fff" }, bp.isMobile && styles.dotMobile]} />
-                </View>
-              </View>
-              <View style={styles.cardContent}>
-                <Text
-                  style={[
-                    styles.cardTitle,
-                    bp.isTabletOrMobile && styles.cardTitleTabletOrMobile,
-                    bp.isMobile && styles.cardTitleMobile,
-                  ]}
-                >
-                  {"<NilO Solutions />"}
-                </Text>
-                <Text
-                  style={[
-                    styles.cardSubtitle,
-                    bp.isTabletOrMobile && styles.cardSubtitleTabletOrMobile,
-                    bp.isMobile && styles.cardSubtitleMobile,
-                  ]}
-                >
-                  Desarrollo de Software
-                </Text>
-                <View style={[styles.cardStats, bp.isMobile && styles.cardStatsMobile]}>
-                  <View style={styles.statItem}>
-                    <Text
-                      style={[
-                        styles.statNumber,
-                        bp.isTabletOrMobile && styles.statNumberTabletOrMobile,
-                        bp.isMobile && styles.statNumberMobile,
-                      ]}
-                    >
-                      15+
-                    </Text>
-                    <Text
-                      style={[
-                        styles.statLabel,
-                        bp.isTabletOrMobile && styles.statLabelTabletOrMobile,
-                        bp.isMobile && styles.statLabelMobile,
-                      ]}
-                    >
-                      Proyectos
-                    </Text>
-                  </View>
-                  <View style={styles.statItem}>
-                    <Text
-                      style={[
-                        styles.statNumber,
-                        bp.isTabletOrMobile && styles.statNumberTabletOrMobile,
-                        bp.isMobile && styles.statNumberMobile,
-                      ]}
-                    >
-                      10+
-                    </Text>
-                    <Text
-                      style={[
-                        styles.statLabel,
-                        bp.isTabletOrMobile && styles.statLabelTabletOrMobile,
-                        bp.isMobile && styles.statLabelMobile,
-                      ]}
-                    >
-                      Clientes
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </Animated.View>
-
-            {/* Background Elements with Animations */}
-            <Animated.View
-              style={[styles.backgroundElements, bp.isMobile && styles.backgroundElementsMobile, heroAnimations.shapes]}
-            >
-              {/* Circle 1 - Animated */}
-              <Animated.View
-                style={[
-                  styles.circle,
-                  styles.circle1,
-                  bp.isTabletOrMobile && styles.circle1TabletOrMobile,
-                  bp.isMobile && styles.circle1Mobile,
-                  {
-                    transform: [{ scale: circle1Animation.scale }],
-                    opacity: circle1Animation.opacity,
-                  },
-                ]}
-              />
-
-              {/* Circle 2 - Animated */}
-              <Animated.View
-                style={[
-                  styles.circle,
-                  styles.circle2,
-                  bp.isTabletOrMobile && styles.circle2TabletOrMobile,
-                  bp.isMobile && styles.circle2Mobile,
-                  {
-                    transform: [{ scale: circle2Animation.scale }],
-                    opacity: circle2Animation.opacity,
-                  },
-                ]}
-              />
-
-              {/* Diamond (Square rotated 45°) - Animated with scale only */}
-              <Animated.View
-                style={[
-                  styles.diamond,
-                  styles.diamond1,
-                  bp.isTabletOrMobile && styles.diamond1TabletOrMobile,
-                  bp.isMobile && styles.diamond1Mobile,
-                  {
-                    transform: [
-                      { rotate: "45deg" }, // Rotación fija para crear el rombo
-                      { scale: square1Animation.scale },
-                    ],
-                    opacity: square1Animation.opacity,
-                  },
-                ]}
-              />
-            </Animated.View>
+          />
+          <View style={styles.stats}>
+            <Stat n="15" label="PROYECTOS" />
+            <View style={styles.rule} />
+            <Stat n="10" label="CLIENTES" />
           </View>
         </View>
       </View>
     </View>
-  )
+  );
 }
 
-/* --------------------- BREAKPOINT HOOK ------------------------ */
-const useBreakpoint = () => {
-  const { width } = useWindowDimensions()
-  return {
-    isTabletOrMobile: width < 1024,
-    isMobile: width < 768,
-  }
+function Stat({ n, label }: { n: string; label: string }) {
+  return (
+    <View style={{ alignItems: "center" }}>
+      <Text style={styles.statN}>
+        {n}
+        <Text style={{ color: COLOR.orange }}>+</Text>
+      </Text>
+      <Text style={styles.statL}>{label}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderColor: "#000",
-  },
-
-  /* -------- HERO SECTION -------- */
-  heroSection: {
-    backgroundColor: "#000",
-    minHeight: height * 0.8,
-    paddingVertical: 60,
-    paddingHorizontal: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  heroSectionTabletOrMobile: {
-    paddingVertical: 50,
-    paddingHorizontal: 16,
-    minHeight: height * 0.75,
-  },
-  heroSectionMobile: {
-    paddingVertical: 40,
-    paddingHorizontal: 12,
-    minHeight: "auto",
-  },
-
-  /* -------- HERO CONTENT -------- */
-  heroContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    maxWidth: 1200,
-    width: "100%",
-  },
-  heroContentTabletOrMobile: {
-    flexDirection: "row",
-    gap: 30,
-  },
-  heroContentMobile: {
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 40,
-  },
-
-  /* -------- HERO TEXT CONTAINER -------- */
-  heroTextContainer: {
-    flex: 1,
-    paddingRight: 40,
-  },
-  heroTextContainerTabletOrMobile: {
-    paddingRight: 20,
-    flex: 1.2,
-  },
-  heroTextContainerMobile: {
-    paddingRight: 0,
-    alignItems: "center",
-    textAlign: "center",
-  },
-
-  /* -------- HERO SUBTITLE -------- */
-  heroSubtitle: {
-    fontSize: 14,
-    color: "#ff6b35",
-    fontWeight: "600",
-    letterSpacing: 2,
-    marginBottom: 20,
-  },
-  heroSubtitleTabletOrMobile: {
-    fontSize: 13,
-    marginBottom: 18,
-  },
-  heroSubtitleMobile: {
-    fontSize: 12,
-    marginBottom: 16,
-    textAlign: "center",
-  },
-
-  /* -------- HERO TITLE -------- */
-  heroTitle: {
-    fontSize: 48,
-    fontWeight: "bold",
-    color: "#fff",
-    lineHeight: 56,
-    marginBottom: 24,
-  },
-  heroTitleTabletOrMobile: {
-    fontSize: 36,
-    lineHeight: 42,
-    marginBottom: 20,
-  },
-  heroTitleMobile: {
-    fontSize: 28,
-    lineHeight: 34,
-    marginBottom: 18,
-    textAlign: "center",
-  },
-  heroTitleAccent: {
-    color: "#ff6b35",
-  },
-
-  /* -------- HERO DESCRIPTION -------- */
-  heroDescription: {
-    fontSize: 18,
-    color: "#ccc",
-    lineHeight: 28,
-    marginBottom: 40,
-    maxWidth: 500,
-  },
-  heroDescriptionTabletOrMobile: {
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 35,
-    maxWidth: 400,
-  },
-  heroDescriptionMobile: {
-    fontSize: 14,
-    lineHeight: 22,
-    marginBottom: 30,
-    maxWidth: 300,
-    textAlign: "center",
-  },
-
-  /* -------- HERO BUTTONS -------- */
-  heroButtons: {
-    flexDirection: "row",
-    gap: 20,
-  },
-  heroButtonsTabletOrMobile: {
-    gap: 16,
-  },
-  heroButtonsMobile: {
-    flexDirection: "column",
-    gap: 16,
-    alignItems: "center",
-    width: "100%",
-  },
-
-  /* -------- HERO VISUAL -------- */
-  heroVisual: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-  },
-  heroVisualTabletOrMobile: {
-    flex: 0.8,
-  },
-  heroVisualMobile: {
-    flex: 0,
-    width: "100%",
-    marginTop: 20,
-  },
-
-  /* -------- FLOATING CARD -------- */
-  floatingCard: {
-    backgroundColor: "#1a1a1a",
-    borderRadius: 20,
-    padding: 24,
-    width: 280,
-    elevation: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    borderWidth: 1,
-    borderColor: "#333",
-  },
-  floatingCardTabletOrMobile: {
-    width: 240,
-    padding: 20,
-    borderRadius: 16,
-  },
-  floatingCardMobile: {
-    width: 260,
-    padding: 18,
-    borderRadius: 14,
-    elevation: 6,
-    shadowRadius: 12,
-  },
-
-  /* -------- CARD HEADER -------- */
-  cardHeader: {
-    marginBottom: 20,
-  },
-  cardHeaderMobile: {
-    marginBottom: 16,
-  },
-
-  /* -------- CARD DOTS -------- */
-  cardDots: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  cardDotsMobile: {
-    gap: 6,
-  },
-
-  /* -------- DOT -------- */
-  dot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-  dotMobile: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-
-  /* -------- CARD CONTENT -------- */
-  cardContent: {
-    alignItems: "center",
-  },
-
-  /* -------- CARD TITLE -------- */
-  cardTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-    marginBottom: 8,
-    fontFamily: "monospace",
-  },
-  cardTitleTabletOrMobile: {
-    fontSize: 20,
-    marginBottom: 6,
-  },
-  cardTitleMobile: {
-    fontSize: 18,
-    marginBottom: 6,
-  },
-
-  /* -------- CARD SUBTITLE -------- */
-  cardSubtitle: {
-    fontSize: 16,
-    color: "#ff6b35",
-    marginBottom: 24,
-  },
-  cardSubtitleTabletOrMobile: {
-    fontSize: 14,
-    marginBottom: 20,
-  },
-  cardSubtitleMobile: {
-    fontSize: 13,
-    marginBottom: 18,
-  },
-
-  /* -------- CARD STATS -------- */
-  cardStats: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-  },
-  cardStatsMobile: {
-    gap: 20,
-  },
-
-  /* -------- STAT ITEM -------- */
-  statItem: {
-    alignItems: "center",
-  },
-
-  /* -------- STAT NUMBER -------- */
-  statNumber: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#ff6b35",
-    marginBottom: 4,
-  },
-  statNumberTabletOrMobile: {
-    fontSize: 24,
-    marginBottom: 3,
-  },
-  statNumberMobile: {
-    fontSize: 22,
-    marginBottom: 3,
-  },
-
-  /* -------- STAT LABEL -------- */
-  statLabel: {
-    fontSize: 14,
-    color: "#ccc",
-  },
-  statLabelTabletOrMobile: {
-    fontSize: 13,
-  },
-  statLabelMobile: {
-    fontSize: 12,
-  },
-
-  /* -------- BACKGROUND ELEMENTS -------- */
-  backgroundElements: {
+  section: { backgroundColor: COLOR.bg, paddingVertical: 112, borderBottomWidth: 1, borderBottomColor: COLOR.line, overflow: "hidden" },
+  inner: { maxWidth: MAX_WIDTH, width: "100%", alignSelf: "center", paddingHorizontal: 24, flexDirection: "row", alignItems: "center", gap: 48 },
+  innerMobile: { flexDirection: "column", alignItems: "flex-start" },
+  text: { flex: 1.15 },
+  eyebrow: { fontFamily: FONT.medium, fontSize: 13, letterSpacing: 4.2, color: COLOR.orange },
+  title: { fontFamily: FONT.bold, color: COLOR.ink, letterSpacing: -1.2, marginTop: 20, marginBottom: 24 },
+  lead: { fontFamily: FONT.light, color: COLOR.ink2, lineHeight: 32, maxWidth: 540 },
+  ctas: { flexDirection: "row", flexWrap: "wrap", gap: 12, marginTop: 40 },
+  ctasMobile: { flexDirection: "column", alignSelf: "stretch" },
+  visual: { alignSelf: "center", alignItems: "center", justifyContent: "center" },
+  glow: { position: "absolute", backgroundColor: COLOR.orangeSoft, opacity: 0.9 },
+  ring: {
     position: "absolute",
-    width: "100%",
-    height: "100%",
-    zIndex: -1,
+    borderColor: "rgba(255,255,255,0.85)",
+    borderBottomColor: "transparent",
+    transform: [{ rotate: "-35deg" }],
+    shadowColor: "#FFFFFF",
+    shadowOpacity: 0.25,
+    shadowRadius: 24,
   },
-  backgroundElementsMobile: {
-    opacity: 0.8,
-    zIndex: 1,
-  },
-
-  /* -------- CIRCLES -------- */
-  circle: {
-    position: "absolute",
-    borderRadius: 50,
-    pointerEvents: "none",
-  },
-  circle1: {
-    width: 100,
-    height: 100,
-    backgroundColor: "#ff6b35",
-    top: 20,
-    right: 20,
-  },
-  circle1TabletOrMobile: {
-    width: 80,
-    height: 80,
-    top: 15,
-    right: 15,
-  },
-  circle1Mobile: {
-    width: 70,
-    height: 70,
-    top: -10,
-    right: -10,
-  },
-  circle2: {
-    width: 60,
-    height: 60,
-    backgroundColor: "#fff",
-    bottom: 100,
-    left: 40,
-  },
-  circle2TabletOrMobile: {
-    width: 50,
-    height: 50,
-    bottom: 80,
-    left: 30,
-  },
-  circle2Mobile: {
-    width: 50,
-    height: 50,
-    bottom: -20,
-    left: -10,
-  },
-
-  /* -------- DIAMOND (ROTATED SQUARE) -------- */
-  diamond: {
-    position: "absolute",
-    pointerEvents: "none",
-  },
-  diamond1: {
-    width: 80,
-    height: 80,
-    backgroundColor: "#ff6b35",
-    bottom: 40,
-    right: 60,
-  },
-  diamond1TabletOrMobile: {
-    width: 65,
-    height: 65,
-    bottom: 30,
-    right: 45,
-  },
-  diamond1Mobile: {
-    width: 60,
-    height: 60,
-    bottom: -15,
-    right: -15,
-  },
-// hover button styles
-hoverButton: {
-transform: [{ scale: 1.05 }],
-},
-
-})
-
-export default NiloSolutionsHome
+  stats: { alignItems: "center", gap: 20 },
+  rule: { width: 40, height: 1, backgroundColor: COLOR.lineStrong },
+  statN: { fontFamily: FONT.bold, fontSize: 52, lineHeight: 56, color: COLOR.ink },
+  statL: { fontFamily: FONT.medium, fontSize: 12, letterSpacing: 2.9, color: COLOR.ink3, marginTop: 6 },
+});

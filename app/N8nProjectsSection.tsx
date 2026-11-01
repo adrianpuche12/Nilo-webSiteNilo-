@@ -1,242 +1,115 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Linking,
-  ScrollView,
-  Image,
-  Dimensions,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
+import { View, Text, StyleSheet, Pressable, Linking, Platform } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import SectionHeader from "@/components/ui/SectionHeader";
+import { COLOR, FONT, MAX_WIDTH } from "@/constants/theme";
 import { useBreakpoint } from "@/hooks/useBreakpoints";
 
-const { width } = Dimensions.get("window");
-
-const projects = [
+/** Flujos de n8n en producción. Lista numerada (sin íconos externos de flaticon). */
+const PROJECTS = [
   {
-    title: "Gestión Legal – Automatización de procesos administrativos",
+    title: "Gestión legal: procesos administrativos",
     description:
       "Flujo diseñado para optimizar la gestión documental y automatizar tareas internas en estudios jurídicos, reduciendo tiempos y errores humanos.",
     url: "https://legalbackn8n.nilosolutions.com/workflow/rvudGubRQEUmVV73",
-    image: "https://cdn-icons-png.flaticon.com/512/9463/9463170.png",
   },
   {
-    title: "Integración de canales de comunicación (Twilio + n8n)",
+    title: "Canales de comunicación unificados",
     description:
-      "Conecta mensajería, correos y CRM para mantener un registro automatizado y unificado de las interacciones con los clientes.",
+      "Conecta mensajería, correos y CRM (Twilio + n8n) para mantener un registro automatizado y unificado de las interacciones con los clientes.",
     url: "https://legalbackn8n.nilosolutions.com/workflow/RMrvdul3O2Fm18B3",
-    image: "https://cdn-icons-png.flaticon.com/512/3062/3062634.png",
   },
   {
-    title: "Pipeline de datos para reportes de IA",
+    title: "Pipeline de datos para reportes con IA",
     description:
-      "Flujo avanzado que recolecta, transforma y distribuye datos hacia módulos de inteligencia artificial para análisis estratégico.",
+      "Recolecta, transforma y distribuye datos hacia módulos de inteligencia artificial para análisis estratégico.",
     url: "https://legalbackn8n.nilosolutions.com/workflow/6wDIzWI3B5YGYdyE",
-    image: "https://cdn-icons-png.flaticon.com/512/4839/4839955.png",
   },
   {
-    title: "Automatización Legal Avanzada – RAG y documentación",
+    title: "Automatización legal avanzada con RAG",
     description:
       "Integración de RAG (Retrieval Augmented Generation) para consultas jurídicas inteligentes basadas en documentación real.",
     url: "https://legalbackn8n.nilosolutions.com/workflow/8bOVNfpNEOY9SUDS",
-    image: "https://cdn-icons-png.flaticon.com/512/3652/3652269.png",
   },
 ];
 
-const N8nProjectsSection = () => {
+export default function N8nProjectsSection() {
   const { isMobile } = useBreakpoint();
-
-  const openLink = (url: string) => {
-    Linking.openURL(url);
-  };
-
   return (
-    <ScrollView
-      style={styles.sectionContainer}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ alignItems: "center" }}
-    >
-      <View style={styles.titleContainer}>
-        <View style={styles.titleDecoration} />
-        <Text style={styles.title}>Proyectos de automatización con n8n</Text>
-        <View style={styles.titleDecoration} />
-      </View>
-
-      <Text style={styles.description}>
-        En{" "}
-        <Text
-          style={styles.highlight}
-          onPress={() =>
-            Linking.openURL("https://educate.nilosolutions.com/")
-          }
-        >
-          Nilo Solutions
-        </Text>
-        , desarrollamos flujos inteligentes con n8n, IA y APIs que conectan
-        sistemas empresariales, optimizan procesos repetitivos y aumentan la
-        productividad. Cada proyecto refleja nuestro enfoque en la eficiencia y
-        la automatización estratégica.
-      </Text>
-
-      <View style={styles.cardsOuterContainer}>
-        <View
-          style={[
-            styles.cardsContainer,
-            isMobile && styles.cardsContainerMobile,
-          ]}
-        >
-          {projects.map((project, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.card, isMobile && styles.cardMobile]}
-              activeOpacity={0.9}
-              onPress={() => openLink(project.url)}
-            >
-              <LinearGradient
-                colors={["#151515", "#101010"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-                style={styles.gradientBackground}
-              >
-                <Image source={{ uri: project.image }} style={styles.icon} />
-                <Text style={styles.cardTitle}>{project.title}</Text>
-                <Text style={styles.cardDescription}>
-                  {project.description}
-                </Text>
-
-                <View style={styles.buttonContainer}>
-                  <LinearGradient
-                    colors={["#ff6b35", "#ff3b00"]}
-                    style={styles.linkButton}
-                  >
-                    <Text style={styles.linkButtonText}>Ver proyecto →</Text>
-                  </LinearGradient>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
+    <View style={[styles.section, isMobile && styles.sectionMobile]}>
+      <View style={styles.inner}>
+        <SectionHeader
+          eyebrow="Automatización"
+          title="Flujos inteligentes con n8n, IA y APIs"
+          description="Conectamos sistemas empresariales y eliminamos tareas repetitivas. Cada flujo está en producción y se puede recorrer."
+        />
+        <View style={styles.list}>
+          {PROJECTS.map((project, index) => (
+            <ProjectRow key={project.url} index={index} project={project} compact={isMobile} />
           ))}
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
-};
+}
 
-export default N8nProjectsSection;
+function ProjectRow({
+  index,
+  project,
+  compact,
+}: {
+  index: number;
+  project: (typeof PROJECTS)[number];
+  compact: boolean;
+}) {
+  const [hover, setHover] = useState(false);
+  const hoverProps = Platform.OS === "web" ? { onHoverIn: () => setHover(true), onHoverOut: () => setHover(false) } : {};
+  return (
+    <Pressable
+      onPress={() => Linking.openURL(project.url)}
+      {...hoverProps}
+      accessibilityRole="link"
+      accessibilityLabel={`Ver el flujo: ${project.title}`}
+      style={[styles.row, compact && styles.rowCompact]}
+    >
+      <Text style={styles.num}>{String(index + 1).padStart(2, "0")}</Text>
+      <View style={styles.body}>
+        <Text style={styles.title}>{project.title}</Text>
+        <Text style={styles.desc}>{project.description}</Text>
+      </View>
+      <View style={[styles.circle, hover && styles.circleHover]}>
+        <Feather name="arrow-up-right" size={18} color={hover ? COLOR.onOrange : COLOR.ink} />
+      </View>
+    </Pressable>
+  );
+}
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    flex: 1,
-    backgroundColor: "#000",
-    paddingVertical: 70,
-    paddingHorizontal: 20,
-  },
-  titleContainer: {
+  section: { backgroundColor: COLOR.bg, paddingVertical: 112, borderBottomWidth: 1, borderBottomColor: COLOR.line },
+  sectionMobile: { paddingVertical: 80 },
+  inner: { maxWidth: MAX_WIDTH, width: "100%", alignSelf: "center", paddingHorizontal: 24 },
+  list: { borderTopWidth: 1, borderTopColor: COLOR.line },
+  row: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 25,
+    gap: 32,
+    paddingVertical: 32,
+    borderBottomWidth: 1,
+    borderBottomColor: COLOR.line,
   },
-  titleDecoration: {
-    width: 50,
-    height: 3,
-    backgroundColor: "#ff6b35",
-    marginHorizontal: 16,
-    borderRadius: 2,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-    textAlign: "center",
-    letterSpacing: 0.8,
-  },
-  description: {
-    fontSize: 16,
-    color: "#ccc",
-    textAlign: "center",
-    marginBottom: 45,
-    paddingHorizontal: 10,
-    lineHeight: 24,
-  },
-  highlight: {
-    color: "#ff6b35",
-    fontWeight: "bold",
-  },
-  cardsOuterContainer: {
-    width: "100%",
-    maxWidth: 1100,
-    alignSelf: "center",
-  },
-  cardsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: 25,
-  },
-  cardsContainerMobile: {
-    flexDirection: "column",
-    gap: 18,
-  },
-  card: {
-  borderRadius: 24,
-  width: "45%",
-  maxWidth: 420,
-  minWidth: 300,
-  backgroundColor: "#121212", // 🔧 fondo opaco uniforme
-  shadowColor: "#000",
-  shadowOpacity: 0.2,
-  shadowOffset: { width: 0, height: 4 },
-  shadowRadius: 10,
-  elevation: 5,
-  overflow: "visible", // 🔧 evita que el gradiente se “recorte” o se vea sombreado abajo
-},
-  cardMobile: {
-    width: "100%",
-    minWidth: "auto",
-    alignSelf: "center",
-  },
-  gradientBackground: {
-  flex: 1,
-  padding: 22,
-  borderRadius: 24,
-  borderWidth: 1,
-  borderColor: "rgba(255,255,255,0.05)",
-  backgroundColor: "#121212", // 🔧 fondo fijo debajo del gradiente
-},
-  icon: {
-    width: 64,
-    height: 64,
-    marginBottom: 18,
-    alignSelf: "center",
-  },
-  cardTitle: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "700",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  cardDescription: {
-    color: "#bbb",
-    fontSize: 15,
-    lineHeight: 22,
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  buttonContainer: {
+  rowCompact: { gap: 16, paddingVertical: 24, alignItems: "flex-start" },
+  num: { fontFamily: FONT.mono, fontSize: 14, color: COLOR.orange, width: 32, paddingTop: 4 },
+  body: { flex: 1 },
+  title: { fontFamily: FONT.medium, fontSize: 19, color: COLOR.ink, marginBottom: 10 },
+  desc: { fontFamily: FONT.regular, fontSize: 15, lineHeight: 25, color: COLOR.ink2 },
+  circle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: COLOR.lineStrong,
     alignItems: "center",
+    justifyContent: "center",
   },
-  linkButton: {
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 25,
-  },
-  linkButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 15,
-    textAlign: "center",
-  },
+  circleHover: { backgroundColor: COLOR.orange, borderColor: COLOR.orange },
 });

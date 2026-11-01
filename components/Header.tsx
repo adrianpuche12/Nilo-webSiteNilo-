@@ -1,28 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { LoginButton, RegisterButton } from "@/components/ui/AppButtons";
+import Text from "@/components/ui/CustomText";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-  View,
-  TextInput,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  Image,
+  Modal,
   Platform,
   Pressable,
-  Modal,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
   useWindowDimensions,
+  View
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import Text from "@/components/ui/CustomText";
-import { LoginButton, EmailConsultButton, RegisterButton } from "@/components/ui/AppButtons";
 import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
   interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
-import { useRouter } from "expo-router";
 
 type HeaderProps = {
   scrollToSection: (sectionId: string) => void;

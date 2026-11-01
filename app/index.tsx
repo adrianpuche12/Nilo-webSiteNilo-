@@ -1,6 +1,7 @@
 import Contact from "@/app/ContactSection";
 import HomePage from "@/app/homePage";
 import Services from "@/app/ServicesSection";
+import ProductsSection from "@/app/ProductsSection";
 // import Team from "@/app/TeamSection";
 import Footer from "@/components/Footer";
 import N8nProjectsSection from "@/app/N8nProjectsSection";
@@ -33,6 +34,9 @@ export default function Home() {
   const serviciosOpacity = useSharedValue(0);
   const serviciosTranslateY = useSharedValue(50);
 
+  const productosOpacity = useSharedValue(0);
+  const productosTranslateY = useSharedValue(50);
+
   const proyectosOpacity = useSharedValue(0);
   const proyectosTranslateY = useSharedValue(50);
 
@@ -57,6 +61,10 @@ export default function Home() {
       case "servicios":
         serviciosOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
         serviciosTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
+        break;
+      case "productos":
+        productosOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
+        productosTranslateY.value = withSpring(isVisible ? 0 : 50, springConfig);
         break;
       case "proyectos":
         proyectosOpacity.value = withTiming(isVisible ? 1 : 0, { duration });
@@ -83,7 +91,7 @@ export default function Home() {
     scrollY.value = currentScrollY;
 
     const offset = 200;
-    const sections = ["inicio", "servicios", "proyectos", "experiencia", "quienes", "contacto"];
+    const sections = ["inicio", "servicios", "productos", "proyectos", "experiencia", "quienes", "contacto"];
     let newCurrentSection = "inicio";
 
     sections.forEach((section) => {
@@ -108,6 +116,14 @@ export default function Home() {
     transform: [
       { translateY: serviciosTranslateY.value },
       { scale: interpolate(serviciosOpacity.value, [0.3, 1], [0.95, 1]) },
+    ],
+  }));
+
+  const productosAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: productosOpacity.value,
+    transform: [
+      { translateY: productosTranslateY.value },
+      { scale: interpolate(productosOpacity.value, [0.3, 1], [0.95, 1]) },
     ],
   }));
 
@@ -180,6 +196,13 @@ export default function Home() {
           onLayout={(event) => handleSectionLayout("servicios", event)}
         >
           <Services isView={serviceIsViewed} />
+        </Animated.View>
+
+        <Animated.View
+          style={productosAnimatedStyle}
+          onLayout={(event) => handleSectionLayout("productos", event)}
+        >
+          <ProductsSection />
         </Animated.View>
 
         <Animated.View

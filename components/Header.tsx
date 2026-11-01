@@ -56,6 +56,11 @@ const Header = ({ scrollToSection, isIndexPage }: HeaderProps) => {
       sectionId: "servicios",
     },
     {
+      id: 6,
+      text: "PRODUCTOS",
+      sectionId: "productos",
+    },
+    {
       id: 3,
       text: "QUIÉNES SOMOS",
       sectionId: "quienes",
